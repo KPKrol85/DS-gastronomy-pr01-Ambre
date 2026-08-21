@@ -1,0 +1,45 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: var(--lh-tight);
+  margin: 0 0 var(--space-02);
+  font-kerning: normal;
+  font-variant-ligatures: contextual;
+  text-wrap: balance;
+}
+h1 {
+  font-size: var(--fs-xxl);
+  font-weight: 700;
+}
+h2 {
+  font-size: var(--fs-xl);
+  font-weight: 700;
+}
+h3 {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+}
+
+.legal__eyebrow {
+  letter-spacing: var(--ls-very-wide);
+  text-transform: uppercase;
+  opacity: 0.9;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+}
+
+.u-lead {
+  font-size: var(--fs-md);
+  line-height: var(--lh-normal);
+  font-weight: 400;
+  color: var(--c-muted);
+  max-width: 65ch;
+  margin: var(--space-02) auto;
+  text-align: center;
+}

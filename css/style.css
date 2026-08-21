@@ -1,0 +1,28 @@
+
+@import "base/base.css";
+
+@import "base/tokens.css";
+@import "base/typography.css";
+
+@import "layout/header.css";
+@import "layout/footer.css";
+
+@import "components/hero.css";
+@import "components/about.css";
+@import "components/menu.css";
+@import "components/gallery.css";
+@import "components/testimonials.css";
+@import "components/forms.css";
+@import "components/cta.css";
+@import "components/faq.css";
+@import "components/buttons.css";
+@import "components/lightbox.css";
+@import "components/breadcrumbs.css";
+@import "components/demo-banner.css";
+
+@import "pages/404.css";
+@import "pages/menu.css";
+@import "pages/galeria.css";
+@import "pages/legal.css";
+
+@import "components/utilities.css";

@@ -1,0 +1,83 @@
+/* Page Menu */
+.page-menu {
+  --menu-shell-bg: color-mix(in oklab, var(--c-bg), white 6%);
+  --menu-shell-border: color-mix(in oklab, var(--c-ink), transparent 88%);
+  --menu-shell-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+  --menu-col-max: 680px;
+  padding-top: 0;
+  padding-bottom: var(--block-y-lg);
+}
+
+:root[data-theme="light"] .page-menu {
+  --menu-shell-bg: color-mix(in oklab, var(--c-bg), var(--c-surface) 10%);
+  --menu-shell-border: color-mix(in oklab, var(--c-ink), transparent 86%);
+  --menu-shell-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+}
+.page-menu .page-shell {
+  max-width: min(960px, 92vw);
+  margin: var(--space-08) auto;
+  background: var(--menu-shell-bg);
+  border: 1px solid var(--menu-shell-border);
+  box-shadow: var(--menu-shell-shadow);
+  border-radius: var(--radius-xs);
+  padding: var(--space-08) var(--space-02);
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+.page-menu .section-head {
+  margin: var(--space-02);
+  text-align: center;
+}
+.page-menu .menu {
+  padding: var(--space-04) 0;
+}
+.page-menu .dish-more {
+  margin: var(--space-03) 0 0;
+  display: inline-block;
+  padding: var(--space-01) var(--space-03);
+  border-radius: var(--radius-xs);
+  border: 1px solid color-mix(in oklab, var(--c-border), transparent 75%);
+  background: color-mix(in oklab, var(--c-surface), transparent 60%);
+  transition:
+    border-color 0.25s ease,
+    background-color 0.25s ease;
+}
+.page-menu .dish-more:hover {
+  border-color: color-mix(in oklab, var(--c-bodziękujęrder), transparent 55%);
+  background: color-mix(in oklab, var(--c-surface), var(--c-ink) 2%);
+}
+.page-menu .dish-more__summary {
+  font-size: var(--fs-xs);
+  padding: var(--space-01) var(--space-02);
+}
+.page-menu .dish-more__content {
+  margin-top: var(--space-02);
+  padding: var(--space-02) 0 0;
+  border-top: 1px solid color-mix(in oklab, var(--c-border), transparent 75%);
+  background: transparent;
+  line-height: var(--lh-relaxed);
+  font-size: var(--fs-sm);
+  color: var(--c-muted);
+}
+.page-menu .dish-more__content strong {
+  letter-spacing: var(--ls-wide);
+}
+@media (min-width: 480px) {
+  .page-menu .dish--has-thumb {
+    grid-template-areas:
+      "thumb head"
+      "thumb desc"
+      "more more";
+  }
+  .page-menu .dish--has-thumb .dish-more {
+    grid-area: more;
+    justify-self: start;
+  }
+}
+@media (min-width: 1024px) {
+  .page-menu .menu .menu__grid {
+    grid-template-columns: 1fr;
+  }
+}

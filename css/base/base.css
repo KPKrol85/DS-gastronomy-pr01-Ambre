@@ -1,0 +1,128 @@
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+}
+.skip-link:focus-visible {
+  left: 1rem;
+  top: 1rem;
+  z-index: 9999;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  background: var(--surface-elevated, var(--c-surface));
+  color: var(--text-strong, var(--c-ink));
+  outline: 2px solid currentColor;
+}
+
+[data-install-pwa]:not([hidden]) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid var(--c-border);
+  background: color-mix(in oklab, var(--c-surface) 92%, transparent);
+  color: var(--c-ink);
+  text-decoration: none;
+  font: inherit;
+}
+[data-install-pwa]:focus-visible {
+  outline: 2px solid var(--c-link);
+  outline-offset: 2px;
+}
+[data-install-pwa]:not([hidden]):hover {
+  background: color-mix(in oklab, var(--c-surface) 85%, transparent);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  color: var(--c-ink);
+  background-color: var(--c-bg);
+  line-height: var(--lh-normal);
+}
+
+main {
+  flex: 1;
+  scroll-margin-top: calc(var(--header-h, 64px) + 12px);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: var(--c-link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+button,
+[role="button"],
+.site-header__nav-toggle {
+  cursor: pointer;
+}
+
+.container {
+  max-width: var(--max, var(--container-xl));
+  margin-inline: auto;
+  padding: 0 var(--space-04);
+}
+
+.l-section {
+  padding-block: var(--block-y-lg);
+  scroll-margin-top: calc(var(--header-h, 70px) + var(--nav-drop-gap, 8px) + 12px);
+}
+
+.grid-2 {
+  display: grid;
+  gap: var(--space-04);
+  grid-template-columns: 1fr;
+  align-items: center;
+}
+
+.section-title {
+  position: relative;
+  display: block;
+  color: var(--c-ink);
+  margin-bottom: var(--space-05);
+  text-align: center;
+}
+.section-title::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  transform: translateX(-50%);
+  width: 72px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--c-accent), transparent);
+  opacity: 0.6;
+}
+
+.tabs {
+  display: flex;
+  gap: var(--space-02);
+  margin: var(--space-06) auto;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+@media (min-width: 760px) {
+  .grid-2 {
+    grid-template-columns: 1.05fr 0.95fr;
+  }
+}

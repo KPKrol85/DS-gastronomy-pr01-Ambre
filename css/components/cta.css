@@ -1,0 +1,60 @@
+/* CTA */
+.cta.l-section {
+  padding-block: var(--block-y-lg);
+  padding-inline: var(--space-06);
+}
+
+.cta__box {
+  margin-top: var(--space-04);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-xs);
+  padding: var(--space-06);
+  text-align: center;
+  background: color-mix(in oklab, var(--c-surface), white 4%);
+  box-shadow: var(--shadow-lg, var(--shadow));
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+.cta__box:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in oklab, var(--c-border), var(--c-accent-contrast) 25%);
+  box-shadow: var(--shadow-md);
+}
+.cta__lead a {
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  letter-spacing: var(--ls-normal);
+}
+.cta__lead a:hover,
+.cta__lead a:focus-visible {
+  color: color-mix(in oklab, var(--c-accent-contrast), #000 20%);
+}
+.cta__actions {
+  justify-content: center;
+  margin: var(--space-06) 0;
+}
+.cta__actions .site-button {
+  width: 100%;
+  max-width: 420px;
+}
+
+html[data-theme="dark"] .cta__box {
+  background: color-mix(in oklab, var(--c-surface), #000 10%);
+  border-color: color-mix(in oklab, var(--c-border), #fff 10%);
+}
+
+@media (min-width: 480px) {
+  .cta__actions .site-button {
+    width: auto;
+    max-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta__box {
+    transition: none;
+  }
+}

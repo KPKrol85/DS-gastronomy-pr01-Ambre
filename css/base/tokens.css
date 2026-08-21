@@ -1,0 +1,188 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+:root {
+  --container-sm: 640px;
+  --container-md: 960px;
+  --container-lg: 1140px;
+  --container-xl: 1280px;
+  --max: var(--container-xl);
+
+  --g: 24px;
+
+  --hero-min-h: clamp(78vh, 86vh, 96vh);
+
+  --block-y-xxs: clamp(8px, 1vw, 32px);
+  --block-y-xs: clamp(16px, 2vw, 48px);
+  --block-y-sm: clamp(32px, 4vw, 80px);
+  --block-y: clamp(40px, 5vw, 96px);
+  --block-y-md: clamp(48px, 6vw, 96px);
+  --block-y-lg: clamp(60px, 8vw, 120px);
+
+  --header-h: 64px;
+  --header-h-shrink: 56px;
+
+  --c-bg: #ffffff;
+  --c-ink: #1b1b1f;
+  --c-muted: #565a61;
+  --c-surface: #f7f2f4;
+  --c-border: #e6e2e6;
+  --c-accent: #fab204;
+  --c-accent-contrast: #8a4f00;
+  --c-accent-2: #a0183f;
+  --c-link: #6f4800;
+  --nav-hover-bg: rgba(0, 0, 0, 0.06);
+
+  --font-sans: "Source Sans 3", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  --fs-xxs: clamp(0.625rem, 0.6rem + 0.1vw, 0.75rem);
+  --fs-xs: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);
+  --fs-sm: clamp(0.875rem, 0.8rem + 0.3vw, 1rem);
+  --fs-smd: clamp(0.95rem, 0.875rem + 0.35vw, 1.1rem);
+  --fs-md: clamp(1rem, 0.95rem + 0.4vw, 1.125rem);
+  --fs-lg: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --fs-xl: clamp(1.75rem, 1.4rem + 1.2vw, 2.5rem);
+  --fs-xxl: clamp(2.5rem, 2rem + 2vw, 4rem);
+
+  --lh-tight: 1.1;
+  --lh-normal: 1.5;
+  --lh-relaxed: 1.7;
+
+  --ls-sm: 0.02em;
+  --ls-normal: 0.04em;
+  --ls-wide: 0.08em;
+  --ls-very-wide: 0.12em;
+
+  --space-01: clamp(0.25rem, 0.22rem + 0.08vw, 0.375rem);
+  --space-02: clamp(0.5rem, 0.45rem + 0.14vw, 0.75rem);
+  --space-03: clamp(0.75rem, 0.68rem + 0.2vw, 1rem);
+  --space-04: clamp(1rem, 0.9rem + 0.3vw, 1.5rem);
+  --space-05: clamp(1.5rem, 1.35rem + 0.45vw, 2rem);
+  --space-06: clamp(2rem, 1.8rem + 0.65vw, 3rem);
+  --space-07: clamp(2.5rem, 2.2rem + 0.9vw, 4rem);
+  --space-08: clamp(3rem, 2.6rem + 1.2vw, 5rem);
+  --space-09: clamp(3.5rem, 3rem + 1.6vw, 6rem);
+  --space-10: clamp(4rem, 3.4rem + 2vw, 7.5rem);
+
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 32px;
+  --radius-full: 999px;
+
+  --border-thin: 1px;
+  --border-medium: 2px;
+  --border-thick: 3px;
+  --outline-focus: 2px solid var(--c-accent);
+
+  --shadow-xs: 0 2px 6px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 6px 18px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.18);
+  --text-shadow-hero: 0 2px 12px rgba(0, 0, 0, 0.6);
+
+  --dur-fast: 120ms;
+  --dur-normal: 240ms;
+  --dur-slow: 400ms;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+  --ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+
+  --glass-blur: 14px;
+  --glass-alpha: 48%;
+  --glass-border-alpha: 65%;
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.15);
+
+  --logo-sm: clamp(40px, 6vw, 64px);
+  --logo-md: clamp(64px, 8vw, 120px);
+  --logo-lg: clamp(96px, 12vw, 200px);
+  --logo-xl: clamp(140px, 18vw, 320px);
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+  --c-bg: #ffffff;
+  --c-ink: #1b1b1f;
+  --c-accent-ink: #1b1b1f;
+  --c-muted: #565a61;
+  --c-surface: #f7f2f4;
+  --c-border: #e6e2e6;
+  --c-link: #6f4800;
+  --c-link-hover: #9e5a00;
+  --nav-hover-bg: rgba(0, 0, 0, 0.06);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --c-bg: #0b0b0f;
+  --c-ink: #eef1f6;
+  --c-muted: #a2a7b3;
+  --c-surface: #12121a;
+  --c-border: #2b2d34;
+  --c-link: #fab204;
+  --c-link-hover: #ffd76a;
+  --c-accent-contrast: #fab204;
+  --nav-hover-bg: rgba(255, 255, 255, 0.1);
+
+  --shadow-xs: 0 2px 10px rgba(0, 0, 0, 0.25);
+  --shadow-sm: 0 8px 22px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 14px 40px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 28px 80px rgba(0, 0, 0, 0.55);
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../../assets/fonts/poppins-v24-latin-regular.woff2") format("woff2");
+}
+@font-face {
+  font-display: swap;
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 600;
+  src: url("../../assets/fonts/poppins-v24-latin-600.woff2") format("woff2");
+}
+@font-face {
+  font-display: swap;
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../../assets/fonts/source-sans-3-v19-latin-regular.woff2") format("woff2");
+}
+@font-face {
+  font-display: swap;
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-weight: 500;
+  src: url("../../assets/fonts/source-sans-3-v19-latin-500.woff2") format("woff2");
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --c-bg: #0b0b0f;
+    --c-ink: #eef1f6;
+    --c-muted: #a2a7b3;
+    --c-surface: #12121a;
+    --c-border: #2b2d34;
+    --c-link: #fab204;
+    --c-accent-contrast: #fab204;
+    --nav-hover-bg: rgba(255, 255, 255, 0.1);
+  }
+}

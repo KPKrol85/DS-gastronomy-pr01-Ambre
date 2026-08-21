@@ -1,0 +1,108 @@
+{
+  "name": "Ambre – Restauracja Fine Dining",
+  "short_name": "Ambre",
+  "description": "Ambre to kameralna restauracja fine dining z autorską kuchnią, sezonowym menu degustacyjnym i starannie dobraną selekcją win.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "window-controls-overlay"],
+  "orientation": "any",
+  "theme_color": "#fab204",
+  "background_color": "#ffffff",
+  "categories": ["food", "restaurant", "business"],
+  "prefer_related_applications": false,
+  "lang": "pl-PL",
+  "dir": "ltr",
+
+  "icons": [
+    {
+      "src": "assets/icons/favicons/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/favicons/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/favicons/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/favicons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/favicons/fav-icon-1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }
+  ],
+
+  "shortcuts": [
+    {
+      "name": "Menu degustacyjne",
+      "short_name": "Menu",
+      "description": "Zobacz pełne menu degustacyjne restauracji Ambre",
+      "url": "/menu.html",
+      "icons": [
+        {
+          "src": "assets/icons/shortcuts/offer-96.png",
+          "sizes": "96x96",
+          "type": "image/png",
+          "purpose": "any maskable"
+        }
+      ]
+    },
+    {
+      "name": "Rezerwacja stolika",
+      "short_name": "Rezerwacja",
+      "description": "Zarezerwuj stolik w restauracji Ambre",
+      "url": "/index.html#rezerwacja",
+      "icons": [
+        {
+          "src": "assets/icons/shortcuts/contact-96.png",
+          "sizes": "96x96",
+          "type": "image/png",
+          "purpose": "any maskable"
+        }
+      ]
+    },
+    {
+      "name": "Informacje prawne",
+      "short_name": "Regulamin",
+      "description": "Polityka prywatności i pliki cookies",
+      "url": "/polityka-prywatnosci.html",
+      "icons": [
+        {
+          "src": "assets/icons/shortcuts/legal-96.png",
+          "sizes": "96x96",
+          "type": "image/png",
+          "purpose": "any maskable"
+        }
+      ]
+    }
+  ],
+
+  "screenshots": [
+    {
+      "src": "assets/icons/screenshots/mobile.jpg",
+      "sizes": "720x1280",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Ambre – strona główna (mobile)"
+    },
+    {
+      "src": "assets/icons/screenshots/desktop.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Ambre – strona główna (desktop)"
+    }
+  ]
+}
