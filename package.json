@@ -25,6 +25,7 @@
     "qa:seo": "node scripts/qa-seo.mjs",
     "qa:html": "html-validate index.html menu.html galeria.html cookies.html polityka-prywatnosci.html regulamin.html 404.html offline.html",
     "qa:js": "eslint --max-warnings 0 \"js/**/*.js\" \"scripts/**/*.mjs\"",
+    "qa:reservation": "node scripts/qa-reservation-e2e.mjs",
     "qa:css": "stylelint --max-warnings 0 \"css/**/*.css\"",
     "qa:a11y": "node scripts/qa-a11y.mjs",
     "qa:lighthouse": "lhci autorun --config=./lighthouserc.json",

@@ -2,17 +2,18 @@
 
 **Audit date:** 2026-08-22
 **Project type:** Static multi-page front-end (HTML, CSS, Vanilla JavaScript)
-**Audit mode:** Static repository review
+**Audit mode:** Static repository review with focused browser verification
 
 ## Overall assessment
 
-The repository has a clear static-site architecture, modular client-side behavior, a defined production build contract, and targeted quality scripts. No critical blocker was detected. Three P1 issues affect implemented public interactions: the reservation form can claim success after an HTTP error, the initial information dialog does not confine keyboard focus, and the shared scroll-to-top control is permanently unavailable. Normal development can continue, but these interaction defects should be addressed before relying on the form and modal behavior in a public deployment.
+The repository has a clear static-site architecture, modular client-side behavior, a defined production build contract, and targeted quality scripts. No critical blocker was detected. The reservation delivery defect recorded as P1-01 has been resolved and covered by focused browser verification. Two P1 issues remain active: the initial information dialog does not confine keyboard focus, and the shared scroll-to-top control is permanently unavailable. Normal development can continue, but these interaction defects should be addressed before relying on the modal and shared navigation behavior in a public deployment.
 
 ## Verified strengths
 
 - Canonical CSS and JavaScript sources are separated from their minified page assets, and `scripts/build-dist.mjs` produces a dedicated distribution directory from those sources.
 - `js/script.js` initializes independent features in isolation, so a failing optional module does not stop later initializers.
 - The mobile navigation implements focus containment, Escape handling, and focus return in `js/modules/nav.js`; the lightbox uses a native dialog where supported.
+- The reservation form reports success and resets its values only after an accepted HTTP response; rejected responses and network failures keep the entered data and expose a recoverable status message.
 - The Service Worker defines explicit application-shell and image-cache strategies plus an offline fallback page.
 - `node scripts/qa-links.mjs` passed for the eight declared HTML pages, including local files and anchors.
 
@@ -20,15 +21,16 @@ The repository has a clear static-site architecture, modular client-side behavio
 
 None detected.
 
+## Resolved findings
+
+### [P1-01] Reservation form confirms only accepted delivery responses
+
+- **Status:** Resolved on 2026-08-22 by PH1-01.
+- **Evidence:** `js/modules/form.js`; `scripts/qa-reservation-e2e.mjs`.
+- **Implemented behavior:** The form checks `response.ok` before displaying confirmation or resetting values. Resolved 4xx/5xx responses and network failures retain entered data, report a recoverable error through the existing status region, and restore the submit control. The native submission path remains available when `fetch` or `FormData` is unavailable.
+- **Focused verification:** `npm run qa:reservation` passed 4/4 browser scenarios: accepted HTTP response, rejected HTTP response, network failure, and native fallback without `fetch`.
+
 ## P1 — Important issues worth fixing next
-
-### [P1-01] Reservation form treats every resolved HTTP response as success
-
-- **Classification:** Defect
-- **Evidence:** `js/modules/form.js:135-147`
-- **Current behavior:** The form's `fetch()` chain displays the success message and resets the form in `.then()` without checking the response status. A rejected network request uses the fallback, but a resolved 4xx or 5xx response follows the success path.
-- **Impact:** A visitor can be told that a reservation request was accepted even when the receiving endpoint rejected it, while their entered data has already been cleared.
-- **Recommended direction:** Make the success state conditional on a successful HTTP response and retain the entered data when delivery is not confirmed.
 
 ### [P1-02] Initial information dialog does not contain keyboard focus
 
@@ -65,11 +67,11 @@ None detected.
 - Inspected the current HTML page shell, form markup, CSS source imports and interaction states, JavaScript modules, Service Worker, manifest, hosting rules, build script, QA scripts, README, and architecture documentation.
 - Inspected the Git worktree before creating this audit; no pre-existing tracked-file changes were reported.
 - Ran `node scripts/qa-links.mjs` successfully: `QA LINKS: PASS`.
-- Did not run HTML validation, linters, accessibility automation, no-JavaScript browser checks, or Lighthouse CI because `node_modules` is not available locally. No dependencies were installed.
-- Did not perform browser, assistive-technology, production-hosting, form-provider, or deployment verification.
+- Ran `npm run qa:reservation` successfully: `QA RESERVATION E2E: PASS (4/4)` for accepted, HTTP-rejected, network-failure, and native-fallback paths.
+- Did not perform assistive-technology, production-hosting, real form-provider, deployment, Lighthouse, PWA, or broad regression verification.
 
 ## Senior rating
 
 **Rating:** 7/10
 
-The project has a coherent source/build boundary, useful static QA coverage, and several deliberately accessible interaction patterns. The current rating is limited by three confirmed defects in public interactive behavior, including one that can misrepresent reservation delivery and one that conflicts with modal keyboard behavior. The rating does not represent a production or accessibility-conformance certification.
+The project has a coherent source/build boundary, useful static QA coverage, and several deliberately accessible interaction patterns. The current rating remains limited by two confirmed defects in public interactive behavior, including modal keyboard behavior and the unavailable shared scroll control. The rating does not represent a production or accessibility-conformance certification.

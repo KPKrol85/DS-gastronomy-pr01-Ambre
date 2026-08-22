@@ -14,6 +14,7 @@ All significant changes to this project are documented in this file.
 
 - Changed the project license and package metadata to use the proprietary KP_Code licensing terms.
 - Changed the cookie, privacy, and terms pages to use KP_Code legal templates aligned with the implemented browser storage, PWA, and reservation-form behavior.
+- Changed reservation delivery feedback so only accepted HTTP responses show success and reset the form; rejected responses and network failures retain entered data and expose a recoverable error state.
 
 ### Documentation
 

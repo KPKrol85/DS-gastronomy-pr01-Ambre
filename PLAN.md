@@ -13,20 +13,19 @@
 
 ## Current priorities
 
-1. `PH1-01` — Correct reservation delivery confirmation.
-2. `PH1-02` — Make the initial information dialog keyboard-modal.
-3. `PH1-03` — Restore the shared scroll-to-top control.
-4. `PH2-01` — Align QA workflow documentation with the executable script.
+1. `PH1-02` — Make the initial information dialog keyboard-modal.
+2. `PH1-03` — Restore the shared scroll-to-top control.
+3. `PH2-01` — Align QA workflow documentation with the executable script.
 
 ## Phase 1 — Public interaction correctness
 
 **Goal:** Remove current user-facing defects in form feedback, modal keyboard behavior, and shared navigation controls.
 
-- [ ] **PH1-01 — Confirm reservation delivery only after an accepted response** — **Priority:** High
-  - [ ] preserve the existing required-field validation, phone formatting, honeypot handling, Netlify-compatible POST format, and native submission fallback.
-  - [ ] treat non-successful HTTP responses as delivery failures rather than displaying the confirmation message or clearing entered values.
-  - [ ] communicate the failure in the existing accessible status area and restore the submit control to a usable state.
-  - [ ] add focused regression coverage for accepted, rejected, and network-failure submission paths using the existing browser-testing runtime.
+- [x] **PH1-01 — Confirm reservation delivery only after an accepted response** — **Priority:** High
+  - [x] preserve the existing required-field validation, phone formatting, honeypot handling, Netlify-compatible POST format, and native submission fallback.
+  - [x] treat non-successful HTTP responses as delivery failures rather than displaying the confirmation message or clearing entered values.
+  - [x] communicate the failure in the existing accessible status area and restore the submit control to a usable state.
+  - [x] add focused regression coverage for accepted, rejected, and network-failure submission paths using the existing browser-testing runtime.
   - **Source:** `daily-AUDIT.md` — [P1-01].
   - **Completion condition:** the success message and form reset occur only after an accepted response; rejected and failed requests keep the user’s data and expose a recoverable failure state.
 
