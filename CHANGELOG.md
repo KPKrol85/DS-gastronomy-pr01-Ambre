@@ -17,9 +17,12 @@ All significant changes to this project are documented in this file.
 - Changed reservation delivery feedback so only accepted HTTP responses show success and reset the form; rejected responses and network failures retain entered data and expose a recoverable error state.
 - Changed the initial project-information dialog to contain keyboard focus, isolate background interaction while open, and move focus to the main content after automatic dismissal while preserving Escape and acceptance persistence behavior.
 - Changed the shared scroll-to-top control to synchronize rendered visibility, keyboard reachability, and accessibility state across all six intended pages while preserving the existing threshold and reduced-motion behavior.
+- Changed the npm workflow to use one discoverable `lint:*`, `qa:*`, `test:e2e:*`, `csp:*`, and `img:*` taxonomy, with separate fast and comprehensive quality gates.
+- Removed the unused `postcss-cli` development dependency after confirming the production build uses the PostCSS Node API directly.
 
 ### Documentation
 
 - Added a Polish-first bilingual README describing the current source/build boundary, PWA mechanisms, quality workflows, and verified limitations.
 - Added a current daily front-end audit record to establish evidence-based maintenance priorities.
 - Synchronized the documented `qa` command and validation scope with the executable package script, including schema-policy, no-JavaScript, and text-lint stages.
+- Updated the README and developer settings reference for the streamlined build, lint, QA, E2E, CSP, server-check, and image-tooling commands.

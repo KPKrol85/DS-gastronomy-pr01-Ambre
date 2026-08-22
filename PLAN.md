@@ -53,3 +53,16 @@ No active items.
   - [x] compare the final documented command with `package.json` without running commands that rewrite generated output.
   - **Source:** `daily-AUDIT.md` — [P2-01].
   - **Completion condition:** the documented `qa` workflow accurately represents the current executable command and its validation scope.
+
+## Phase 3 — Developer workflow maintenance
+
+**Goal:** Keep the established build and quality capabilities behind a clear, non-redundant npm interface.
+
+- [x] **PH3-01 — Standardize the npm script taxonomy** — **Priority:** Maintenance
+  - [x] use `build`, `lint:*`, `qa:*`, `test:e2e:*`, `csp:*`, and `img:*` consistently.
+  - [x] provide separate fast and comprehensive QA entry points without duplicating expensive checks.
+  - [x] preserve the three focused browser regressions under one deterministic `test:e2e` aggregate.
+  - [x] remove only the dependency proven to have no current repository consumer and synchronize the lockfile.
+  - [x] update README, developer settings, changelog, plan, and audit maintenance notes without rewriting PH1 or PH2 history.
+  - **Source:** User-directed developer-experience maintenance on 2026-08-22; not an earlier audit finding.
+  - **Completion condition:** documented commands match `package.json`, retained capabilities have clear owners, and focused workflow verification is executed with any pre-existing project failures reported separately.

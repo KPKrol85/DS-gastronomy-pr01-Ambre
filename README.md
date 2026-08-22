@@ -22,7 +22,7 @@ Repozytorium zawiera implementację interfejsu, zasoby lokalne, konfigurację PW
 
 Główne pliki HTML są przechowywane w katalogu głównym. Kod źródłowy stylów zaczyna się w `css/style.css`, a punkt wejścia JavaScript znajduje się w `js/script.js`; moduły funkcji są w `js/modules/`.
 
-Strony źródłowe używają czytelnych plików `css/style.css` i `js/script.js`. Polecenie `npm run build:dist` tworzy katalog `dist/` z minifikowanymi plikami `css/style.min.css` i `js/script.min.js`, kopią wymaganych plików statycznych oraz stronami HTML przepisanymi na te artefakty produkcyjne.
+Strony źródłowe używają czytelnych plików `css/style.css` i `js/script.js`. Polecenie `npm run build` tworzy katalog `dist/` z minifikowanymi plikami `css/style.min.css` i `js/script.min.js`, kopią wymaganych plików statycznych oraz stronami HTML przepisanymi na te artefakty produkcyjne.
 
 ### Stos technologiczny
 
@@ -61,31 +61,26 @@ Nie zdefiniowano skryptu lokalnego serwera deweloperskiego. Pliki HTML można se
 # zbuduj produkcyjny katalog dist z minifikowanymi CSS i JavaScript
 npm run build
 
-# równoważne jawne polecenie dla katalogu dist
-npm run build:dist
-
-# podstawowy zestaw kontroli: CSP, lint, polityka JSON-LD, HTML, linki i a11y
-npm run check
-
-# rozszerzony pakiet QA, w tym SEO, no-JS i Lighthouse CI
-npm run qa
-
-# pojedyncze kontrole
-npm run qa:links
-npm run qa:seo
-npm run qa:nojs
-npm run qa:a11y
-npm run qa:lighthouse
-npm run qa:html
+# lint JavaScriptu, CSS i tekstu
 npm run lint
-npm run csp:check
+
+# szybka codzienna kontrola statyczna i integralności projektu
+npm run qa:fast
+
+# skupione regresje przeglądarkowe rezerwacji, dialogu i przewijania
+npm run test:e2e
+
+# pełna bramka jakości: szybkie QA, no-JS, E2E, a11y i Lighthouse CI
+npm run qa
 ```
+
+Pojedyncze kontrole są dostępne jako `lint:*`, `qa:*` i `test:e2e:*`. `qa:csp` wyłącznie weryfikuje aktualność CSP, a mutujące `csp:hash` świadomie regeneruje hashe. Polecenie `qa:server` sprawdza lokalny serwer statyczny używany przez narzędzia jakości; nie weryfikuje publicznego wdrożenia.
 
 W projekcie są także polecenia `img:opt`, `img:webp`, `img:avif`, `img:clean` i `img:verify` do przygotowania oraz kontroli wariantów obrazów. `img:clean` usuwa katalog wygenerowanych obrazów, więc używaj go świadomie.
 
 ### Kontrola jakości
 
-Skrypty w `scripts/` sprawdzają między innymi linki i kotwice, meta dane SEO oraz JSON-LD, HTML, JavaScript, CSS, obsługę bez JavaScriptu i automatyczne reguły dostępności z axe-core. Konfiguracja Lighthouse CI obejmuje osiem stron projektu i definiuje progi dla wydajności, SEO oraz dobrych praktyk.
+`qa:fast` obejmuje lint JavaScriptu, CSS i tekstu, HTML, linki, SEO, politykę JSON-LD oraz kontrolę CSP bez uruchamiania szerokich testów przeglądarkowych. `test:e2e` uruchamia deterministycznie trzy skupione regresje. Pełne `qa` rozszerza szybki zestaw o zachowanie bez JavaScriptu, E2E, automatyczne reguły dostępności z axe-core i Lighthouse CI na ośmiu stronach.
 
 Lista poleceń opisuje dostępne kontrole w repozytorium; nie jest zapisem ich wyniku dla konkretnego środowiska lub wdrożenia.
 
@@ -127,7 +122,7 @@ The repository contains the interface implementation, local assets, PWA configur
 
 The main HTML files live in the repository root. The CSS source starts at `css/style.css`, while `js/script.js` is the JavaScript entry point and feature modules live in `js/modules/`.
 
-Source pages load the readable `css/style.css` and `js/script.js` files. `npm run build:dist` creates `dist/` with the minified `css/style.min.css` and `js/script.min.js` artifacts, required static files, and HTML rewritten to use the production assets.
+Source pages load the readable `css/style.css` and `js/script.js` files. `npm run build` creates `dist/` with the minified `css/style.min.css` and `js/script.min.js` artifacts, required static files, and HTML rewritten to use the production assets.
 
 ### Technology stack
 
@@ -166,31 +161,26 @@ No local development-server script is defined. The HTML files can be served by a
 # build the production dist directory with minified CSS and JavaScript
 npm run build
 
-# equivalent explicit command for dist
-npm run build:dist
-
-# core checks: CSP, linting, JSON-LD policy, HTML, links, and accessibility
-npm run check
-
-# extended QA including SEO, no-JS checks, and Lighthouse CI
-npm run qa
-
-# individual checks
-npm run qa:links
-npm run qa:seo
-npm run qa:nojs
-npm run qa:a11y
-npm run qa:lighthouse
-npm run qa:html
+# lint JavaScript, CSS, and public text
 npm run lint
-npm run csp:check
+
+# fast everyday static and project-integrity checks
+npm run qa:fast
+
+# focused browser regressions for reservations, the dialog, and scrolling
+npm run test:e2e
+
+# full quality gate: fast QA, no-JS, E2E, accessibility, and Lighthouse CI
+npm run qa
 ```
+
+Individual checks are available under `lint:*`, `qa:*`, and `test:e2e:*`. `qa:csp` only verifies the current CSP, while the mutating `csp:hash` command deliberately regenerates hashes. `qa:server` checks the local static server used by quality tooling; it does not verify a public deployment.
 
 The repository also provides `img:opt`, `img:webp`, `img:avif`, `img:clean`, and `img:verify` for generating and checking image variants. `img:clean` removes the generated-image directory, so use it deliberately.
 
 ### Quality assurance
 
-Scripts in `scripts/` check, among other things, links and anchors, SEO metadata and JSON-LD, HTML, JavaScript, CSS, no-JavaScript behavior, and automated accessibility rules with axe-core. The Lighthouse CI configuration covers eight project pages and sets thresholds for performance, SEO, and best practices.
+`qa:fast` covers JavaScript, CSS, and text linting, HTML, links, SEO, the JSON-LD policy, and read-only CSP verification without launching broad browser checks. `test:e2e` runs the three focused regressions in a deterministic order. The full `qa` command extends the fast set with no-JavaScript behavior, E2E, automated axe-core accessibility rules, and Lighthouse CI across eight pages.
 
 The command list documents checks available in the repository; it does not record their result for a particular environment or deployment.
 

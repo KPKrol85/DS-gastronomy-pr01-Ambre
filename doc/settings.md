@@ -1,79 +1,72 @@
-# settings.md
+# Kontrakt poleceń npm
 
-## npm scripts (z `package.json`)
+Plik `package.json` jest wykonywalnym źródłem prawdy. Poniższy opis rozróżnia codzienny szybki zestaw, skupione testy E2E i pełną bramkę jakości.
+
+## Główne punkty wejścia
 
 ### `build`
-- **Command:** `npm run build:dist`
-- **What it does:** Czyści `dist/`, tworzy w nim minifikowane `css/style.min.css` i `js/script.min.js`, kopiuje zasoby statyczne oraz przepisuje odwołania HTML na artefakty produkcyjne.
-- **When to use:** Standardowy krok przygotowania artefaktów produkcyjnych.
-- **Technical note:** Źródłowe strony używają czytelnych `css/style.css` i `js/script.js`; pliki `.min.*` istnieją wyłącznie w `dist/`.
 
-### `build:dist`
 - **Command:** `node scripts/build-dist.mjs`
-- **What it does:** Wykonuje ten sam produkcyjny przepływ co `build`.
-- **When to use:** Gdy chcesz jawnie wskazać docelowy katalog generowany.
+- **Purpose:** Czyści `dist/`, buduje minifikowane `css/style.min.css` i `js/script.min.js`, kopiuje wymagane zasoby i przepisuje odwołania HTML na artefakty produkcyjne.
+- **Use:** Standardowe przygotowanie katalogu produkcyjnego. Czytelne pliki źródłowe pozostają w `css/` i `js/`; pliki `.min.*` istnieją wyłącznie w `dist/`.
 
-### `img:opt`
-- **Command:** `node scripts/optimize-images.mjs`
-- **What it does:** Uruchamia optymalizację obrazów zgodnie z konfiguracją skryptu.
-- **When to use:** Przy aktualizacji assetów graficznych.
+### `lint`
 
-### `img:webp`
-- **Command:** `node scripts/optimize-images.mjs --webp`
-- **What it does:** Generuje warianty WebP.
-- **When to use:** Gdy potrzebujesz odświeżyć tylko format WebP.
+- **Command:** `npm run lint:js && npm run lint:css && npm run lint:text`
+- **Purpose:** Agreguje lint JavaScriptu, CSS i publicznego tekstu.
+- **Use:** Po zmianach źródłowych, przed `qa:fast`.
 
-### `img:avif`
-- **Command:** `node scripts/optimize-images.mjs --avif`
-- **What it does:** Generuje warianty AVIF.
-- **When to use:** Gdy potrzebujesz odświeżyć tylko format AVIF.
+### `qa:fast`
 
-### `img:clean`
-- **Command:** `node -e "require('fs').rmSync('assets/img/_optimized', { recursive: true, force: true })"`
-- **What it does:** Czyści wygenerowane obrazy z `assets/img/_optimized`.
-- **When to use:** Przed pełną regeneracją assetów lub przy porządkowaniu repo.
+- **Command:** `npm run lint && npm run qa:html && npm run qa:links && npm run qa:seo && npm run qa:schema && npm run qa:csp`
+- **Purpose:** Szybka, niezmieniająca plików kontrola źródeł i integralności projektu bez szerokich testów przeglądarkowych oraz Lighthouse.
+- **Use:** Codzienna bramka podczas pracy.
 
-### `img:verify`
-- **Command:** `node scripts/img-verify.mjs`
-- **What it does:** Weryfikuje obecność/stan wygenerowanych obrazów.
-- **When to use:** Po optymalizacji obrazów, przed commitem.
+### `test:e2e`
+
+- **Command:** `npm run test:e2e:reservation && npm run test:e2e:demo-legal && npm run test:e2e:scroll-to-top`
+- **Purpose:** Uruchamia deterministycznie trzy skupione regresje przeglądarkowe.
+- **Use:** Po zmianach interakcji formularza, dialogu lub wspólnego sterowania przewijaniem.
 
 ### `qa`
-- **Command:** `npm run qa:links && npm run qa:seo && npm run lint:schema-policy && npm run qa:html && npm run qa:nojs && npm run qa:a11y && npm run qa:lighthouse && npm run qa:text && npm run qa:js && npm run qa:css`
-- **What it does:** Uruchamia pełny pakiet QA obejmujący linki, SEO, politykę schematów, HTML, działanie bez JavaScriptu, dostępność, Lighthouse CI oraz lint tekstu, JavaScriptu i CSS.
-- **When to use:** Przed wydaniem lub jako pipeline quality gate.
 
-### `qa:links`
-- **Command:** `node scripts/qa-links.mjs`
-- **What it does:** Sprawdza integralność linków/anchorów.
-- **When to use:** Po zmianach nawigacji, URL-i i treści.
+- **Command:** `npm run qa:fast && npm run qa:nojs && npm run test:e2e && npm run qa:a11y && npm run qa:lighthouse`
+- **Purpose:** Najpełniejsza skonfigurowana bramka jakości: szybkie QA, zachowanie bez JavaScriptu, skupione E2E, automatyczna dostępność i Lighthouse CI.
+- **Use:** Przed wydaniem lub jako pełny pipeline jakości. Jest wyraźnie droższa od `qa:fast`.
 
-### `qa:seo`
-- **Command:** `node scripts/qa-seo.mjs`
-- **What it does:** Waliduje SEO i structured-data (metadata, canonical, OG, JSON-LD).
-- **When to use:** Po zmianach head/meta/schema.
+## Skrypty lintujące
 
-### `qa:html`
-- **Command:** `html-validate index.html menu.html galeria.html cookies.html polityka-prywatnosci.html regulamin.html 404.html offline.html`
-- **What it does:** Waliduje składnię i jakość HTML.
-- **When to use:** Po zmianach w strukturze stron.
+- `lint:js` — `eslint --max-warnings 0 "js/**/*.js" "scripts/**/*.mjs"`.
+- `lint:css` — `stylelint --max-warnings 0 "css/**/*.css"`.
+- `lint:text` — `node scripts/text-lint.mjs`.
 
-### `qa:js`
-- **Command:** `eslint --max-warnings 0 "js/**/*.js" "scripts/**/*.mjs"`
-- **What it does:** Lintuje kod JS i skrypty narzędziowe.
-- **When to use:** Po każdej zmianie JS.
+## Skrypty QA
 
-### `qa:css`
-- **Command:** `stylelint --max-warnings 0 "css/**/*.css"`
-- **What it does:** Lintuje CSS.
-- **When to use:** Po każdej zmianie stylów.
+- `qa:html` — waliduje osiem stron źródłowych przez HTML-Validate.
+- `qa:links` — sprawdza lokalne linki i kotwice.
+- `qa:seo` — sprawdza metadane SEO, canonicale i JSON-LD.
+- `qa:schema` — egzekwuje politykę obecności JSON-LD na właściwych stronach.
+- `qa:csp` — tylko sprawdza, czy hashe CSP w `_headers` są aktualne; nie zapisuje pliku.
+- `qa:nojs` — sprawdza bazowe zachowanie stron bez JavaScriptu w przeglądarce.
+- `qa:a11y` — uruchamia automatyczny audyt Playwright + axe na ośmiu stronach.
+- `qa:lighthouse` — uruchamia Lighthouse CI zgodnie z `lighthouserc.json`.
+- `qa:server` — sprawdza odpowiedzi lokalnego serwera statycznego używanego przez narzędzia jakości; nie potwierdza działania wdrożenia publicznego.
 
-### `qa:a11y`
-- **Command:** `node scripts/qa-a11y.mjs`
-- **What it does:** Uruchamia automatyczny audyt dostępności (Playwright + axe).
-- **When to use:** Po zmianach UI, nawigacji, formularzy i komponentów interaktywnych.
+## Skupione testy E2E
 
-### `qa:lighthouse`
-- **Command:** `lhci autorun --config=./lighthouserc.json`
-- **What it does:** Uruchamia Lighthouse CI na zdefiniowanej konfiguracji.
-- **When to use:** Do kontroli wydajności, SEO i best-practices przed wdrożeniem.
+- `test:e2e:reservation` — regresje wysyłania formularza rezerwacji i natywnego fallbacku.
+- `test:e2e:demo-legal` — regresje początkowego dialogu informacyjnego i jego pamięci akceptacji.
+- `test:e2e:scroll-to-top` — regresje wspólnego przycisku przewijania do góry.
+
+## CSP
+
+- `csp:hash` — regeneruje hashe skryptów inline w `_headers`; jest jawnym poleceniem utrzymaniowym zmieniającym plik.
+- `qa:csp` — wykonuje wyłącznie weryfikację i należy do `qa:fast` oraz pełnego `qa`.
+
+## Obrazy
+
+- `img:opt` — generuje skonfigurowane warianty WebP i AVIF.
+- `img:webp` — generuje tylko warianty WebP.
+- `img:avif` — generuje tylko warianty AVIF.
+- `img:clean` — usuwa katalog `assets/img/_optimized`; używaj świadomie przed pełną regeneracją.
+- `img:verify` — sprawdza obecność i spójność wygenerowanych wariantów obrazów.
