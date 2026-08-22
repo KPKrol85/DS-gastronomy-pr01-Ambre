@@ -1,223 +1,217 @@
 # Ambre
 
-## PL
+## Polski
 
-### Przegląd projektu
-Ambre to statyczny, wielostronicowy projekt front-end dla restauracji fine dining. Repozytorium zawiera publiczne strony serwisu (`index.html`, `menu.html`, `galeria.html`), strony prawne (`cookies.html`, `polityka-prywatnosci.html`, `regulamin.html`) oraz dedykowane widoki `404.html` i `offline.html`.
+### O projekcie
 
-### Kluczowe funkcje
-- Wielostronicowa nawigacja z sekcjami strony głównej oraz osobnymi podstronami menu i galerii.
-- Interaktywne moduły UI w Vanilla JS: menu mobilne, scrollspy, sticky header, przełącznik motywu, płynne przewijanie, lightbox galerii, filtry zakładek i „load more”.
-- Formularz rezerwacji z walidacją po stronie klienta (telefon, zgoda, honeypot) oraz wysyłką przez `fetch` z fallbackiem do natywnego submitu.
-- PWA: `manifest.webmanifest`, rejestracja service workera, ekran offline i cache strategii dla HTML/CSS/JS/obrazów.
-- Zestaw stron i zasobów SEO: canonical, Open Graph, Twitter Cards, JSON-LD, `robots.txt`, `sitemap.xml`.
+**Ambre** to statyczny, wielostronicowy projekt front-endowy prezentujący restaurację fine dining. Aplikacja została zbudowana bez frameworka: wykorzystuje semantyczny HTML, CSS oraz modułowy JavaScript, który jest bundlowany do pliku produkcyjnego.
 
-### Stack technologiczny
-**Runtime**
-- HTML5
-- CSS3 (architektura oparta o importy: base/layout/components/pages)
-- Vanilla JavaScript (moduły ES)
-- Service Worker + Web App Manifest
+Repozytorium zawiera implementację interfejsu, zasoby lokalne, konfigurację PWA, reguły hostingu statycznego oraz skrypty budowania i kontroli jakości. Nie stanowi deklaracji działającego, publicznego wdrożenia.
 
-**Tooling / QA**
-- npm
-- PostCSS (`postcss-import`, `autoprefixer`, `cssnano`)
-- esbuild
-- ESLint
-- Stylelint
-- html-validate
-- Playwright + `@axe-core/playwright`
-- Lighthouse CI (`@lhci/cli`)
-- Sharp (optymalizacja obrazów)
+### Zakres implementacji
 
-### Struktura projektu
-```text
-.
-├── assets/                 # obrazy, fonty, ikony, warianty zoptymalizowane
-├── css/                    # style źródłowe i bundle style.min.css
-│   ├── base/
-│   ├── layout/
-│   ├── components/
-│   └── pages/
-├── js/
-│   ├── modules/            # moduły funkcjonalne UI
-│   ├── script.js           # entry point aplikacji
-│   ├── script.min.js       # bundle produkcyjny
-│   ├── sw-register.js      # rejestracja SW
-│   └── pwa-install.js      # obsługa instalacji PWA
-├── scripts/                # skrypty build/QA/SEO/a11y/CSP/obrazy
-├── doc/                    # mapa architektury i ustawienia skryptów
-├── *.html                  # strony publiczne
-├── sw.js                   # service worker
-├── manifest.webmanifest
-├── _headers / _redirects   # konfiguracja hostingu statycznego
-└── package.json
-```
+- strony: strona główna, menu, galeria, polityka cookies, polityka prywatności, regulamin, strona offline i 404;
+- responsywna nawigacja, przełącznik motywu, aktywny stan nawigacji oraz obsługa przewijania;
+- filtrowanie pozycji menu i galerii, stopniowe pokazywanie elementów oraz lightbox obsługiwany z klawiatury;
+- formularz rezerwacji z walidacją po stronie klienta, ochroną honeypot i natywnym awaryjnym wysłaniem formularza;
+- meta dane SEO, canonicale, Open Graph, Twitter Cards i dane strukturalne JSON-LD na stronach indeksowalnych;
+- manifest, przycisk instalacji PWA oraz Service Worker z cache aplikacji i obrazów, widokiem offline i obsługą aktualizacji;
+- lokalne fonty, grafiki, ikony aplikacji oraz konfiguracja nagłówków bezpieczeństwa i przekierowań dla hostingu statycznego.
 
-### Instalacja i konfiguracja
-```bash
-npm install
-```
+### Architektura i pliki źródłowe
 
-### Development lokalny
-Dostępne skrypty deweloperskie:
+Główne pliki HTML są przechowywane w katalogu głównym. Kod źródłowy stylów zaczyna się w `css/style.css`, a punkt wejścia JavaScript znajduje się w `js/script.js`; moduły funkcji są w `js/modules/`.
+
+Strony używają zbudowanych plików `css/style.min.css` i `js/script.min.js`. Należy generować je skryptami projektu, a nie edytować ręcznie. Polecenie `npm run build:dist` tworzy katalog `dist/` z minifikowanymi zasobami oraz kopią wymaganych plików statycznych.
+
+### Stos technologiczny
+
+- HTML5 i CSS;
+- Vanilla JavaScript oraz ES modules;
+- PostCSS, Autoprefixer i cssnano dla CSS;
+- esbuild dla bundla JavaScript;
+- Service Worker i Web App Manifest dla mechanizmów PWA;
+- Playwright i axe-core, HTML-Validate, ESLint, Stylelint oraz Lighthouse CI w narzędziach jakości.
+
+### PWA i zachowanie offline
+
+`sw.js` precache’uje strony i kluczowe zasoby aplikacji. Dla nawigacji oraz plików stylów, skryptów i workerów stosuje pobieranie z sieci z awaryjnym odczytem cache; dla obrazów stosuje odczyt z cache z późniejszym pobraniem. Gdy brak jest dokumentu w cache podczas nawigacji offline, używana jest strona `offline.html`.
+
+`manifest.webmanifest` definiuje nazwę aplikacji, ikony, skróty i zrzuty ekranu. Przycisk instalacji jest pokazywany dopiero po otrzymaniu przez przeglądarkę zdarzenia `beforeinstallprompt`.
+
+### Formularz rezerwacji
+
+Formularz w `index.html` ma atrybuty zgodne z przetwarzaniem formularzy Netlify. Skrypt sprawdza wymagane pola, format polskiego numeru telefonu i zgodę, a następnie wysyła dane metodą POST, jeśli dostępne są `fetch` i `FormData`; w razie błędu korzysta z natywnego wysłania formularza.
+
+Odbiór zgłoszeń zależy od konfiguracji środowiska hostującego i nie jest potwierdzany przez sam kod źródłowy tego repozytorium.
+
+### Wymagania i uruchomienie
+
+Projekt zawiera `package-lock.json`, dlatego do odtworzenia zależności użyj:
 
 ```bash
+npm ci
+```
+
+Nie zdefiniowano skryptu lokalnego serwera deweloperskiego. Pliki HTML można serwować dowolnym serwerem statycznym, a skrypty QA uruchamiają własne serwery lokalne tam, gdzie są potrzebne.
+
+### Polecenia
+
+```bash
+# zbuduj minifikowane CSS i JavaScript używane przez strony
+npm run build
+
+# utwórz katalog dist/ na podstawie źródeł
+npm run build:dist
+
+# obserwuj zmiany odpowiednio CSS lub JavaScript
 npm run watch:css
 npm run watch:js
+
+# podstawowy zestaw kontroli: CSP, lint, polityka JSON-LD, HTML, linki i a11y
+npm run check
+
+# rozszerzony pakiet QA, w tym SEO, no-JS i Lighthouse CI
 npm run qa
+
+# pojedyncze kontrole
+npm run qa:links
+npm run qa:seo
+npm run qa:nojs
+npm run qa:a11y
+npm run qa:lighthouse
+npm run qa:html
+npm run lint
+npm run csp:check
 ```
 
-### Build produkcyjny
-```bash
-npm run build
-npm run build:dist
-```
+W projekcie są także polecenia `img:opt`, `img:webp`, `img:avif`, `img:clean` i `img:verify` do przygotowania oraz kontroli wariantów obrazów. `img:clean` usuwa katalog wygenerowanych obrazów, więc używaj go świadomie.
 
-`build:dist` generuje katalog `dist/` z gotowymi plikami HTML, assetami, plikami statycznymi i zbudowanymi bundle’ami CSS/JS.
+### Kontrola jakości
 
-### Deployment
-Repozytorium zawiera pliki `_headers` i `_redirects`, a także skrypt `check:server:prod`, co wskazuje na workflow wdrożenia dla hostingu statycznego z regułami nagłówków i przekierowań.
+Skrypty w `scripts/` sprawdzają między innymi linki i kotwice, meta dane SEO oraz JSON-LD, HTML, JavaScript, CSS, obsługę bez JavaScriptu i automatyczne reguły dostępności z axe-core. Konfiguracja Lighthouse CI obejmuje osiem stron projektu i definiuje progi dla wydajności, SEO oraz dobrych praktyk.
 
-### Dostępność
-Zaobserwowane implementacje dostępności:
-- skip link do głównej treści,
-- semantyczne struktury (`header`, `nav`, `main`, `section`, `footer`),
-- atrybuty ARIA dla nawigacji, FAQ, lightboxa i komunikatów formularza,
-- obsługa klawiatury w komponentach interaktywnych,
-- automatyczne testy a11y (`npm run qa:a11y`).
+Lista poleceń opisuje dostępne kontrole w repozytorium; nie jest zapisem ich wyniku dla konkretnego środowiska lub wdrożenia.
 
-### SEO
-Zaobserwowane elementy SEO:
-- meta description, canonical, Open Graph, Twitter Cards,
-- JSON-LD na stronach głównych serwisu,
-- `robots.txt` i `sitemap.xml`,
-- dedykowany skrypt walidacji SEO (`npm run qa:seo`).
+### Hosting i bezpieczeństwo
 
-### Wydajność
-Zaobserwowane implementacje wydajnościowe:
-- pipeline minifikacji CSS i bundlowania/minifikacji JS,
-- zoptymalizowane formaty obrazów (`webp`, `avif`) oraz skrypty ich generowania i weryfikacji,
-- preload fontów,
-- cache aplikacji przez service workera,
-- audyty Lighthouse CI (`npm run qa:lighthouse`).
-
-### Utrzymanie projektu
-- Główny entry point front-endu: `js/script.js`; logika podzielona na moduły w `js/modules/`.
-- Kompozycja stylów oparta o `css/style.css` i importy warstwowe (`base`, `layout`, `components`, `pages`).
-- Skrypty operacyjne (QA, SEO, a11y, obrazki, CSP, build `dist`) znajdują się w `scripts/`.
-- Dokumentacja mapująca hooki HTML do modułów JS jest utrzymywana w `doc/ARCHITECTURE_MAP.md`.
+Pliki `_headers` i `_redirects` dostarczają konfigurację dla hostingu statycznego: przekierowania adresów, stronę 404 oraz nagłówki bezpieczeństwa, w tym Content Security Policy. Nie przesądza to o tym, że konfiguracja została zastosowana przez konkretną usługę hostingową.
 
 ### Licencja
-Projekt jest objęty własnościową licencją KP_CODE (plik `LICENSE`).
 
-## EN
+Projekt jest objęty własnościową licencją KP_Code. Szczegółowe warunki znajdują się w pliku [LICENSE](LICENSE). Oprogramowanie nie jest udostępniane jako open source.
 
-### Project Overview
-Ambre is a static multi-page front-end project for a fine dining restaurant website. The repository includes public pages (`index.html`, `menu.html`, `galeria.html`), legal pages (`cookies.html`, `polityka-prywatnosci.html`, `regulamin.html`), and dedicated `404.html` and `offline.html` views.
+### Ograniczenia
 
-### Key Features
-- Multi-page navigation with homepage sections and dedicated menu/gallery pages.
-- Interactive Vanilla JS UI modules: mobile navigation, scrollspy, sticky header, theme switcher, smooth scrolling, gallery lightbox, tab filters, and load-more behavior.
-- Reservation form with client-side validation (phone, consent, honeypot) and `fetch` submission with native submit fallback.
-- PWA surface: `manifest.webmanifest`, service worker registration, offline screen, and caching strategies for HTML/CSS/JS/images.
-- SEO file and metadata set: canonical, Open Graph, Twitter Cards, JSON-LD, `robots.txt`, and `sitemap.xml`.
+- Repozytorium zawiera wyłącznie warstwę statycznego front-endu; nie zawiera backendu, bazy danych, autoryzacji ani integracji płatności.
+- Działanie formularza w środowisku produkcyjnym, instalacja PWA i zachowanie cache zależą od przeglądarki oraz konfiguracji hostingu i nie są potwierdzane w tym README.
+- Dane prezentowane w interfejsie i danych strukturalnych należy zweryfikować przed użyciem w rzeczywistym serwisie operacyjnym.
 
-### Tech Stack
-**Runtime**
-- HTML5
-- CSS3 (import-based architecture: base/layout/components/pages)
-- Vanilla JavaScript (ES modules)
-- Service Worker + Web App Manifest
+---
 
-**Tooling / QA**
-- npm
-- PostCSS (`postcss-import`, `autoprefixer`, `cssnano`)
-- esbuild
-- ESLint
-- Stylelint
-- html-validate
-- Playwright + `@axe-core/playwright`
-- Lighthouse CI (`@lhci/cli`)
-- Sharp (image optimization)
+## English
 
-### Project Structure
-```text
-.
-├── assets/                 # images, fonts, icons, optimized variants
-├── css/                    # source styles and style.min.css bundle
-│   ├── base/
-│   ├── layout/
-│   ├── components/
-│   └── pages/
-├── js/
-│   ├── modules/            # UI feature modules
-│   ├── script.js           # application entry point
-│   ├── script.min.js       # production bundle
-│   ├── sw-register.js      # SW registration
-│   └── pwa-install.js      # PWA install handling
-├── scripts/                # build/QA/SEO/a11y/CSP/image scripts
-├── doc/                    # architecture map and script settings
-├── *.html                  # public pages
-├── sw.js                   # service worker
-├── manifest.webmanifest
-├── _headers / _redirects   # static hosting configuration
-└── package.json
-```
+### About the project
 
-### Setup and Installation
-```bash
-npm install
-```
+**Ambre** is a static, multi-page front-end project presenting a fine-dining restaurant. It is built without a framework, using semantic HTML, CSS, and modular JavaScript bundled into a production asset.
 
-### Local Development
-Available development scripts:
+The repository contains the interface implementation, local assets, PWA configuration, static-hosting rules, and build and quality-assurance scripts. It does not assert that a public deployment is currently operating.
+
+### Implemented scope
+
+- pages for the home view, menu, gallery, cookie policy, privacy policy, terms, offline view, and 404 view;
+- responsive navigation, theme switching, current navigation state, and scroll controls;
+- menu and gallery filtering, progressive item reveal, and a keyboard-operable lightbox;
+- a reservation form with client-side validation, a honeypot field, and native submission fallback;
+- SEO metadata, canonicals, Open Graph, Twitter Cards, and JSON-LD structured data on indexable pages;
+- a manifest, PWA install prompt, and a Service Worker with application and image caches, an offline view, and update handling;
+- local fonts, images, application icons, and static-hosting configuration for security headers and redirects.
+
+### Architecture and source files
+
+The main HTML files live in the repository root. The CSS source starts at `css/style.css`, while `js/script.js` is the JavaScript entry point and feature modules live in `js/modules/`.
+
+Pages load the built `css/style.min.css` and `js/script.min.js` assets. Generate these files with the project scripts rather than editing them manually. `npm run build:dist` creates `dist/` from source files, minified assets, and the required static files.
+
+### Technology stack
+
+- HTML5 and CSS;
+- Vanilla JavaScript and ES modules;
+- PostCSS, Autoprefixer, and cssnano for CSS processing;
+- esbuild for JavaScript bundling;
+- Service Worker and Web App Manifest for PWA mechanisms;
+- Playwright and axe-core, HTML-Validate, ESLint, Stylelint, and Lighthouse CI for quality tooling.
+
+### PWA and offline behavior
+
+`sw.js` precaches application pages and key assets. Navigation plus style, script, and worker requests use network retrieval with a cache fallback; image requests use cache retrieval before a network attempt. If no cached document is available during offline navigation, the worker serves `offline.html`.
+
+`manifest.webmanifest` defines the application name, icons, shortcuts, and screenshots. The install control is only shown after the browser emits the `beforeinstallprompt` event.
+
+### Reservation form
+
+The form in `index.html` uses attributes compatible with Netlify Forms processing. Its script validates required fields, the Polish telephone-number format, and consent; it then submits a POST request when `fetch` and `FormData` are available, with native form submission as a fallback.
+
+Receipt of submissions depends on the hosting environment configuration and is not established by this repository's source code alone.
+
+### Requirements and local use
+
+The project includes `package-lock.json`; install the locked dependency set with:
 
 ```bash
+npm ci
+```
+
+No local development-server script is defined. The HTML files can be served by any static server, while the relevant QA scripts start their own local servers when needed.
+
+### Commands
+
+```bash
+# build the minified CSS and JavaScript loaded by the pages
+npm run build
+
+# create dist/ from source files
+npm run build:dist
+
+# watch CSS or JavaScript changes
 npm run watch:css
 npm run watch:js
+
+# core checks: CSP, linting, JSON-LD policy, HTML, links, and accessibility
+npm run check
+
+# extended QA including SEO, no-JS checks, and Lighthouse CI
 npm run qa
+
+# individual checks
+npm run qa:links
+npm run qa:seo
+npm run qa:nojs
+npm run qa:a11y
+npm run qa:lighthouse
+npm run qa:html
+npm run lint
+npm run csp:check
 ```
 
-### Production Build
-```bash
-npm run build
-npm run build:dist
-```
+The repository also provides `img:opt`, `img:webp`, `img:avif`, `img:clean`, and `img:verify` for generating and checking image variants. `img:clean` removes the generated-image directory, so use it deliberately.
 
-`build:dist` creates a `dist/` directory with production HTML files, assets, static files, and built CSS/JS bundles.
+### Quality assurance
 
-### Deployment
-The repository includes `_headers` and `_redirects` files, plus a `check:server:prod` script, indicating a static-hosting deployment workflow with explicit headers and redirect rules.
+Scripts in `scripts/` check, among other things, links and anchors, SEO metadata and JSON-LD, HTML, JavaScript, CSS, no-JavaScript behavior, and automated accessibility rules with axe-core. The Lighthouse CI configuration covers eight project pages and sets thresholds for performance, SEO, and best practices.
 
-### Accessibility
-Implemented accessibility patterns include:
-- a skip link to main content,
-- semantic page structure (`header`, `nav`, `main`, `section`, `footer`),
-- ARIA usage for navigation, FAQ, lightbox, and form status messages,
-- keyboard support in interactive components,
-- automated a11y checks (`npm run qa:a11y`).
+The command list documents checks available in the repository; it does not record their result for a particular environment or deployment.
 
-### SEO
-Implemented SEO surface includes:
-- meta description, canonical, Open Graph, and Twitter Cards,
-- JSON-LD on core site pages,
-- `robots.txt` and `sitemap.xml`,
-- dedicated SEO validation script (`npm run qa:seo`).
+### Hosting and security
 
-### Performance
-Verified performance-oriented implementation includes:
-- CSS minification and JS bundling/minification pipeline,
-- optimized image formats (`webp`, `avif`) with generation and verification scripts,
-- font preloading,
-- app-shell/runtime caching via service worker,
-- Lighthouse CI audits (`npm run qa:lighthouse`).
-
-### Project Maintenance
-- Main front-end entry point: `js/script.js`; feature logic is split across `js/modules/`.
-- Style composition is controlled by `css/style.css` and layered imports (`base`, `layout`, `components`, `pages`).
-- Operational scripts (QA, SEO, a11y, images, CSP, `dist` build) are located in `scripts/`.
-- HTML-to-JS hook mapping documentation is maintained in `doc/ARCHITECTURE_MAP.md`.
+`_headers` and `_redirects` provide static-hosting configuration for route redirects, a 404 page, and security headers including a Content Security Policy. Their presence does not establish that the configuration has been applied by a specific hosting provider.
 
 ### License
-This project is covered by the KP_CODE Proprietary Project License (see `LICENSE`).
+
+The project is covered by the proprietary KP_Code license. See [LICENSE](LICENSE) for its full terms. The software is not released as open source.
+
+### Limitations
+
+- The repository contains only the static front-end layer; it does not include a backend, database, authentication, or payment integration.
+- Production form delivery, PWA installation, and cache behavior depend on the browser and hosting configuration and are not confirmed by this README.
+- Information presented in the interface and structured data should be verified before use in an operational public service.
