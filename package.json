@@ -4,7 +4,7 @@
   "private": true,
   "description": "Ambre — front-end project (HTML, CSS, Vanilla JS). Live demo: https://gastronomy-project-01.netlify.app/",
   "author": "Kamil Król | KP_Code Digital Studio",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "build:css": "postcss css/style.css -o css/style.min.css --no-map && node -e \"const fs=require('fs');const css=fs.readFileSync('css/style.min.css','utf8');if(/@import/i.test(css)){console.error('Found @import in css/style.min.css');process.exit(1);}console.log('CSS bundle OK');\"",
     "build:js": "esbuild js/script.js --bundle --minify --target=es2018 --outfile=js/script.min.js --log-level=warning && node -e \"const fs=require('fs');const js=fs.readFileSync('js/script.min.js','utf8');if(/\\bimport\\s|from\\s+\\\"\\.\\/modules\\//.test(js)){console.error('Found import syntax in js/script.min.js');process.exit(1);}console.log('JS bundle OK');\"",

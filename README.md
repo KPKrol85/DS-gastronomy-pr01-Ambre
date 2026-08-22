@@ -109,7 +109,7 @@ Zaobserwowane implementacje wydajnościowe:
 - Dokumentacja mapująca hooki HTML do modułów JS jest utrzymywana w `doc/ARCHITECTURE_MAP.md`.
 
 ### Licencja
-Projekt jest udostępniony na licencji MIT (plik `LICENSE`).
+Projekt jest objęty własnościową licencją KP_CODE (plik `LICENSE`).
 
 ## EN
 
@@ -220,4 +220,4 @@ Verified performance-oriented implementation includes:
 - HTML-to-JS hook mapping documentation is maintained in `doc/ARCHITECTURE_MAP.md`.
 
 ### License
-This project is licensed under the MIT License (see `LICENSE`).
+This project is covered by the KP_CODE Proprietary Project License (see `LICENSE`).
