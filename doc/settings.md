@@ -2,32 +2,16 @@
 
 ## npm scripts (z `package.json`)
 
-### `build:css`
-- **Command:** `postcss css/style.css -o css/style.min.css --no-map && node -e "..."`
-- **What it does:** Bundle’uje CSS do `css/style.min.css` i sprawdza, czy w wynikowym pliku nie został `@import`.
-- **When to use:** Przed publikacją artefaktów CSS lub przed testem środowiska produkcyjnego.
-- **Technical note:** Każdy build nadpisuje `css/style.min.css`; ręczne zmiany w tym pliku zostaną utracone.
-
-### `build:js`
-- **Command:** `esbuild js/script.js --bundle --minify --target=es2018 --outfile=js/script.min.js --log-level=warning && node -e "..."`
-- **What it does:** Bundle’uje i minifikuje JS do `js/script.min.js`, następnie waliduje brak składni `import` w bundle.
-- **When to use:** Przed deployem i przy weryfikacji kompatybilności bundle dla runtime bez modułów.
-- **Technical note:** Każdy build nadpisuje `js/script.min.js`; ręczne zmiany w tym pliku zostaną utracone.
-
 ### `build`
-- **Command:** `npm run build:css && npm run build:js`
-- **What it does:** Uruchamia pełny build front-end (CSS + JS).
-- **When to use:** Standardowy krok przygotowania artefaktów.
+- **Command:** `npm run build:dist`
+- **What it does:** Czyści `dist/`, tworzy w nim minifikowane `css/style.min.css` i `js/script.min.js`, kopiuje zasoby statyczne oraz przepisuje odwołania HTML na artefakty produkcyjne.
+- **When to use:** Standardowy krok przygotowania artefaktów produkcyjnych.
+- **Technical note:** Źródłowe strony używają czytelnych `css/style.css` i `js/script.js`; pliki `.min.*` istnieją wyłącznie w `dist/`.
 
-### `watch:css`
-- **Command:** `postcss css/style.css -o css/style.min.css --watch --no-map`
-- **What it does:** Obserwuje zmiany CSS i odświeża `style.min.css`.
-- **When to use:** Podczas lokalnej pracy nad stylingiem.
-
-### `watch:js`
-- **Command:** `esbuild js/script.js --bundle --minify --target=es2018 --outfile=js/script.min.js --watch`
-- **What it does:** Obserwuje moduły JS i przebudowuje bundle.
-- **When to use:** Podczas lokalnej pracy nad JS.
+### `build:dist`
+- **Command:** `node scripts/build-dist.mjs`
+- **What it does:** Wykonuje ten sam produkcyjny przepływ co `build`.
+- **When to use:** Gdy chcesz jawnie wskazać docelowy katalog generowany.
 
 ### `img:opt`
 - **Command:** `node scripts/optimize-images.mjs`

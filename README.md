@@ -22,7 +22,7 @@ Repozytorium zawiera implementację interfejsu, zasoby lokalne, konfigurację PW
 
 Główne pliki HTML są przechowywane w katalogu głównym. Kod źródłowy stylów zaczyna się w `css/style.css`, a punkt wejścia JavaScript znajduje się w `js/script.js`; moduły funkcji są w `js/modules/`.
 
-Strony używają zbudowanych plików `css/style.min.css` i `js/script.min.js`. Należy generować je skryptami projektu, a nie edytować ręcznie. Polecenie `npm run build:dist` tworzy katalog `dist/` z minifikowanymi zasobami oraz kopią wymaganych plików statycznych.
+Strony źródłowe używają czytelnych plików `css/style.css` i `js/script.js`. Polecenie `npm run build:dist` tworzy katalog `dist/` z minifikowanymi plikami `css/style.min.css` i `js/script.min.js`, kopią wymaganych plików statycznych oraz stronami HTML przepisanymi na te artefakty produkcyjne.
 
 ### Stos technologiczny
 
@@ -58,15 +58,11 @@ Nie zdefiniowano skryptu lokalnego serwera deweloperskiego. Pliki HTML można se
 ### Polecenia
 
 ```bash
-# zbuduj minifikowane CSS i JavaScript używane przez strony
+# zbuduj produkcyjny katalog dist z minifikowanymi CSS i JavaScript
 npm run build
 
-# utwórz katalog dist/ na podstawie źródeł
+# równoważne jawne polecenie dla katalogu dist
 npm run build:dist
-
-# obserwuj zmiany odpowiednio CSS lub JavaScript
-npm run watch:css
-npm run watch:js
 
 # podstawowy zestaw kontroli: CSP, lint, polityka JSON-LD, HTML, linki i a11y
 npm run check
@@ -131,7 +127,7 @@ The repository contains the interface implementation, local assets, PWA configur
 
 The main HTML files live in the repository root. The CSS source starts at `css/style.css`, while `js/script.js` is the JavaScript entry point and feature modules live in `js/modules/`.
 
-Pages load the built `css/style.min.css` and `js/script.min.js` assets. Generate these files with the project scripts rather than editing them manually. `npm run build:dist` creates `dist/` from source files, minified assets, and the required static files.
+Source pages load the readable `css/style.css` and `js/script.js` files. `npm run build:dist` creates `dist/` with the minified `css/style.min.css` and `js/script.min.js` artifacts, required static files, and HTML rewritten to use the production assets.
 
 ### Technology stack
 
@@ -167,15 +163,11 @@ No local development-server script is defined. The HTML files can be served by a
 ### Commands
 
 ```bash
-# build the minified CSS and JavaScript loaded by the pages
+# build the production dist directory with minified CSS and JavaScript
 npm run build
 
-# create dist/ from source files
+# equivalent explicit command for dist
 npm run build:dist
-
-# watch CSS or JavaScript changes
-npm run watch:css
-npm run watch:js
 
 # core checks: CSP, linting, JSON-LD policy, HTML, links, and accessibility
 npm run check
