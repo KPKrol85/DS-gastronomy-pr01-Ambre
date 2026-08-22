@@ -13,8 +13,7 @@
 
 ## Current priorities
 
-1. `PH1-03` — Restore the shared scroll-to-top control.
-2. `PH2-01` — Align QA workflow documentation with the executable script.
+1. `PH2-01` — Align QA workflow documentation with the executable script.
 
 ## Phase 1 — Public interaction correctness
 
@@ -36,11 +35,11 @@
   - **Source:** `daily-AUDIT.md` — [P1-02].
   - **Completion condition:** the dialog’s rendered and ARIA modal states match its keyboard behavior, and background controls are unreachable until dismissal.
 
-- [ ] **PH1-03 — Restore the shared scroll-to-top control** — **Priority:** High
-  - [ ] establish one visibility state that synchronizes rendered visibility, keyboard reachability, and accessibility attributes after the scroll threshold.
-  - [ ] apply the same state contract to every page that exposes the shared control.
-  - [ ] preserve reduced-motion behavior when returning to the top of the page.
-  - [ ] verify threshold visibility and keyboard activation on a representative page, then confirm the shared markup contract across the remaining pages.
+- [x] **PH1-03 — Restore the shared scroll-to-top control** — **Priority:** High
+  - [x] establish one visibility state that synchronizes rendered visibility, keyboard reachability, and accessibility attributes after the scroll threshold.
+  - [x] apply the same state contract to every page that exposes the shared control.
+  - [x] preserve reduced-motion behavior when returning to the top of the page.
+  - [x] verify threshold visibility and keyboard activation on a representative page, then confirm the shared markup contract across the remaining pages.
   - **Source:** `daily-AUDIT.md` — [P1-03].
   - **Completion condition:** the control becomes visible and operable after the threshold on all six intended pages and remains absent from keyboard navigation while hidden.
 

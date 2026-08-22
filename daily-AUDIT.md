@@ -6,7 +6,7 @@
 
 ## Overall assessment
 
-The repository has a clear static-site architecture, modular client-side behavior, a defined production build contract, and targeted quality scripts. No critical blocker was detected. The reservation delivery defect recorded as P1-01 and the initial-dialog keyboard defect recorded as P1-02 have been resolved and covered by focused browser verification. One P1 issue remains active: the shared scroll-to-top control is permanently unavailable. Normal development can continue, but that shared navigation defect should be addressed before relying on the control in a public deployment.
+The repository has a clear static-site architecture, modular client-side behavior, a defined production build contract, and targeted quality scripts. No critical blocker was detected. The reservation delivery, initial-dialog keyboard, and shared scroll-to-top defects recorded as P1-01 through P1-03 have been resolved and covered by focused browser verification. No active P1 finding remains; the current maintenance priority is the P2 QA-documentation alignment item.
 
 ## Verified strengths
 
@@ -38,15 +38,16 @@ None detected.
 - **Implemented behavior:** Initial focus remains on the dialog panel; Tab and Shift+Tab cycle through only its available controls, including the single-control case. Direct body siblings are temporarily made inert so background focus and pointer interaction are unavailable, and their prior inert state is restored on close. Escape still dismisses without recording acceptance, the acceptance button still persists `demoLegalAccepted="true"`, and automatic dismissal moves focus without scrolling to the existing main content target.
 - **Focused verification:** `npm run qa:demo-legal` passed 2/2 browser scenarios covering initial focus, forward and reverse wraparound, single-control traversal, background focus and pointer isolation, Escape dismissal and focus placement, acceptance persistence, and persisted first-visit suppression after reload.
 
+### [P1-03] Shared scroll-to-top control synchronizes its interaction state
+
+- **Status:** Resolved on 2026-08-22 by PH1-03.
+- **Evidence:** `js/modules/scroll.js`; `css/components/buttons.css`; `scripts/qa-scroll-to-top-e2e.mjs`.
+- **Implemented behavior:** One shared state updater retains the existing `> 300` threshold and synchronizes the `is-visible` class, `hidden`, `aria-hidden`, and `tabindex` on the native button. The hidden state is not rendered or focusable; the visible state is fixed within the viewport, exposed to assistive technology, and uses native button keyboard activation. Scroll-to-top still requests smooth behavior by default and automatic behavior when reduced motion is preferred.
+- **Focused verification:** `npm run qa:scroll-to-top` passed 3/3 scenarios covering the initial hidden/non-focusable state, threshold visibility, native keyboard focus and Enter activation, return to the hidden state at the threshold, reduced-motion behavior, and the shared default-markup contract across all six intended pages.
+
 ## P1 — Important issues worth fixing next
 
-### [P1-03] Shared scroll-to-top control remains permanently hidden
-
-- **Classification:** Defect
-- **Evidence:** `js/modules/scroll.js:35-42`; `index.html:894`
-- **Current behavior:** Six public pages render the scroll-to-top button with `hidden`, `aria-hidden="true"`, and `tabindex="-1"`. The shared script only toggles an `is-visible` class; it never removes those attributes, and no source CSS rule exposes that class.
-- **Impact:** The advertised control cannot be discovered, focused, or activated on any page that includes it.
-- **Recommended direction:** Use one consistent visibility state that updates the rendered, keyboard, and accessibility states together when the scroll threshold is crossed.
+None active.
 
 ## P2 — Minor refinements
 
@@ -69,10 +70,12 @@ None detected.
 - Ran `node scripts/qa-links.mjs` successfully: `QA LINKS: PASS`.
 - Ran `npm run qa:reservation` successfully: `QA RESERVATION E2E: PASS (4/4)` for accepted, HTTP-rejected, network-failure, and native-fallback paths.
 - Ran `npm run qa:demo-legal` successfully: `QA DEMO LEGAL E2E: PASS (2/2 scenarios)` for keyboard-modal behavior and acceptance persistence.
+- Ran `npm run qa:scroll-to-top` successfully: `QA SCROLL TO TOP E2E: PASS (3/3 scenarios)` for the shared markup contract, threshold visibility and keyboard activation, return-to-hidden behavior, and reduced-motion activation.
+- Ran `npm run qa:js`, `npm run qa:css`, and `npm run qa:html` successfully after the PH1-03 implementation.
 - Did not perform assistive-technology, production-hosting, real form-provider, deployment, Lighthouse, PWA, or broad regression verification.
 
 ## Senior rating
 
-**Rating:** 7/10
+**Rating:** 8/10
 
-The project has a coherent source/build boundary, useful static QA coverage, and several deliberately accessible interaction patterns. The current rating remains limited by the confirmed shared scroll-control defect and the stale QA workflow documentation. The rating does not represent a production or accessibility-conformance certification.
+The project has a coherent source/build boundary, useful static QA coverage, and several deliberately accessible interaction patterns. The current rating remains limited by the stale QA workflow documentation and by verification that does not include production hosting or real assistive technology. The rating does not represent a production or accessibility-conformance certification.
