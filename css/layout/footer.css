@@ -125,6 +125,37 @@ html[data-theme="light"] .site-footer {
   block-size: 100%;
   border: 0;
 }
+.site-footer__map-loader,
+.site-footer__map-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  inline-size: 100%;
+  padding: var(--space-04);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-xs);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font: inherit;
+  text-align: center;
+}
+.site-footer__map-loader {
+  cursor: pointer;
+}
+.site-footer__map-loader:hover,
+.site-footer__map-fallback:hover {
+  color: var(--c-link-hover);
+}
+.site-footer__map-loader:focus-visible,
+.site-footer__map-fallback:focus-visible {
+  outline: var(--outline-focus);
+  outline-offset: 3px;
+}
+.site-footer__map-loader[hidden],
+.site-footer__map iframe[hidden] {
+  display: none;
+}
 .site-footer__contact {
   display: grid;
   width: 100%;

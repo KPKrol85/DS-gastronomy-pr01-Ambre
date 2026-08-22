@@ -6,7 +6,7 @@
 
 ## Overall assessment
 
-The repository has a clear static-site architecture, modular client-side behavior, a defined production build contract, and targeted quality scripts. No critical blocker was detected. The reservation delivery, initial-dialog keyboard, and shared scroll-to-top defects recorded as P1-01 through P1-03 have been resolved and covered by focused browser verification. The P2 QA-documentation alignment item has also been resolved; no active audit finding remains. This closure reflects the documented tasks and does not represent a new comprehensive audit.
+The repository has a clear static-site architecture, modular client-side behavior, a defined production build contract, and targeted quality scripts. No critical blocker was detected. The reservation delivery, initial-dialog keyboard, and shared scroll-to-top defects recorded as P1-01 through P1-03 have been resolved and covered by focused browser verification. Lighthouse Performance remediation is now verified across all eight configured pages. One active contract conflict remains: Lighthouse scores the intentional `noindex` directives on `offline.html` and `404.html` as `is-crawlable` failures, leaving both SEO scores at `0.93` against the unchanged `0.95` threshold. This update does not represent a new comprehensive audit or rating reassessment.
 
 ## Verified strengths
 
@@ -54,6 +54,17 @@ None detected.
 
 ## Post-audit maintenance
 
+### Lighthouse remediation follow-up
+
+- **Status:** Performance resolved on 2026-08-22; SEO indexing-policy conflict remains active.
+- **Baseline evidence:** Fresh `.lighthouseci/*.report.json` reports measured Performance at `0.61`, `0.60`, `0.62`, `0.62`, `0.62`, `0.60`, `0.66`, and `0.66` for `index`, `menu`, `galeria`, `cookies`, `polityka-prywatnosci`, `regulamin`, `offline`, and `404`. SEO was `0.86` on `offline` and `0.93` on `404`.
+- **Shared root cause:** LHCI served canonical source files rather than the existing production output. Each page requested 23 render-blocking CSS files through `@import` and 16 local JavaScript modules; Lighthouse reported `1.50–3.64 s` potential render-blocking savings, while LCP render delay accounted for most of the `6.1–8.4 s` LCP values. TBT, CLS, server latency, modern formats, explicit image dimensions, and third-party usage on longer pages were not shared limiting causes.
+- **Implemented path correction:** `lighthouserc.json` now runs the existing build before collection, `scripts/lhci-static-server.mjs` serves `dist/`, and textual responses use gzip when supported. The unchanged audit now receives one bundled stylesheet and one bundled application script; `uses-text-compression` passes.
+- **Page-specific remediation:** `menu.html` no longer lazily loads its verified LCP thumbnail and defers its approximately `443 KB` Google Maps embed until explicit activation, with a no-JavaScript fallback link. Its verified final request total fell from 39 to 21 and transfer size from about 728 KB to 285 KB. `offline.html` now has the missing meta description and preloads the two first-render fonts used by its text LCP.
+- **Verified final categories:** Performance/SEO were `0.94/1.00` (`index`), `0.92/1.00` (`menu`), `0.95/1.00` (`galeria`), `0.96/1.00` (`cookies`), `0.96/1.00` (`polityka-prywatnosci`), `0.96/1.00` (`regulamin`), `0.99/0.93` (`offline`), and `0.98/0.93` (`404`). Best Practices remained at or above its configured `0.90` threshold.
+- **Remaining assertion evidence:** `offline.html` improved from SEO `0.86` to `0.93` after its missing description was added. Its only remaining weighted SEO failure is `is-crawlable`, identical to the sole failure on `404.html`; both pages intentionally declare `noindex`. Removing that directive, hiding it from the local audit, excluding the pages, or lowering the threshold would violate the requested indexing and quality-gate requirements.
+- **Focused map verification:** A local Playwright check confirmed that `menu.html` exposes a Google Maps fallback link without JavaScript, sends zero map requests before activation with JavaScript, and reveals the same iframe after one user action.
+
 ### npm developer workflow taxonomy
 
 - **Status:** Completed on 2026-08-22 as user-directed maintenance, not as a newly discovered audit finding.
@@ -65,7 +76,12 @@ None detected.
 
 ## P1 — Important issues worth fixing next
 
-None active.
+### [P1-04] Global Lighthouse SEO assertion conflicts with intentional utility-page `noindex`
+
+- **Status:** Active; blocked by incompatible current requirements rather than a missing page metadata fix.
+- **Evidence:** Latest `.lighthouseci` JSON reports for `offline.html` and `404.html`; `meta[name="robots"]` in both source documents; `categories:seo >= 0.95` in `lighthouserc.json`.
+- **Observed behavior:** Both pages score `0.93` because the weighted `is-crawlable` audit assigns zero to intentional `noindex`. `offline.html` has no other weighted SEO failure after its description fix; `404.html` never had another weighted SEO failure.
+- **Safe resolution requirement:** Any future resolution must preserve truthful offline/404 semantics and intentional non-indexing without lowering the threshold, disabling the assertion, excluding either URL, or making the local audit diverge from the deployed indexing policy.
 
 ## P2 — Minor refinements
 

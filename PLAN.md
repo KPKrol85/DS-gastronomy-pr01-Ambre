@@ -13,7 +13,7 @@
 
 ## Current priorities
 
-No active items.
+- Reconcile the global Lighthouse SEO threshold with the intentional `noindex` policy for `offline.html` and `404.html` without weakening either indexing semantics or the quality gate.
 
 ## Phase 1 — Public interaction correctness
 
@@ -66,3 +66,18 @@ No active items.
   - [x] update README, developer settings, changelog, plan, and audit maintenance notes without rewriting PH1 or PH2 history.
   - **Source:** User-directed developer-experience maintenance on 2026-08-22; not an earlier audit finding.
   - **Completion condition:** documented commands match `package.json`, retained capabilities have clear owners, and focused workflow verification is executed with any pre-existing project failures reported separately.
+
+## Phase 4 — Lighthouse remediation
+
+**Goal:** Audit the production path, resolve measured Performance causes, and keep error/offline indexing semantics truthful.
+
+- [ ] **PH4-01 — Complete the Lighthouse quality gate without weakening its contract** — **Priority:** High
+  - [x] inspect fresh JSON reports for all eight configured pages and map shared, page-specific, and SEO causes.
+  - [x] make LHCI build and serve `dist/` so the audit measures the existing production CSS and JavaScript bundles rather than the source `@import` and module graph.
+  - [x] add production-like text compression to the local LHCI server without changing CSP, page scope, run count, or thresholds.
+  - [x] remove lazy loading from the verified menu LCP image and defer the menu Google Map behind an accessible interaction with a no-JavaScript fallback link.
+  - [x] add the missing offline-page meta description and preload its two first-render fonts.
+  - [x] verify Performance at or above `0.85` on all eight configured pages with the unchanged Lighthouse command.
+  - [ ] resolve the remaining `is-crawlable` failures on `offline.html` and `404.html` without making either utility page indexable, excluding pages, or weakening the `0.95` SEO threshold.
+  - **Source:** `daily-AUDIT.md` — Lighthouse remediation follow-up and [P1-04].
+  - **Completion condition:** all configured Lighthouse assertions pass while `offline.html` and `404.html` retain truthful error/offline semantics and intentional indexing behavior.

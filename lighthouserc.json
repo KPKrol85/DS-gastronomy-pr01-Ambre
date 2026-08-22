@@ -1,7 +1,7 @@
 {
   "ci": {
     "collect": {
-      "startServerCommand": "node scripts/lhci-static-server.mjs",
+      "startServerCommand": "npm run build && node scripts/lhci-static-server.mjs",
       "startServerReadyPattern": "LHCI static server ready",
       "url": [
         "http://127.0.0.1:4174/index.html",

@@ -1,7 +1,7 @@
 import { initHelpers, reportError } from "./modules/utils.js";
 import { initThemeSwitcher } from "./modules/theme.js";
 import { initMobileNav, initScrollspy, initSmartNav, initAriaCurrent, initStickyShadow } from "./modules/nav.js";
-import { initFooterYear } from "./modules/footer.js";
+import { initFooterMap, initFooterYear } from "./modules/footer.js";
 import { initScrollButtons, initScrollToTop, initScrollTargets } from "./modules/scroll.js";
 import { initCtaPulse } from "./modules/cta.js";
 import { initLoadMoreMenu, initLoadMoreGallery } from "./modules/load-more.js";
@@ -19,6 +19,7 @@ const FEATURES = [
   { name: "MOBILE NAV", init: initMobileNav },
 
   { name: "FOOTER YEAR", init: initFooterYear },
+  { name: "FOOTER MAP", init: initFooterMap },
 
   { name: "SMART NAV", init: initSmartNav },
   { name: "NAV", init: initAriaCurrent },

@@ -12,6 +12,9 @@ All significant changes to this project are documented in this file.
 
 ### Changed
 
+- Changed Lighthouse CI to build and audit the production `dist/` path with text compression, while preserving the existing eight URLs, one-run contract, and category thresholds.
+- Changed the first menu thumbnail to load eagerly after Lighthouse identified it as the LCP element, and deferred the menu page's embedded Google Map behind an accessible, no-JavaScript-safe user action.
+- Added the missing offline-page description and preloaded its first-render fonts; all eight configured pages now meet the unchanged Lighthouse Performance threshold, while the intentional `noindex` SEO conflict remains documented.
 - Changed the project license and package metadata to use the proprietary KP_Code licensing terms.
 - Changed the cookie, privacy, and terms pages to use KP_Code legal templates aligned with the implemented browser storage, PWA, and reservation-form behavior.
 - Changed reservation delivery feedback so only accepted HTTP responses show success and reset the form; rejected responses and network failures retain entered data and expose a recoverable error state.
@@ -22,6 +25,7 @@ All significant changes to this project are documented in this file.
 
 ### Documentation
 
+- Recorded the Lighthouse root causes, verified Performance resolution, measured final scores, and remaining intentional-`noindex` SEO blocker in the plan and daily audit.
 - Added a Polish-first bilingual README describing the current source/build boundary, PWA mechanisms, quality workflows, and verified limitations.
 - Added a current daily front-end audit record to establish evidence-based maintenance priorities.
 - Synchronized the documented `qa` command and validation scope with the executable package script, including schema-policy, no-JavaScript, and text-lint stages.
