@@ -39,8 +39,8 @@
 - **When to use:** Po optymalizacji obrazów, przed commitem.
 
 ### `qa`
-- **Command:** `npm run qa:links && npm run qa:seo && npm run qa:a11y && npm run qa:lighthouse && npm run qa:html && npm run qa:js && npm run qa:css`
-- **What it does:** Uruchamia pełny pakiet QA.
+- **Command:** `npm run qa:links && npm run qa:seo && npm run lint:schema-policy && npm run qa:html && npm run qa:nojs && npm run qa:a11y && npm run qa:lighthouse && npm run qa:text && npm run qa:js && npm run qa:css`
+- **What it does:** Uruchamia pełny pakiet QA obejmujący linki, SEO, politykę schematów, HTML, działanie bez JavaScriptu, dostępność, Lighthouse CI oraz lint tekstu, JavaScriptu i CSS.
 - **When to use:** Przed wydaniem lub jako pipeline quality gate.
 
 ### `qa:links`

@@ -22,3 +22,4 @@ All significant changes to this project are documented in this file.
 
 - Added a Polish-first bilingual README describing the current source/build boundary, PWA mechanisms, quality workflows, and verified limitations.
 - Added a current daily front-end audit record to establish evidence-based maintenance priorities.
+- Synchronized the documented `qa` command and validation scope with the executable package script, including schema-policy, no-JavaScript, and text-lint stages.

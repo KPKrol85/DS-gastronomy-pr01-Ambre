@@ -13,7 +13,7 @@
 
 ## Current priorities
 
-1. `PH2-01` — Align QA workflow documentation with the executable script.
+No active items.
 
 ## Phase 1 — Public interaction correctness
 
@@ -47,9 +47,9 @@
 
 **Goal:** Keep developer-facing QA documentation synchronized with the executable project workflow.
 
-- [ ] **PH2-01 — Synchronize the documented QA command with package scripts** — **Priority:** Medium
-  - [ ] update the `qa` command description in `doc/settings.md` to include the schema-policy, no-JavaScript, and text-lint stages present in `package.json`.
-  - [ ] preserve the existing descriptions of individual checks unless the executable command contradicts them.
-  - [ ] compare the final documented command with `package.json` without running commands that rewrite generated output.
+- [x] **PH2-01 — Synchronize the documented QA command with package scripts** — **Priority:** Medium
+  - [x] update the `qa` command description in `doc/settings.md` to include the schema-policy, no-JavaScript, and text-lint stages present in `package.json`.
+  - [x] preserve the existing descriptions of individual checks unless the executable command contradicts them.
+  - [x] compare the final documented command with `package.json` without running commands that rewrite generated output.
   - **Source:** `daily-AUDIT.md` — [P2-01].
   - **Completion condition:** the documented `qa` workflow accurately represents the current executable command and its validation scope.

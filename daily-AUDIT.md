@@ -6,7 +6,7 @@
 
 ## Overall assessment
 
-The repository has a clear static-site architecture, modular client-side behavior, a defined production build contract, and targeted quality scripts. No critical blocker was detected. The reservation delivery, initial-dialog keyboard, and shared scroll-to-top defects recorded as P1-01 through P1-03 have been resolved and covered by focused browser verification. No active P1 finding remains; the current maintenance priority is the P2 QA-documentation alignment item.
+The repository has a clear static-site architecture, modular client-side behavior, a defined production build contract, and targeted quality scripts. No critical blocker was detected. The reservation delivery, initial-dialog keyboard, and shared scroll-to-top defects recorded as P1-01 through P1-03 have been resolved and covered by focused browser verification. The P2 QA-documentation alignment item has also been resolved; no active audit finding remains. This closure reflects the documented tasks and does not represent a new comprehensive audit.
 
 ## Verified strengths
 
@@ -45,19 +45,20 @@ None detected.
 - **Implemented behavior:** One shared state updater retains the existing `> 300` threshold and synchronizes the `is-visible` class, `hidden`, `aria-hidden`, and `tabindex` on the native button. The hidden state is not rendered or focusable; the visible state is fixed within the viewport, exposed to assistive technology, and uses native button keyboard activation. Scroll-to-top still requests smooth behavior by default and automatic behavior when reduced motion is preferred.
 - **Focused verification:** `npm run qa:scroll-to-top` passed 3/3 scenarios covering the initial hidden/non-focusable state, threshold visibility, native keyboard focus and Enter activation, return to the hidden state at the threshold, reduced-motion behavior, and the shared default-markup contract across all six intended pages.
 
+### [P2-01] QA workflow documentation matches the executable script
+
+- **Status:** Resolved on 2026-08-22 by PH2-01.
+- **Evidence:** `doc/settings.md`; `package.json`.
+- **Implemented change:** The documented `qa` command now matches the executable chain exactly and describes its schema-policy, no-JavaScript, and text-lint stages alongside the existing checks.
+- **Focused verification:** Compared the complete documented command directly with `scripts.qa` from `package.json`; every stage is present once and in the executable order.
+
 ## P1 — Important issues worth fixing next
 
 None active.
 
 ## P2 — Minor refinements
 
-### [P2-01] QA workflow documentation is stale relative to the executable script
-
-- **Classification:** Maintenance risk
-- **Evidence:** `doc/settings.md:57-60`; `package.json:27-39`
-- **Current behavior:** `doc/settings.md` describes `qa` as a shorter chain than the current `package.json` script. It omits the schema-policy, no-JavaScript, and text-lint stages that the executable `qa` command now runs.
-- **Impact:** Maintainers following the documentation can misunderstand the release-check scope or reproduce only part of the configured QA workflow.
-- **Recommended direction:** Align the documented `qa` command and its description with the current package script.
+None active.
 
 ## Extra quality improvements
 
@@ -72,10 +73,11 @@ None detected.
 - Ran `npm run qa:demo-legal` successfully: `QA DEMO LEGAL E2E: PASS (2/2 scenarios)` for keyboard-modal behavior and acceptance persistence.
 - Ran `npm run qa:scroll-to-top` successfully: `QA SCROLL TO TOP E2E: PASS (3/3 scenarios)` for the shared markup contract, threshold visibility and keyboard activation, return-to-hidden behavior, and reduced-motion activation.
 - Ran `npm run qa:js`, `npm run qa:css`, and `npm run qa:html` successfully after the PH1-03 implementation.
+- Compared the documented `qa` command directly with `scripts.qa` from `package.json`; all ten stages match exactly in content and order.
 - Did not perform assistive-technology, production-hosting, real form-provider, deployment, Lighthouse, PWA, or broad regression verification.
 
 ## Senior rating
 
 **Rating:** 8/10
 
-The project has a coherent source/build boundary, useful static QA coverage, and several deliberately accessible interaction patterns. The current rating remains limited by the stale QA workflow documentation and by verification that does not include production hosting or real assistive technology. The rating does not represent a production or accessibility-conformance certification.
+The project has a coherent source/build boundary, useful static QA coverage, and several deliberately accessible interaction patterns. The current rating remains limited by verification that does not include production hosting or real assistive technology. Resolving P2-01 did not trigger a rating reassessment. The rating does not represent a production or accessibility-conformance certification.
