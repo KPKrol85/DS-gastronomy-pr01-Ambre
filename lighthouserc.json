@@ -13,7 +13,7 @@
         "http://127.0.0.1:4174/offline.html",
         "http://127.0.0.1:4174/404.html"
       ],
-      "numberOfRuns": 1,
+      "numberOfRuns": 3,
       "settings": {
         "chromeFlags": "--headless=new --no-sandbox --disable-dev-shm-usage"
       }
@@ -26,7 +26,8 @@
             "categories:performance": [
               "error",
               {
-                "minScore": 0.85
+                "minScore": 0.85,
+                "aggregationMethod": "median"
               }
             ],
             "categories:seo": [
@@ -49,7 +50,8 @@
             "categories:performance": [
               "error",
               {
-                "minScore": 0.85
+                "minScore": 0.85,
+                "aggregationMethod": "median"
               }
             ],
             "categories:seo": [
