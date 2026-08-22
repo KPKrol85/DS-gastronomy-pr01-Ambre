@@ -1,0 +1,58 @@
+# Ambre — Development Plan
+
+**Last reviewed:** 2026-08-22
+**Project type:** Static multi-page front-end (HTML, CSS, Vanilla JavaScript)
+**Plan status:** Active
+
+## Planning principles
+
+- The plan reflects the current verified repository state.
+- Main items are checked only after their required behavior and focused verification are complete.
+- Canonical HTML, CSS, JavaScript, and build sources own implementation changes; generated minified assets are refreshed only through the project workflow.
+- Significant completed changes are recorded separately in `CHANGELOG.md`.
+
+## Current priorities
+
+1. `PH1-01` — Correct reservation delivery confirmation.
+2. `PH1-02` — Make the initial information dialog keyboard-modal.
+3. `PH1-03` — Restore the shared scroll-to-top control.
+4. `PH2-01` — Align QA workflow documentation with the executable script.
+
+## Phase 1 — Public interaction correctness
+
+**Goal:** Remove current user-facing defects in form feedback, modal keyboard behavior, and shared navigation controls.
+
+- [ ] **PH1-01 — Confirm reservation delivery only after an accepted response** — **Priority:** High
+  - [ ] preserve the existing required-field validation, phone formatting, honeypot handling, Netlify-compatible POST format, and native submission fallback.
+  - [ ] treat non-successful HTTP responses as delivery failures rather than displaying the confirmation message or clearing entered values.
+  - [ ] communicate the failure in the existing accessible status area and restore the submit control to a usable state.
+  - [ ] add focused regression coverage for accepted, rejected, and network-failure submission paths using the existing browser-testing runtime.
+  - **Source:** `daily-AUDIT.md` — [P1-01].
+  - **Completion condition:** the success message and form reset occur only after an accepted response; rejected and failed requests keep the user’s data and expose a recoverable failure state.
+
+- [ ] **PH1-02 — Constrain keyboard focus within the initial information dialog** — **Priority:** High
+  - [ ] preserve the current first-visit display rule, acceptance persistence, and Escape dismissal behavior.
+  - [ ] keep Tab and Shift+Tab within the visible dialog while it is open and ensure background content cannot receive focus or pointer interaction.
+  - [ ] retain a logical post-close focus state without changing the dialog’s informational purpose.
+  - [ ] add focused browser verification for initial focus, forward and reverse Tab traversal, and Escape dismissal.
+  - **Source:** `daily-AUDIT.md` — [P1-02].
+  - **Completion condition:** the dialog’s rendered and ARIA modal states match its keyboard behavior, and background controls are unreachable until dismissal.
+
+- [ ] **PH1-03 — Restore the shared scroll-to-top control** — **Priority:** High
+  - [ ] establish one visibility state that synchronizes rendered visibility, keyboard reachability, and accessibility attributes after the scroll threshold.
+  - [ ] apply the same state contract to every page that exposes the shared control.
+  - [ ] preserve reduced-motion behavior when returning to the top of the page.
+  - [ ] verify threshold visibility and keyboard activation on a representative page, then confirm the shared markup contract across the remaining pages.
+  - **Source:** `daily-AUDIT.md` — [P1-03].
+  - **Completion condition:** the control becomes visible and operable after the threshold on all six intended pages and remains absent from keyboard navigation while hidden.
+
+## Phase 2 — Workflow contract alignment
+
+**Goal:** Keep developer-facing QA documentation synchronized with the executable project workflow.
+
+- [ ] **PH2-01 — Synchronize the documented QA command with package scripts** — **Priority:** Medium
+  - [ ] update the `qa` command description in `doc/settings.md` to include the schema-policy, no-JavaScript, and text-lint stages present in `package.json`.
+  - [ ] preserve the existing descriptions of individual checks unless the executable command contradicts them.
+  - [ ] compare the final documented command with `package.json` without running commands that rewrite generated output.
+  - **Source:** `daily-AUDIT.md` — [P2-01].
+  - **Completion condition:** the documented `qa` workflow accurately represents the current executable command and its validation scope.
