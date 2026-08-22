@@ -13,9 +13,8 @@
 
 ## Current priorities
 
-1. `PH1-02` — Make the initial information dialog keyboard-modal.
-2. `PH1-03` — Restore the shared scroll-to-top control.
-3. `PH2-01` — Align QA workflow documentation with the executable script.
+1. `PH1-03` — Restore the shared scroll-to-top control.
+2. `PH2-01` — Align QA workflow documentation with the executable script.
 
 ## Phase 1 — Public interaction correctness
 
@@ -29,11 +28,11 @@
   - **Source:** `daily-AUDIT.md` — [P1-01].
   - **Completion condition:** the success message and form reset occur only after an accepted response; rejected and failed requests keep the user’s data and expose a recoverable failure state.
 
-- [ ] **PH1-02 — Constrain keyboard focus within the initial information dialog** — **Priority:** High
-  - [ ] preserve the current first-visit display rule, acceptance persistence, and Escape dismissal behavior.
-  - [ ] keep Tab and Shift+Tab within the visible dialog while it is open and ensure background content cannot receive focus or pointer interaction.
-  - [ ] retain a logical post-close focus state without changing the dialog’s informational purpose.
-  - [ ] add focused browser verification for initial focus, forward and reverse Tab traversal, and Escape dismissal.
+- [x] **PH1-02 — Constrain keyboard focus within the initial information dialog** — **Priority:** High
+  - [x] preserve the current first-visit display rule, acceptance persistence, and Escape dismissal behavior.
+  - [x] keep Tab and Shift+Tab within the visible dialog while it is open and ensure background content cannot receive focus or pointer interaction.
+  - [x] retain a logical post-close focus state without changing the dialog’s informational purpose.
+  - [x] add focused browser verification for initial focus, forward and reverse Tab traversal, and Escape dismissal.
   - **Source:** `daily-AUDIT.md` — [P1-02].
   - **Completion condition:** the dialog’s rendered and ARIA modal states match its keyboard behavior, and background controls are unreachable until dismissal.
 
