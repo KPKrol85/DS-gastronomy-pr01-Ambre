@@ -72,6 +72,7 @@ const openFormPage = async (browser, options = {}) => {
   const page = await context.newPage();
   await page.goto(`${baseUrl}/index.html#rezerwacja`, { waitUntil: "domcontentloaded" });
   await page.locator("#booking-form").waitFor();
+  await page.waitForFunction(() => document.querySelector("#booking-form")?.noValidate === true);
   return { context, page };
 };
 
@@ -185,13 +186,31 @@ const runFailureTest = async (browser, kind) => {
 
 const runNativeFallbackTest = async (browser) => {
   const { context, page } = await openFormPage(browser, { disableFetch: true });
+  let interceptedPosts = 0;
+
+  await context.route("**/*", async (route) => {
+    const request = route.request();
+    if (request.method() !== "POST") {
+      await route.continue();
+      return;
+    }
+
+    interceptedPosts += 1;
+    await route.fulfill({
+      status: 200,
+      contentType: "text/html; charset=utf-8",
+      body: "<!doctype html><title>Intercepted</title>"
+    });
+  });
 
   try {
     await fillValidForm(page);
-    const postRequest = page.waitForRequest((request) => request.method() === "POST");
-    await page.locator('.site-button--form[type="submit"]').click();
-    const request = await postRequest;
+    const [request] = await Promise.all([
+      page.waitForRequest((candidate) => candidate.method() === "POST"),
+      page.locator('.site-button--form[type="submit"]').click()
+    ]);
 
+    assert.equal(interceptedPosts, 1);
     assert.equal(new URL(request.url()).pathname, "/index.html");
     assert.match((await request.headerValue("content-type")) || "", /^application\/x-www-form-urlencoded/);
     assert.match(request.postData() || "", /form-name=reservation/);

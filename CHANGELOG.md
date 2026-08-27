@@ -20,6 +20,7 @@ All significant changes to this project are documented in this file.
 - Changed the project license and package metadata to use the proprietary KP_Code licensing terms.
 - Changed the cookie, privacy, and terms pages to use KP_Code legal templates aligned with the implemented browser storage, PWA, and reservation-form behavior.
 - Changed reservation delivery feedback so only accepted HTTP responses show success and reset the form; rejected responses and network failures retain entered data and expose a recoverable error state.
+- Changed reservation validation to keep native constraints active until the JavaScript enhancement initializes successfully, and extended no-JavaScript regression coverage for blocked invalid submissions and intercepted valid native POSTs.
 - Changed the initial project-information dialog to contain keyboard focus, isolate background interaction while open, and move focus to the main content after automatic dismissal while preserving Escape and acceptance persistence behavior.
 - Changed the shared scroll-to-top control to synchronize rendered visibility, keyboard reachability, and accessibility state across all six intended pages while preserving the existing threshold and reduced-motion behavior.
 - Changed the npm workflow to use one discoverable `lint:*`, `qa:*`, `test:e2e:*`, `csp:*`, and `img:*` taxonomy, with separate fast and comprehensive quality gates.

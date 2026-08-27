@@ -159,5 +159,5 @@ export function initReservationForm() {
   });
 
   log();
+  form.noValidate = true;
 }
-
