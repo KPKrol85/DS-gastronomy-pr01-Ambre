@@ -7,7 +7,7 @@
 
 ## Overall assessment
 
-The repository has a clear static-site architecture, modular client-side behavior, a defined production build contract, and targeted quality scripts. No critical blocker was detected. The reservation delivery, initial-dialog keyboard, and shared scroll-to-top defects recorded as P1-01 through P1-03 have been resolved and covered by focused browser verification. Lighthouse Performance remediation is verified across all eight configured pages, and P1-04 is resolved through a URL-specific assertion contract: standard pages retain blocking SEO `>= 0.95`, while `offline.html` and `404.html` intentionally retain `noindex` and their SEO `0.93` `is-crawlable` result is an expected non-blocking warning. Performance and Best Practices remain blocking for every configured page. No P0, P1, P2, or Extra finding remains active. This update does not represent a new comprehensive audit or rating reassessment.
+The repository has a clear static-site architecture, modular client-side behavior, a defined production build contract, and targeted quality scripts. No critical blocker was detected. No P0, P1, P2, or Extra finding remains active. This update does not represent a new comprehensive audit or rating reassessment.
 
 ## Verified strengths
 
@@ -23,70 +23,9 @@ The repository has a clear static-site architecture, modular client-side behavio
 
 None detected.
 
-## Resolved findings
-
-### [P1-01] Reservation form confirms only accepted delivery responses
-
-- **Status:** Resolved on 2026-08-22 by PH1-01.
-- **Evidence:** `js/modules/form.js`; `scripts/qa-reservation-e2e.mjs`.
-- **Implemented behavior:** The form checks `response.ok` before displaying confirmation or resetting values. Resolved 4xx/5xx responses and network failures retain entered data, report a recoverable error through the existing status region, and restore the submit control. The native submission path remains available when `fetch` or `FormData` is unavailable.
-- **Focused verification:** `npm run test:e2e:reservation` passed 4/4 browser scenarios: accepted HTTP response, rejected HTTP response, network failure, and native fallback without `fetch`.
-
-### [P1-02] Initial information dialog contains keyboard focus
-
-- **Status:** Resolved on 2026-08-22 by PH1-02.
-- **Evidence:** `js/modules/demo-legal.js`; `scripts/qa-demo-legal-e2e.mjs`.
-- **Implemented behavior:** Initial focus remains on the dialog panel; Tab and Shift+Tab cycle through only its available controls, including the single-control case. Direct body siblings are temporarily made inert so background focus and pointer interaction are unavailable, and their prior inert state is restored on close. Escape still dismisses without recording acceptance, the acceptance button still persists `demoLegalAccepted="true"`, and automatic dismissal moves focus without scrolling to the existing main content target.
-- **Focused verification:** `npm run test:e2e:demo-legal` passed 2/2 browser scenarios covering initial focus, forward and reverse wraparound, single-control traversal, background focus and pointer isolation, Escape dismissal and focus placement, acceptance persistence, and persisted first-visit suppression after reload.
-
-### [P1-03] Shared scroll-to-top control synchronizes its interaction state
-
-- **Status:** Resolved on 2026-08-22 by PH1-03.
-- **Evidence:** `js/modules/scroll.js`; `css/components/buttons.css`; `scripts/qa-scroll-to-top-e2e.mjs`.
-- **Implemented behavior:** One shared state updater retains the existing `> 300` threshold and synchronizes the `is-visible` class, `hidden`, `aria-hidden`, and `tabindex` on the native button. The hidden state is not rendered or focusable; the visible state is fixed within the viewport, exposed to assistive technology, and uses native button keyboard activation. Scroll-to-top still requests smooth behavior by default and automatic behavior when reduced motion is preferred.
-- **Focused verification:** `npm run test:e2e:scroll-to-top` passed 3/3 scenarios covering the initial hidden/non-focusable state, threshold visibility, native keyboard focus and Enter activation, return to the hidden state at the threshold, reduced-motion behavior, and the shared default-markup contract across all six intended pages.
-
-### [P2-01] QA workflow documentation matches the executable script
-
-- **Status:** Resolved on 2026-08-22 by PH2-01.
-- **Evidence:** `doc/settings.md`; `package.json`.
-- **Implemented change:** At PH2-01 completion, the documented `qa` command matched the then-current executable chain and described its schema-policy, no-JavaScript, and text-lint stages alongside the existing checks.
-- **Focused verification:** At PH2-01 completion, the complete documented command was compared directly with `scripts.qa` from `package.json`; every then-current stage was present once and in executable order.
-
-### [P1-04] Lighthouse assertions preserve the utility-page indexing policy
-
-- **Status:** Resolved on 2026-08-22 by the final PH4 URL-specific assertion contract.
-- **Evidence:** Final `.lighthouseci` JSON reports for `offline.html` and `404.html`; `meta[name="robots"]` in both source documents; URL-specific `assertMatrix` rules in `lighthouserc.json`.
-- **Historical root cause:** Both utility pages scored `0.93` because the weighted `is-crawlable` audit assigns zero to intentional `noindex`. `offline.html` had no other weighted SEO failure after its description fix; `404.html` had no other weighted SEO failure.
-- **Implemented contract:** The six standard pages retain blocking SEO `>= 0.95`. `offline.html` and `404.html` remain in Lighthouse collection with intentional `noindex`; their SEO threshold result is reported as an expected warning. Performance `>= 0.85` and Best Practices `>= 0.90` remain blocking assertions for both utility pages and all standard pages.
-- **Focused verification:** The unchanged Lighthouse command completed successfully for all eight configured URLs under the final assertion matrix. The utility pages retained SEO `0.93`, and no page was excluded or made indexable.
-
-## Post-audit maintenance
-
-### Lighthouse remediation follow-up
-
-- **Status:** Resolved on 2026-08-22, including the final URL-specific SEO assertion policy.
-- **Baseline evidence:** Fresh `.lighthouseci/*.report.json` reports measured Performance at `0.61`, `0.60`, `0.62`, `0.62`, `0.62`, `0.60`, `0.66`, and `0.66` for `index`, `menu`, `galeria`, `cookies`, `polityka-prywatnosci`, `regulamin`, `offline`, and `404`. SEO was `0.86` on `offline` and `0.93` on `404`.
-- **Shared root cause:** LHCI served canonical source files rather than the existing production output. Each page requested 23 render-blocking CSS files through `@import` and 16 local JavaScript modules; Lighthouse reported `1.50–3.64 s` potential render-blocking savings, while LCP render delay accounted for most of the `6.1–8.4 s` LCP values. TBT, CLS, server latency, modern formats, explicit image dimensions, and third-party usage on longer pages were not shared limiting causes.
-- **Implemented path correction:** `lighthouserc.json` now runs the existing build before collection, `scripts/lhci-static-server.mjs` serves `dist/`, and textual responses use gzip when supported. The audit now receives one bundled stylesheet and one bundled application script; `uses-text-compression` passes.
-- **Page-specific remediation:** `menu.html` no longer lazily loads its verified LCP thumbnail and defers its approximately `443 KB` Google Maps embed until explicit activation, with a no-JavaScript fallback link. Its verified final request total fell from 39 to 21 and transfer size from about 728 KB to 285 KB. `offline.html` now has the missing meta description and preloads the two first-render fonts used by its text LCP.
-- **Verified final categories:** Performance/SEO were `0.94/1.00` (`index`), `0.92/1.00` (`menu`), `0.95/1.00` (`galeria`), `0.96/1.00` (`cookies`), `0.96/1.00` (`polityka-prywatnosci`), `0.96/1.00` (`regulamin`), `0.99/0.93` (`offline`), and `0.98/0.93` (`404`). Best Practices remained at or above its configured `0.90` threshold.
-- **Final assertion policy:** `offline.html` improved from SEO `0.86` to `0.93` after its missing description was added. Its only remaining weighted SEO failure is `is-crawlable`, identical to the sole failure on `404.html`; both pages intentionally declare `noindex`. Both remain in the Lighthouse run, with SEO `0.93` retained as an expected non-blocking warning. The six standard pages retain blocking SEO `>= 0.95`, and Performance plus Best Practices remain blocking for all eight pages.
-- **Final gate result:** The Lighthouse command completed successfully under the URL-specific assertion matrix without excluding either utility page, changing its indexing policy, or lowering the standard-page SEO threshold.
-- **Focused map verification:** A local Playwright check confirmed that `menu.html` exposes a Google Maps fallback link without JavaScript, sends zero map requests before activation with JavaScript, and reveals the same iframe after one user action.
-
-### npm developer workflow taxonomy
-
-- **Status:** Completed on 2026-08-22 as user-directed maintenance, not as a newly discovered audit finding.
-- **Scope:** Consolidated redundant aliases into `build`, `lint:*`, `qa:*`, `test:e2e:*`, `csp:*`, and `img:*`; retained all focused browser regressions; separated `qa:fast` from comprehensive `qa`; and removed only the unused `postcss-cli` dependency.
-- **Documentation:** Synchronized `README.md` and `doc/settings.md`; recorded the maintenance separately in `../plans/PLAN-2026-08-22.md` and `CHANGELOG.md` without changing PH1 or PH2 completion history.
-- **Passed verification:** `npm run build`, `npm run lint`, `npm run test:e2e` (9/9 focused scenarios), `npm run qa:nojs`, `npm run qa:a11y`, and `npm run qa:server`.
-- **Historical quality-gate failures at this maintenance checkpoint:** `npm run qa:fast` reached `qa:csp` and reported stale hashes in `_headers`; Lighthouse completed collection for all eight configured pages but missed the then-current performance thresholds on every page and the SEO threshold on `offline.html` and `404.html`. These results predate the later CSP and Lighthouse remediation recorded above and are not active findings in this archived audit.
-- **Not changed at that checkpoint:** CSP hashes, Lighthouse thresholds, application code, generated `dist/`, and the existing project behavior were not altered to mask those failures. The aggregate `npm run qa` was not repeated at that checkpoint because its components had been exercised separately and its CSP/Lighthouse failures were already confirmed.
-
 ## P1 — Important issues worth fixing next
 
-None active. Historical P1-01 through P1-04 findings are preserved under Resolved findings.
+None active.
 
 ## P2 — Minor refinements
 
@@ -106,11 +45,11 @@ None detected.
 - Ran the scroll-to-top E2E script successfully: `QA SCROLL TO TOP E2E: PASS (3/3 scenarios)` for the shared markup contract, threshold visibility and keyboard activation, return-to-hidden behavior, and reduced-motion activation. Current entry point: `npm run test:e2e:scroll-to-top`.
 - Ran the JavaScript, CSS, and HTML checks successfully after the PH1-03 implementation. Current entry points: `npm run lint:js`, `npm run lint:css`, and `npm run qa:html`.
 - At PH2-01 completion, compared the then-current documented `qa` command directly with `scripts.qa` from `package.json`; all ten then-current stages matched exactly in content and order.
-- During the original audit, did not perform assistive-technology, production-hosting, real form-provider, deployment, Lighthouse, PWA, or broad regression verification. The later workflow-maintenance run is recorded separately above.
-- During final PH4 verification, the Lighthouse command completed successfully for all eight configured URLs under the URL-specific assertion matrix; standard-page SEO, all-page Performance, and all-page Best Practices remained blocking as documented above.
+- During the original audit, did not perform assistive-technology, production-hosting, real form-provider, deployment, Lighthouse, PWA, or broad regression verification.
+- During final PH4 verification, the Lighthouse command completed successfully for all eight configured URLs under the URL-specific assertion matrix; standard-page SEO, all-page Performance, and all-page Best Practices remained blocking.
 
 ## Senior rating
 
 **Rating:** 8/10
 
-The project has a coherent source/build boundary, useful static QA coverage, and several deliberately accessible interaction patterns. The current rating remains limited by verification that does not include production hosting or real assistive technology. Resolving P2-01 did not trigger a rating reassessment. The rating does not represent a production or accessibility-conformance certification.
+The project has a coherent source/build boundary, useful static QA coverage, and several deliberately accessible interaction patterns. The current rating remains limited by verification that does not include production hosting or real assistive technology. The rating does not represent a production or accessibility-conformance certification.

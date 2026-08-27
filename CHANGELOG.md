@@ -9,6 +9,7 @@ All significant changes to this project are documented in this file.
 - Added the initial static multi-page restaurant front end with responsive navigation, menu and gallery interactions, a reservation form, legal pages, and local media assets.
 - Added PWA mechanisms including a Web App Manifest, install prompt, Service Worker cache strategies, and an offline fallback page.
 - Added source-to-production CSS and JavaScript build workflows together with project-specific validation for HTML, links, SEO, JSON-LD policy, no-JavaScript behavior, accessibility, and Lighthouse CI.
+- Added focused browser regression coverage for the reservation submission paths, the initial project-information dialog's keyboard behavior, and the shared scroll-to-top control.
 
 ### Changed
 
@@ -22,6 +23,7 @@ All significant changes to this project are documented in this file.
 - Changed the shared scroll-to-top control to synchronize rendered visibility, keyboard reachability, and accessibility state across all six intended pages while preserving the existing threshold and reduced-motion behavior.
 - Changed the npm workflow to use one discoverable `lint:*`, `qa:*`, `test:e2e:*`, `csp:*`, and `img:*` taxonomy, with separate fast and comprehensive quality gates.
 - Removed the unused `postcss-cli` development dependency after confirming the production build uses the PostCSS Node API directly.
+- Changed the inline script hashes in `_headers` to match the current source content, preserving the existing security headers and Content-Security-Policy directives.
 
 ### Documentation
 
