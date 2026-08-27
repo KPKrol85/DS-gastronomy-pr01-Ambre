@@ -27,6 +27,7 @@ All significant changes to this project are documented in this file.
 - Changed the inline script hashes in `_headers` to match the current source content, preserving the existing security headers and Content-Security-Policy directives.
 - Changed the `_headers` inline script hashes to the values derived from the LF source bytes, replacing platform-dependent values that made `npm run qa:csp` pass on Windows but fail in CI.
 - Corrected the current public origin across canonical and social metadata, JSON-LD, sitemap, robots, package metadata, and the visible terms link to `https://gastronomy-pr01-ambre.netlify.app/`, with matching JSON-LD CSP hashes.
+- Replaced the fictional `Restaurant` JSON-LD with a truthful `WebSite`/`CreativeWork`/`WebPage` model and separate KP_Code Digital Studio `Organization`, and strengthened schema policy checks against fictional business entities and unsupported operational data.
 
 ### Documentation
 
