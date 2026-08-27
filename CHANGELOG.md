@@ -28,6 +28,7 @@ All significant changes to this project are documented in this file.
 - Changed the `_headers` inline script hashes to the values derived from the LF source bytes, replacing platform-dependent values that made `npm run qa:csp` pass on Windows but fail in CI.
 - Corrected the current public origin across canonical and social metadata, JSON-LD, sitemap, robots, package metadata, and the visible terms link to `https://gastronomy-pr01-ambre.netlify.app/`, with matching JSON-LD CSP hashes.
 - Replaced the fictional `Restaurant` JSON-LD with a truthful `WebSite`/`CreativeWork`/`WebPage` model and separate KP_Code Digital Studio `Organization`, and strengthened schema policy checks against fictional business entities and unsupported operational data.
+- Corrected the X and LinkedIn social controls on all current pages to use the verified KP_Code operator profiles instead of generic platform homepages.
 
 ### Documentation
 
