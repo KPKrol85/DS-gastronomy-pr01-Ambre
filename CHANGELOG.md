@@ -26,6 +26,7 @@ All significant changes to this project are documented in this file.
 - Removed the unused `postcss-cli` development dependency after confirming the production build uses the PostCSS Node API directly.
 - Changed the inline script hashes in `_headers` to match the current source content, preserving the existing security headers and Content-Security-Policy directives.
 - Changed the `_headers` inline script hashes to the values derived from the LF source bytes, replacing platform-dependent values that made `npm run qa:csp` pass on Windows but fail in CI.
+- Corrected the current public origin across canonical and social metadata, JSON-LD, sitemap, robots, package metadata, and the visible terms link to `https://gastronomy-pr01-ambre.netlify.app/`, with matching JSON-LD CSP hashes.
 
 ### Documentation
 

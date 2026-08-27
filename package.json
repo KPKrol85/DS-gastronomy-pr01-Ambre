@@ -2,7 +2,7 @@
   "name": "ambre-gastronomy-project-01",
   "version": "1.0.0",
   "private": true,
-  "description": "Ambre — front-end project (HTML, CSS, Vanilla JS). Live demo: https://gastronomy-project-01.netlify.app/",
+  "description": "Ambre — front-end project (HTML, CSS, Vanilla JS). Live demo: https://gastronomy-pr01-ambre.netlify.app/",
   "author": "Kamil Król | KP_Code Digital Studio",
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
