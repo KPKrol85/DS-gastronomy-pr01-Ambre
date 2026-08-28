@@ -9,9 +9,9 @@
 
 Ambre has a strong static-site foundation: its source/build boundary is explicit, core features are modular, the configured fast QA suite passes, the focused interaction tests pass, the no-JavaScript navigation baseline works, and the deployed site provides a functional custom 404 and offline navigation fallback. Responsive navigation, gallery filtering, lightbox focus return, and the first-visit legal modal were also exercised successfully in Chromium.
 
-The previously open P1 development-toolchain finding has been remediated. `postcss`, `sharp`, and `@lhci/cli` were updated to current supported releases, the full development audit fell from 22 high findings to 7 while keeping 0 critical findings, and the production dependency audit remains at 0 vulnerabilities. The remaining high rows are development-only, reduce to an upstream-unpatched `extract-zip` path and legacy `tmp` paths inside the current supported `@lhci/cli` chain, and are accepted with a written applicability decision rather than removed by a forced downgrade or an unsupported override; see the residual dependency-risk decision in section 2. Three P2 findings affect audit coverage, gallery polish, and current documentation accuracy.
+The previously open P1 development-toolchain finding has been remediated. `postcss`, `sharp`, and `@lhci/cli` were updated to current supported releases, the full development audit fell from 22 high findings to 7 while keeping 0 critical findings, and the production dependency audit remains at 0 vulnerabilities. The remaining high rows are development-only, reduce to an upstream-unpatched `extract-zip` path and legacy `tmp` paths inside the current supported `@lhci/cli` chain, and are accepted with a written applicability decision rather than removed by a forced downgrade or an unsupported override; see the residual dependency-risk decision in section 2. Two P2 findings affect audit coverage and current documentation accuracy.
 
-No P0 blocker was confirmed and no P1 finding remains open. Current finding count: **0 P0, 0 P1, 3 P2, 0 optional improvements**.
+No P0 blocker was confirmed and no P1 finding remains open. Current finding count: **0 P0, 0 P1, 2 P2, 0 optional improvements**.
 
 ## 2. Audit scope and verification
 
@@ -32,7 +32,7 @@ No P0 blocker was confirmed and no P1 finding remains open. Current finding coun
 - `npm ls --depth=0` — passed; the installed direct dependency graph is internally resolved.
 - `npm audit --json` — reported 33 development-tool findings before remediation (22 high, 6 moderate, 5 low, 0 critical) and 10 after it (7 high, 1 moderate, 2 low, 0 critical).
 - `npm audit --omit=dev --json` — passed with 0 production dependency findings both before and after remediation; the delivered site has no npm runtime dependency graph.
-- `npm run test:e2e` — passed all 19 configured scenarios: four reservation outcomes, two legal-modal scenarios, three scroll-to-top scenarios, four legal-table page/viewport scenarios at 320 px and 390 px, and six lightbox document-state scenarios. The six lightbox scenarios were added with the P2-02 remediation and passed on the post-remediation rerun of the aggregate.
+- `npm run test:e2e` — passed all 25 configured scenarios: four reservation outcomes, two legal-modal scenarios, three scroll-to-top scenarios, four legal-table page/viewport scenarios at 320 px and 390 px, six lightbox document-state scenarios, and six gallery-status scenarios. The six lightbox scenarios were added with the P2-02 remediation; the six gallery-status scenarios were added with the P2-03 remediation, cover the completed status text, the decorative icon's exclusion from the Chromium accessibility tree, and all four gallery category filters, and were confirmed to fail against the pre-remediation markup before passing on the post-remediation rerun of the aggregate.
 - `npm run qa:nojs` — passed after an environment-only Chromium `spawn EPERM` on the sandboxed attempt; the exact command was rerun outside that launch restriction.
 - `npm run qa:a11y` — passed its configured eight-page axe scan after the same environment-only Chromium launch restriction was bypassed. A separate scope comparison confirmed that this command scans the first-visit modal state rather than the complete page state; see P2-01.
 - `npm run build` — passed after the toolchain update; the production `dist/` output was generated from source with the updated PostCSS and esbuild path.
@@ -67,7 +67,7 @@ No P0 blocker was confirmed and no P1 finding remains open. Current finding coun
 
 1. **Clear source/build boundary.** `scripts/build-dist.mjs` produces an ignored production directory from source HTML/CSS/JS, applies minification and path rewrites, copies static assets, and adjusts Service Worker asset paths rather than treating generated files as authoring sources.
 2. **Broad fast QA contract.** `package.json:7-25` composes linting, eight-page HTML validation, links, SEO, structured-data policy, and CSP-hash verification. The complete `qa:fast` command passed on the audited checkout.
-3. **Feature isolation and focused regressions.** `js/script.js` initializes independent modules through guarded feature boundaries. Reservation outcomes, legal-modal behavior, scroll-to-top behavior, responsive legal-table containment, and lightbox document-state restoration all passed their configured end-to-end scenarios.
+3. **Feature isolation and focused regressions.** `js/script.js` initializes independent modules through guarded feature boundaries. Reservation outcomes, legal-modal behavior, scroll-to-top behavior, responsive legal-table containment, lightbox document-state restoration, and completed gallery-status rendering all passed their configured end-to-end scenarios.
 4. **Good interaction mechanics in checked states.** The mobile drawer exposed the correct expanded state, trapped interaction in the open drawer, closed on Escape, and restored focus. The lightbox used a native dialog, focused its close control, loaded the selected image, and returned focus to the triggering gallery item.
 5. **Working progressive navigation baseline.** The configured no-JavaScript suite passed navigation, reservation-section discovery, required-control presence, blocked invalid submission, intercepted valid native submission, and legal-link traversal.
 6. **Functional offline and error fallbacks.** The deployed Service Worker controlled the application, an uncached offline navigation reached the dedicated offline page at the requested URL, and an unknown route returned the custom page with HTTP 404 rather than a soft 200.
@@ -95,16 +95,6 @@ None detected.
 **Recommended direction:** Scan the modal-open state and the accepted/full-page state explicitly, with an assertion that the intended inert state is active before each scan. Add key interactive states only where they materially change semantics.  
 **Verification criteria:** The QA output identifies each scanned state, asserts modal/inert preconditions, covers the full underlying DOM after acceptance on all eight pages, and fails when a seeded violation is introduced outside the modal.
 
-### P2-03 — The completed gallery status renders a stray `>` character
-
-**Classification:** Defect  
-**Affected area:** Gallery status UI, visual polish, and live-status announcements  
-**Evidence:** `js/modules/load-more.js:5` contains an extra `>` immediately inside the status SVG string, before the first `<path>`. `js/modules/load-more.js:22` injects that string into the status region. The deployed gallery rendered the text content as `>Wszystko załadowane`.  
-**Current behavior:** The completion status includes an unintended visible/text-node character before its icon and label.  
-**Impact:** The UI looks unfinished and assistive output can include punctuation that has no semantic meaning.  
-**Recommended direction:** Remove the stray character from the trusted SVG constant and keep the icon hidden from accessibility APIs while retaining the meaningful status text.  
-**Verification criteria:** The rendered status text is exactly `Wszystko załadowane`, the icon remains decorative, and the gallery's filter/load behavior is unchanged.
-
 ### P2-04 — Current Lighthouse documentation describes the wrong run count
 
 **Classification:** Documentation mismatch  
@@ -123,7 +113,7 @@ None detected.
 
 **Release-ready with minor refinements outstanding.** No P0 or P1 finding remains open. The production build succeeds with the updated toolchain, the eight-URL three-run Lighthouse contract passes on a clean host with unchanged thresholds, the end-to-end, no-JavaScript, accessibility, and image-verification suites pass, and the production dependency audit is at 0 vulnerabilities. The remaining development-only advisories are recorded as an accepted residual with a written applicability decision rather than as an open blocker.
 
-The three remaining P2 items should still be closed or explicitly accepted with evidence before final sign-off, and the residual `@lhci/cli` chain should be revisited when an upstream `extract-zip` fix, or a Lighthouse CI release that drops those paths, becomes available. Final sign-off should preserve the existing CSP, custom 404 status, offline fallback, form-host integration, and intentional noindex semantics of utility pages.
+The two remaining P2 items should still be closed or explicitly accepted with evidence before final sign-off, and the residual `@lhci/cli` chain should be revisited when an upstream `extract-zip` fix, or a Lighthouse CI release that drops those paths, becomes available. Final sign-off should preserve the existing CSP, custom 404 status, offline fallback, form-host integration, and intentional noindex semantics of utility pages.
 
 ## 9. Final quality rating
 
@@ -131,4 +121,4 @@ The three remaining P2 items should still be closed or explicitly accepted with 
 
 Both conditions that held the previous 6/10 below release-ready territory no longer apply. The high-severity development-toolchain advisories that constituted the open P1 finding were remediated as far as upstream support allows, with the remainder accepted as a documented development-only residual, and the previously missing evidence now exists: the production build passes and the eight-URL, three-run Lighthouse contract passes on a clean host with its original thresholds, alongside passing end-to-end, no-JavaScript, accessibility, and image-verification suites and a zero-vulnerability production dependency audit.
 
-The rating stops short of the 9-10 range because three P2 findings remain open, including a user-visible gallery status defect and an accessibility gate that scans the modal-dominated state rather than the full pages; because seven development-only high audit rows persist upstream and cannot yet be closed by a supported update; and because browser verification remains Chromium-only, with the environment limitations recorded in section 2.
+The rating stops short of the 9-10 range because two P2 findings remain open, including an accessibility gate that scans the modal-dominated state rather than the full pages; because seven development-only high audit rows persist upstream and cannot yet be closed by a supported update; and because browser verification remains Chromium-only, with the environment limitations recorded in section 2.

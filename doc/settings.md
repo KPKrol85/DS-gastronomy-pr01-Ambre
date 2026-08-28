@@ -24,9 +24,9 @@ Plik `package.json` jest wykonywalnym źródłem prawdy. Poniższy opis rozróż
 
 ### `test:e2e`
 
-- **Command:** `npm run test:e2e:reservation && npm run test:e2e:demo-legal && npm run test:e2e:scroll-to-top && npm run test:e2e:legal-tables && npm run test:e2e:lightbox`
-- **Purpose:** Uruchamia deterministycznie pięć skupionych regresji przeglądarkowych.
-- **Use:** Po zmianach interakcji formularza, dialogu, wspólnego sterowania przewijaniem, responsywnego osadzania tabel prawnych lub lightboxa galerii.
+- **Command:** `npm run test:e2e:reservation && npm run test:e2e:demo-legal && npm run test:e2e:scroll-to-top && npm run test:e2e:legal-tables && npm run test:e2e:lightbox && npm run test:e2e:gallery-status`
+- **Purpose:** Uruchamia deterministycznie sześć skupionych regresji przeglądarkowych.
+- **Use:** Po zmianach interakcji formularza, dialogu, wspólnego sterowania przewijaniem, responsywnego osadzania tabel prawnych, lightboxa galerii lub statusu ukończenia galerii.
 
 ### `qa`
 
@@ -59,6 +59,7 @@ Plik `package.json` jest wykonywalnym źródłem prawdy. Poniższy opis rozróż
 - `test:e2e:scroll-to-top` — regresje wspólnego przycisku przewijania do góry.
 - `test:e2e:legal-tables` — regresje poziomego przepełnienia, dostępności i obsługi klawiaturą tabel na stronach prawnych przy szerokościach 320 px i 390 px.
 - `test:e2e:lightbox` — regresje przywracania stanu dokumentu przez lightbox galerii: dokładna poprzednia wartość `scroll-behavior` w stylu inline elementu głównego, zachowana pozycja przewijania i powrót fokusu do klikniętego elementu galerii we wszystkich obsługiwanych ścieżkach zamknięcia (przycisk zamykania, Escape/cancel, tło i natywne zamknięcie dialogu).
+- `test:e2e:gallery-status` — regresje ukończonego statusu galerii: treść statusu dokładnie równa `Wszystko załadowane`, bez zbędnych znaków i obcych węzłów tekstowych, dekoracyjna ikona SVG wykluczona z drzewa dostępności oraz niezmienione filtrowanie galerii i moment pojawienia się stanu ukończonego.
 
 ## CSP
 
