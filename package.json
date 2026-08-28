@@ -18,6 +18,7 @@
     "qa:seo": "node scripts/qa-seo.mjs",
     "qa:schema": "node scripts/schema-policy-check.mjs",
     "qa:csp": "node scripts/update-csp-hashes.mjs --check",
+    "qa:service-worker": "node scripts/qa-service-worker.mjs",
     "qa:nojs": "node scripts/qa-nojs-e2e.mjs",
     "qa:a11y": "node scripts/qa-a11y.mjs",
     "qa:lighthouse": "lhci autorun --config=./lighthouserc.json",

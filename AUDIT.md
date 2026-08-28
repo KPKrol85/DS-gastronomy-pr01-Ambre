@@ -9,9 +9,9 @@
 
 Ambre has a strong static-site foundation: its source/build boundary is explicit, core features are modular, the configured fast QA suite passes, the focused interaction tests pass, the no-JavaScript navigation baseline works, and the deployed site provides a functional custom 404 and offline navigation fallback. Responsive navigation, gallery filtering, lightbox focus return, and the first-visit legal modal were also exercised successfully in Chromium.
 
-The project is not yet ready for an unqualified final release. Three P1 findings remain: the development toolchain contains current high-severity advisories; Service Worker activation deletes caches it does not own; and two legal pages overflow the mobile viewport. Four P2 findings affect audit coverage, lightbox state restoration, gallery polish, and current documentation accuracy.
+The project is not yet ready for an unqualified final release. Two P1 findings remain: the development toolchain contains current high-severity advisories, and two legal pages overflow the mobile viewport. Four P2 findings affect audit coverage, lightbox state restoration, gallery polish, and current documentation accuracy.
 
-No P0 blocker was confirmed. Current finding count: **0 P0, 3 P1, 4 P2, 0 optional improvements**.
+No P0 blocker was confirmed. Current finding count: **0 P0, 2 P1, 4 P2, 0 optional improvements**.
 
 ## 2. Audit scope and verification
 
@@ -77,16 +77,6 @@ None detected.
 **Recommended direction:** Triage the current advisory paths and make the smallest supported direct-package updates that remove applicable high-severity findings. Review `postcss`, `sharp`, and the Lighthouse CI chain separately; do not rely on the registry's suggested `@lhci/cli@0.1.0` downgrade or use a forced bulk remediation without validating the tool contract.  
 **Verification criteria:** A fresh full `npm audit` has no unresolved high or critical findings, or each remaining finding has a written applicability decision and compensating control; `npm ls --depth=0`, the production build, `qa:fast`, browser suites, image verification, and Lighthouse collection still pass with unchanged intended thresholds.
 
-### P1-04 — Service Worker activation deletes caches it does not own
-
-**Classification:** Defect  
-**Affected area:** PWA lifecycle, Cache Storage ownership, updates, and same-origin integration safety  
-**Evidence:** `sw.js:45-58` keeps only `app-shell-v1.8` and `runtime-img-v1.8`, then deletes every other key returned by `caches.keys()`. A runtime activation probe created an unrelated same-origin cache named `audit-unrelated-cache`; after the worker reactivated, that cache was deleted while the two Ambre caches remained.  
-**Current behavior:** Cache cleanup is global to the origin rather than scoped to cache names owned by this Service Worker.  
-**Impact:** Any present or future same-origin application, function, migration, or diagnostic cache can be destroyed during an Ambre worker update. The current dedicated Netlify origin reduces the immediate blast radius but does not make the ownership contract safe.  
-**Recommended direction:** Introduce an Ambre-specific cache namespace and delete only obsolete versions within that namespace. Preserve unknown cache keys by default while retaining deterministic removal of superseded Ambre caches.  
-**Verification criteria:** An activation test proves that old Ambre cache versions are removed, current Ambre caches remain usable, and a sentinel cache outside the Ambre namespace survives installation and activation.
-
 ### P1-05 — Legal tables force document-wide horizontal scrolling on mobile
 
 **Classification:** Defect  
@@ -145,12 +135,12 @@ None detected.
 
 ## 8. Production readiness assessment
 
-**Needs important fixes.** The site is functionally mature and no catastrophic blocker was found, but the release cannot be described as final while high-severity development-tool advisories remain unresolved, Service Worker cleanup violates cache ownership, and legal pages overflow on common mobile widths.
+**Needs important fixes.** The site is functionally mature and no catastrophic blocker was found, but the release cannot be described as final while high-severity development-tool advisories remain unresolved and legal pages overflow on common mobile widths.
 
-After the three P1 items are resolved, the full production build and three-run/eight-URL Lighthouse contract should be executed in a verification context that permits generated artifacts. The P2 items should then be closed or explicitly accepted with evidence. Final sign-off should preserve the existing CSP, custom 404 status, offline fallback, form-host integration, and intentional noindex semantics of utility pages.
+After the two P1 items are resolved, the full production build and three-run/eight-URL Lighthouse contract should be executed in a verification context that permits generated artifacts. The P2 items should then be closed or explicitly accepted with evidence. Final sign-off should preserve the existing CSP, custom 404 status, offline fallback, form-host integration, and intentional noindex semantics of utility pages.
 
 ## 9. Final quality rating
 
 **6/10**
 
-The implementation demonstrates solid engineering discipline, good static QA, focused browser coverage, and a functioning PWA baseline. The rating is held below release-ready territory by three independent P1 findings spanning supply-chain hygiene, cache safety, and responsive legal content. The absence of a current production build and Lighthouse run also limits confidence in final performance readiness, without being counted as a defect by itself.
+The implementation demonstrates solid engineering discipline, good static QA, focused browser coverage, and a functioning PWA baseline. The rating is held below release-ready territory by two independent P1 findings spanning supply-chain hygiene and responsive legal content. The absence of a current production build and Lighthouse run also limits confidence in final performance readiness, without being counted as a defect by itself.

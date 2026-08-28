@@ -10,6 +10,7 @@ All significant changes to this project are documented in this file.
 - Added PWA mechanisms including a Web App Manifest, install prompt, Service Worker cache strategies, and an offline fallback page.
 - Added source-to-production CSS and JavaScript build workflows together with project-specific validation for HTML, links, SEO, JSON-LD policy, no-JavaScript behavior, accessibility, and Lighthouse CI.
 - Added focused browser regression coverage for the reservation submission paths, the initial project-information dialog's keyboard behavior, and the shared scroll-to-top control.
+- Added focused browser regression coverage for Service Worker activation, including current-cache usability, obsolete and legacy Ambre cache cleanup, and preservation of unknown same-origin caches.
 - Added a repository-wide `.gitattributes` policy that checks out text files with LF endings on every platform, so inline-script hash generation produces identical values on Windows and in CI.
 
 ### Changed
@@ -27,6 +28,7 @@ All significant changes to this project are documented in this file.
 - Removed the unused `postcss-cli` development dependency after confirming the production build uses the PostCSS Node API directly.
 - Changed the inline script hashes in `_headers` to match the current source content, preserving the existing security headers and Content-Security-Policy directives.
 - Changed the `_headers` inline script hashes to the values derived from the LF source bytes, replacing platform-dependent values that made `npm run qa:csp` pass on Windows but fail in CI.
+- Changed the current Service Worker caches to `ambre-app-shell-v1.8` and `ambre-runtime-img-v1.8`; activation cleanup now targets only obsolete Ambre-namespaced caches and the explicitly known pre-namespace keys while preserving unknown same-origin caches.
 - Corrected the current public origin across canonical and social metadata, JSON-LD, sitemap, robots, package metadata, and the visible terms link to `https://gastronomy-pr01-ambre.netlify.app/`, with matching JSON-LD CSP hashes.
 - Replaced the fictional `Restaurant` JSON-LD with a truthful `WebSite`/`CreativeWork`/`WebPage` model and separate KP_Code Digital Studio `Organization`, and strengthened schema policy checks against fictional business entities and unsupported operational data.
 - Corrected the X and LinkedIn social controls on all current pages to use the verified KP_Code operator profiles instead of generic platform homepages.
@@ -37,4 +39,5 @@ All significant changes to this project are documented in this file.
 - Added a Polish-first bilingual README describing the current source/build boundary, PWA mechanisms, quality workflows, and verified limitations.
 - Added a current daily front-end audit record to establish evidence-based maintenance priorities.
 - Synchronized the documented `qa` command and validation scope with the executable package script, including schema-policy, no-JavaScript, and text-lint stages.
+- Synchronized the cookie policy's Cache Storage identifiers with the current Ambre-specific Service Worker cache names.
 - Updated the README and developer settings reference for the streamlined build, lint, QA, E2E, CSP, server-check, and image-tooling commands.
