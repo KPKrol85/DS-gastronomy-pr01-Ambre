@@ -15,7 +15,7 @@ All significant changes to this project are documented in this file.
 
 ### Changed
 
-- Changed Lighthouse CI to build and audit the production `dist/` path with text compression, while preserving the existing eight URLs, one-run contract, and category thresholds.
+- Changed Lighthouse CI to build and audit the production `dist/` path with text compression, while preserving the existing eight URLs and category thresholds; the current contract collects three runs per URL, for 24 Lighthouse collections per complete run.
 - Changed the first menu thumbnail to load eagerly after Lighthouse identified it as the LCP element, and deferred the menu page's embedded Google Map behind an accessible, no-JavaScript-safe user action.
 - Added the missing offline-page description and preloaded its first-render fonts; all eight configured pages now meet the Lighthouse Performance threshold, while URL-specific assertions preserve blocking SEO `>= 0.95` on standard pages and retain the intentional utility-page `noindex` result as a warning.
 - Changed the project license and package metadata to use the proprietary KP_Code licensing terms.

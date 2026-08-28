@@ -1,17 +1,18 @@
 # Ambre — Final Technical Front-End Audit
 
 **Audit date:** 2026-08-27  
+**Last re-verification:** 2026-08-28  
 **Project type:** Static multi-page restaurant portfolio/demo built with HTML, modular CSS, Vanilla JavaScript, PWA mechanisms, and a Netlify-oriented production build  
 **Audit mode:** Final repository and implementation review  
-**Current readiness:** Release-ready with minor refinements outstanding
+**Current readiness:** Release-ready with an accepted development-only dependency residual
 
 ## 1. Executive summary
 
 Ambre has a strong static-site foundation: its source/build boundary is explicit, core features are modular, the configured fast QA suite passes, the focused interaction tests pass, the no-JavaScript navigation baseline works, and the deployed site provides a functional custom 404 and offline navigation fallback. Responsive navigation, gallery filtering, lightbox focus return, and the first-visit legal modal were also exercised successfully in Chromium.
 
-The previously open P1 development-toolchain finding has been remediated. `postcss`, `sharp`, and `@lhci/cli` were updated to current supported releases, the full development audit fell from 22 high findings to 7 while keeping 0 critical findings, and the production dependency audit remains at 0 vulnerabilities. The remaining high rows are development-only, reduce to an upstream-unpatched `extract-zip` path and legacy `tmp` paths inside the current supported `@lhci/cli` chain, and are accepted with a written applicability decision rather than removed by a forced downgrade or an unsupported override; see the residual dependency-risk decision in section 2. The accessibility-coverage P2 finding has since been remediated: the configured axe gate now scans an explicit modal-open state and an accepted/full-page state, asserts its modal and inert preconditions before each scan, and carries a runtime-only negative control. One P2 finding remains, affecting current documentation accuracy.
+The previously open P1 development-toolchain finding has been remediated. `postcss`, `sharp`, and `@lhci/cli` were updated to current supported releases, the full development audit fell from 22 high findings to 7 while keeping 0 critical findings, and the production dependency audit remains at 0 vulnerabilities. The remaining high rows are development-only, reduce to an upstream-unpatched `extract-zip` path and legacy `tmp` paths inside the current supported `@lhci/cli` chain, and are accepted with a written applicability decision rather than removed by a forced downgrade or an unsupported override; see the residual dependency-risk decision in section 2. The accessibility-coverage P2 finding has since been remediated: the configured axe gate now scans an explicit modal-open state and an accepted/full-page state, asserts its modal and inert preconditions before each scan, and carries a runtime-only negative control. The final P2 finding, a current-documentation mismatch in the Lighthouse run count, has since been corrected: the active Unreleased changelog entry now states the executable eight-URL contract with three runs per URL, for 24 Lighthouse collections per complete run, leaving the category thresholds and the intentional utility-page SEO treatment unchanged.
 
-No P0 blocker was confirmed and no P1 finding remains open. Current finding count: **0 P0, 0 P1, 1 P2, 0 optional improvements**.
+No P0 blocker was confirmed and no finding remains open in any severity class. Current finding count: **0 P0, 0 P1, 0 P2, 0 optional improvements**.
 
 ## 2. Audit scope and verification
 
@@ -85,15 +86,7 @@ None detected.
 
 ## 6. P2 — Minor refinements
 
-### P2-04 — Current Lighthouse documentation describes the wrong run count
-
-**Classification:** Documentation mismatch  
-**Affected area:** Release documentation, audit duration expectations, and QA contract maintenance  
-**Evidence:** `lighthouserc.json:16` currently sets `numberOfRuns` to 3 for eight configured URLs. `CHANGELOG.md:17` in the active Unreleased section says the production-path change preserved a “one-run contract.”  
-**Current behavior:** Executable configuration requests 24 Lighthouse collections, while current release documentation describes eight. Historical archived one-run records remain valid as history and are not themselves defects.  
-**Impact:** Maintainers can misestimate local/CI duration and misunderstand what current Lighthouse evidence represents.  
-**Recommended direction:** Correct the active current-state documentation to match the intentional executable contract. If the run count itself is reconsidered, change it only as an explicit performance/coverage decision without weakening category thresholds or utility-page indexing semantics.  
-**Verification criteria:** Current documentation and `lighthouserc.json` agree on URL count, run count, production-path collection, thresholds, and the special SEO treatment of offline/404 pages.
+None detected.
 
 ## 7. Extra quality improvements
 
@@ -101,16 +94,16 @@ None detected.
 
 ## 8. Production readiness assessment
 
-**Release-ready with minor refinements outstanding.** No P0 or P1 finding remains open. The production build succeeds with the updated toolchain, the eight-URL three-run Lighthouse contract passes on a clean host with unchanged thresholds, the end-to-end, no-JavaScript, two-state accessibility, and image-verification suites pass, and the production dependency audit is at 0 vulnerabilities. The remaining development-only advisories are recorded as an accepted residual with a written applicability decision rather than as an open blocker.
+**Release-ready.** No P0, P1, or P2 finding remains open. The production build succeeds with the updated toolchain, the eight-URL three-run Lighthouse contract passes on a clean host with unchanged thresholds, the end-to-end, no-JavaScript, two-state accessibility, and image-verification suites pass, and the production dependency audit is at 0 vulnerabilities. The remaining development-only advisories are recorded as an accepted residual, carried with the written applicability decision and the compensating controls in section 2 — development-only reachability, a lockfile-pinned graph installed through `npm ci`, an unexercised `extract-zip` download path, and a `tmp` consumer tied to `lhci open` rather than the `lhci autorun` command Ambre runs — rather than as an open blocker.
 
-The one remaining P2 item should still be closed or explicitly accepted with evidence before final sign-off, and the residual `@lhci/cli` chain should be revisited when an upstream `extract-zip` fix, or a Lighthouse CI release that drops those paths, becomes available. Final sign-off should preserve the existing CSP, custom 404 status, offline fallback, form-host integration, and intentional noindex semantics of utility pages.
+The residual `@lhci/cli` chain should be revisited when an upstream `extract-zip` fix, or a Lighthouse CI release that drops those paths, becomes available. Final sign-off should preserve the existing CSP, custom 404 status, offline fallback, form-host integration, and intentional noindex semantics of utility pages. The verification limitations in section 2 are unchanged by this cycle and remain the known gaps a production owner accepts with this release: Chromium-only browser coverage, no assistive-technology testing, and no verified Netlify Forms delivery.
 
 ## 9. Final quality rating
 
-**8/10**
+**9/10**
 
-Both conditions that held the previous 6/10 below release-ready territory no longer apply. The high-severity development-toolchain advisories that constituted the open P1 finding were remediated as far as upstream support allows, with the remainder accepted as a documented development-only residual, and the previously missing evidence now exists: the production build passes and the eight-URL, three-run Lighthouse contract passes on a clean host with its original thresholds, alongside passing end-to-end, no-JavaScript, accessibility, and image-verification suites and a zero-vulnerability production dependency audit.
+Every severity class is now clear. The development-toolchain P1 was remediated as far as upstream support allows, the accessibility-coverage P2 was closed by the two-state axe gate, and the final documentation P2 — the stale one-run Lighthouse claim in the active Unreleased section — has been corrected against the executable contract, so this audit closes at 0 P0, 0 P1, 0 P2, and 0 optional improvements.
 
-The accessibility driver behind the previous shortfall no longer applies. The axe gate now scans an explicit modal-open state and an accepted/full-page state, asserts its modal and inert preconditions before each scan, covers the full underlying page on all eight pages after real acceptance, and proves through a runtime-only negative control that a violation outside the modal fails the accepted-page result.
+The evidence behind the rating is current rather than deferred. The production build passes with the updated toolchain, and the eight-URL, three-run Lighthouse contract passes on a clean host with its original thresholds and its intentional utility-page `noindex` warning, after the first execution's failure was traced to host contention rather than a scoring or content change. The end-to-end, no-JavaScript, and image-verification suites pass alongside a zero-vulnerability production dependency audit, and the axe gate scans an explicit modal-open state and an accepted/full-page state, asserts its modal and inert preconditions before each scan, and proves through a runtime-only negative control that a violation outside the modal fails the accepted-page result.
 
-The rating is nonetheless held at 8/10 rather than raised, because the remaining reasons are untouched by that work: one P2 documentation-accuracy finding is still open; seven development-only high audit rows persist upstream and cannot yet be closed by a supported update; and browser verification remains Chromium-only, with the environment limitations recorded in section 2 — including the dot-path worktree behavior that prevents the ESLint stage of `qa:fast` from reporting results in that environment, and axe's inability to substitute for screen-reader and manual accessibility testing.
+The rating stops short of 10/10 because the reasons that remain are outside what this remediation cycle could close. Seven development-only high audit rows persist upstream, cannot be resolved by a supported update, and are therefore carried as an accepted residual with compensating controls rather than eliminated. Verification also remains Chromium-only, without assistive-technology testing, verified Netlify Forms delivery, cross-browser or real PWA-install coverage, and with the dot-path worktree behavior that prevents the ESLint stage of `qa:fast` from reporting results in that environment — all recorded in section 2.
