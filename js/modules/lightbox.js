@@ -92,6 +92,8 @@ export function initLightbox() {
   let prevTop = "";
   let prevWidth = "";
   let prevHash = "";
+  let prevRootScrollBehavior = "";
+  let documentStateLocked = false;
 
   const getGalleryItems = (root) =>
     root
@@ -148,10 +150,15 @@ export function initLightbox() {
       history.replaceState(null, "", location.pathname + location.search);
     }
 
-    scrollY = window.scrollY;
-    prevPosition = document.body.style.position;
-    prevTop = document.body.style.top;
-    prevWidth = document.body.style.width;
+    if (!documentStateLocked) {
+      scrollY = window.scrollY;
+      prevPosition = document.body.style.position;
+      prevTop = document.body.style.top;
+      prevWidth = document.body.style.width;
+      prevRootScrollBehavior = document.documentElement.style.scrollBehavior;
+      documentStateLocked = true;
+    }
+
     document.documentElement.style.scrollBehavior = "auto";
     document.body.style.position = "fixed";
     document.body.style.top = `-${scrollY}px`;
@@ -175,6 +182,30 @@ export function initLightbox() {
     preload(-1);
   };
 
+  const restoreDocumentState = () => {
+    if (!documentStateLocked) return;
+    documentStateLocked = false;
+
+    if (prevHash) {
+      history.replaceState(null, "", location.pathname + location.search + prevHash);
+    }
+
+    document.body.style.position = prevPosition;
+    document.body.style.top = prevTop;
+    document.body.style.width = prevWidth;
+    window.scrollTo(0, scrollY);
+    document.documentElement.style.scrollBehavior = prevRootScrollBehavior;
+
+    if (lastActive && typeof lastActive.focus === "function") lastActive.focus();
+
+    index = -1;
+    items = [];
+    if (counter) {
+      counter.hidden = true;
+      counter.textContent = "";
+    }
+  };
+
   const close = () => {
     if (isDialog) {
       if (box.open) box.close();
@@ -189,23 +220,7 @@ export function initLightbox() {
       }, 170);
     }
 
-    if (prevHash) {
-      history.replaceState(null, "", location.pathname + location.search + prevHash);
-    }
-
-    document.body.style.position = prevPosition;
-    document.body.style.top = prevTop;
-    document.body.style.width = prevWidth;
-    window.scrollTo(0, scrollY);
-
-    if (lastActive && typeof lastActive.focus === "function") lastActive.focus();
-
-    index = -1;
-    items = [];
-    if (counter) {
-      counter.hidden = true;
-      counter.textContent = "";
-    }
+    restoreDocumentState();
   };
 
   const showAt = (nextIndex) => {
@@ -537,6 +552,7 @@ export function initLightbox() {
   box.addEventListener("close", () => {
     zoomOut();
     setFullscreenClass(false);
+    restoreDocumentState();
   });
 
   document.addEventListener("fullscreenchange", () => setFullscreenClass(isFullscreen()));
