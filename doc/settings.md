@@ -48,7 +48,7 @@ Plik `package.json` jest wykonywalnym źródłem prawdy. Poniższy opis rozróż
 - `qa:schema` — egzekwuje politykę obecności JSON-LD na właściwych stronach.
 - `qa:csp` — tylko sprawdza, czy hashe CSP w `_headers` są aktualne; nie zapisuje pliku.
 - `qa:nojs` — sprawdza bazowe zachowanie stron bez JavaScriptu w przeglądarce.
-- `qa:a11y` — uruchamia automatyczny audyt Playwright + axe na ośmiu stronach.
+- `qa:a11y` — uruchamia automatyczny audyt Playwright + axe na ośmiu stronach w dwóch jawnych stanach: pierwszej wizyty z otwartym modalem informacyjnym oraz stanu po akceptacji, czyli pełnej strony osiąganej przez kliknięcie wysyłanego z projektem przycisku akceptacji. Przed każdym skanem axe weryfikuje warunki wstępne stanu — widoczność i `aria-hidden` modala, kontrakt `inert` na tle oraz obecność treści głównej w drzewie dostępności Chromium — więc wynik nie może zostać zgłoszony dla niewłaściwego stanu strony. Wynik raportowany jest osobno dla każdej pary strona–stan. Pełne pokrycie po akceptacji obejmuje wszystkie osiem stron; skan modal-open dotyczy wyłącznie stron faktycznie zawierających modal, a strony narzędziowe bez niego (`offline.html`, `404.html`) zgłaszają jawne pominięcie tego stanu zamiast sztucznie tworzonego modala. Na koniec wykonywana jest kontrola negatywna: wyłącznie w czasie działania wstrzykiwany jest niepoprawny obraz poza modalem, co potwierdza, że skan pełnej strony go wykrywa i na nim nie przechodzi, a skan modal-open go nie widzi; zaszczepiony znacznik nigdy nie trafia do źródeł projektu.
 - `qa:lighthouse` — uruchamia Lighthouse CI zgodnie z `lighthouserc.json`.
 - `qa:server` — sprawdza odpowiedzi lokalnego serwera statycznego używanego przez narzędzia jakości; nie potwierdza działania wdrożenia publicznego.
 
