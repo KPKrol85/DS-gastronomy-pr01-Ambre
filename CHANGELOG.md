@@ -33,6 +33,9 @@ All significant changes to this project are documented in this file.
 - Corrected the current public origin across canonical and social metadata, JSON-LD, sitemap, robots, package metadata, and the visible terms link to `https://gastronomy-pr01-ambre.netlify.app/`, with matching JSON-LD CSP hashes.
 - Replaced the fictional `Restaurant` JSON-LD with a truthful `WebSite`/`CreativeWork`/`WebPage` model and separate KP_Code Digital Studio `Organization`, and strengthened schema policy checks against fictional business entities and unsupported operational data.
 - Corrected the X and LinkedIn social controls on all current pages to use the verified KP_Code operator profiles instead of generic platform homepages.
+- Updated the directly affected supported development toolchain dependencies — `postcss` to `^8.5.26`, `sharp` to `^0.35.4`, and `@lhci/cli` to `^0.15.1` — reducing the full development audit from 22 high findings to 7 while keeping 0 critical findings and preserving a zero-vulnerability production dependency audit.
+- Retained the existing production build, end-to-end, no-JavaScript, accessibility, image-verification, CI, and Lighthouse contracts across the toolchain update; no thresholds, URL set, run count, assertions, or QA steps were changed.
+- Documented that the remaining high audit rows originate from the `@lhci/cli` dependency chain and were left in place with a written applicability decision rather than removed through the registry's suggested forced `@lhci/cli` downgrade or an unsupported transitive override.
 
 ### Documentation
 

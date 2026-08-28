@@ -3,15 +3,15 @@
 **Audit date:** 2026-08-27  
 **Project type:** Static multi-page restaurant portfolio/demo built with HTML, modular CSS, Vanilla JavaScript, PWA mechanisms, and a Netlify-oriented production build  
 **Audit mode:** Final repository and implementation review  
-**Current readiness:** Needs important fixes
+**Current readiness:** Release-ready with minor refinements outstanding
 
 ## 1. Executive summary
 
 Ambre has a strong static-site foundation: its source/build boundary is explicit, core features are modular, the configured fast QA suite passes, the focused interaction tests pass, the no-JavaScript navigation baseline works, and the deployed site provides a functional custom 404 and offline navigation fallback. Responsive navigation, gallery filtering, lightbox focus return, and the first-visit legal modal were also exercised successfully in Chromium.
 
-The project is not yet ready for an unqualified final release. One P1 finding remains: the development toolchain contains current high-severity advisories. Four P2 findings affect audit coverage, lightbox state restoration, gallery polish, and current documentation accuracy.
+The previously open P1 development-toolchain finding has been remediated. `postcss`, `sharp`, and `@lhci/cli` were updated to current supported releases, the full development audit fell from 22 high findings to 7 while keeping 0 critical findings, and the production dependency audit remains at 0 vulnerabilities. The remaining high rows are development-only, reduce to an upstream-unpatched `extract-zip` path and legacy `tmp` paths inside the current supported `@lhci/cli` chain, and are accepted with a written applicability decision rather than removed by a forced downgrade or an unsupported override; see the residual dependency-risk decision in section 2. Four P2 findings affect audit coverage, lightbox state restoration, gallery polish, and current documentation accuracy.
 
-No P0 blocker was confirmed. Current finding count: **0 P0, 1 P1, 4 P2, 0 optional improvements**.
+No P0 blocker was confirmed and no P1 finding remains open. Current finding count: **0 P0, 0 P1, 4 P2, 0 optional improvements**.
 
 ## 2. Audit scope and verification
 
@@ -27,22 +27,36 @@ No P0 blocker was confirmed. Current finding count: **0 P0, 1 P1, 4 P2, 0 option
 ### Verification performed
 
 - Confirmed a clean initial worktree at detached commit `394e820f873b33ec8c8d6eba7a745de7d9a1b720` before creating this report.
-- `npm run qa:fast` — passed: ESLint, Stylelint, text lint, validation of eight HTML pages, internal-link checks, SEO policy, schema policy, and six CSP hashes.
+- `npm run qa:fast` — passed on the audited checkout: ESLint, Stylelint, text lint, validation of eight HTML pages, internal-link checks, SEO policy, schema policy, and six CSP hashes. On the post-remediation rerun the Stylelint, text-lint, HTML-validation, internal-link, SEO, schema, and CSP stages passed unchanged, while the ESLint stage could not report from the worktree checkout for the environment reason recorded under Limitations; ESLint passed for the same sources and the same dependency graph at an unaffected path. `qa:fast` is therefore not claimed as an unconditional pass in that environment.
 - `npm run img:verify` — passed for 126 optimized image files.
 - `npm ls --depth=0` — passed; the installed direct dependency graph is internally resolved.
-- `npm audit --json` — completed against the current registry and reported 33 development-tool findings: 22 high, 6 moderate, 5 low, and 0 critical.
-- `npm audit --omit=dev --json` — passed with 0 production dependency findings; the delivered site has no npm runtime dependency graph.
+- `npm audit --json` — reported 33 development-tool findings before remediation (22 high, 6 moderate, 5 low, 0 critical) and 10 after it (7 high, 1 moderate, 2 low, 0 critical).
+- `npm audit --omit=dev --json` — passed with 0 production dependency findings both before and after remediation; the delivered site has no npm runtime dependency graph.
 - `npm run test:e2e` — passed all 13 configured scenarios: four reservation outcomes, two legal-modal scenarios, three scroll-to-top scenarios, and four legal-table page/viewport scenarios at 320 px and 390 px.
 - `npm run qa:nojs` — passed after an environment-only Chromium `spawn EPERM` on the sandboxed attempt; the exact command was rerun outside that launch restriction.
 - `npm run qa:a11y` — passed its configured eight-page axe scan after the same environment-only Chromium launch restriction was bypassed. A separate scope comparison confirmed that this command scans the first-visit modal state rather than the complete page state; see P2-01.
+- `npm run build` — passed after the toolchain update; the production `dist/` output was generated from source with the updated PostCSS and esbuild path.
+- `npm run qa:lighthouse` — executed with the existing `lighthouserc.json`, its eight URLs, three runs per URL, and unchanged category thresholds. The first execution failed one assertion: `offline.html` Performance returned a median of 0.74 against the 0.85 threshold, across runs of 0.72, 0.99, and 0.74. The failing runs showed first-contentful-paint near 3,440 ms against 1,549 ms in the passing run on identical content, with total blocking time at 0, and `404.html` showed the same bimodal pattern; the cause was host contention rather than a scoring or content change. A clean rerun on an unloaded host passed with status 0, with `offline.html` and `404.html` at 0.99 in all three runs and every configured page meeting its threshold. No threshold, URL, run count, or assertion was modified, and the intentional utility-page `noindex` result remained a warning as configured.
 - Supplementary Chromium checks covered all eight live pages at 390 × 844 and 1440 × 1000, mobile-drawer keyboard behavior, gallery filters, lightbox opening/closing and focus return, custom 404 status, Service Worker control and cache activation, and an uncached offline navigation.
 - A separate live axe scan after accepting the legal modal reported no automated violations on any of the eight pages. This is automated browser evidence, not assistive-technology verification.
 - A no-JavaScript form probe confirmed that native constraint validation blocks an invalid empty submission and that a completed valid form can still initiate the intended native POST; the valid request was intercepted before data left the browser.
 - Targeted source searches covered unsafe DOM sinks, external `_blank` links, hard-coded secret patterns, stale markers, absolute public URLs, form constraints, cache deletion, and current-vs-historical Lighthouse claims. No P0 issue was found by those searches.
 
+### Residual dependency-risk decision
+
+- Seven high `npm audit` rows remain in the development graph after remediation.
+- They reduce to two upstream root advisories: the unpatched `extract-zip` path and the legacy `tmp` paths reached through the current supported `@lhci/cli` chain. The other remaining rows are ancestors of those two paths rather than independently vulnerable packages.
+- No patched `extract-zip` release exists at any published version, and the current supported `@lhci/cli` still declares the legacy `tmp` ranges, so neither path can be closed by a supported update.
+- The affected paths are development-only. `npm audit --omit=dev` remains at 0 vulnerabilities and the delivered site has no npm runtime dependency graph.
+- The `extract-zip` browser-download and archive-extraction path was not exercised by Ambre's verified workflow; the local browser cache was unchanged across both Lighthouse executions.
+- The `tmp` consumer is tied to the `lhci open` command, while Ambre's Lighthouse contract uses `lhci autorun`, which invokes only its healthcheck, collect, assert, and upload stages.
+- The committed lockfile and `npm ci` pin the verified dependency graph for local and CI use.
+- These advisories are accepted as residual on the applicability reasoning above. They are not patched and not eliminated, and they were not suppressed; the registry's suggested `@lhci/cli` downgrade and an unsupported transitive override were both rejected as unsafe for the Lighthouse contract.
+
 ### Limitations
 
-- `npm run build`, `npm run qa:lighthouse`, and the aggregate `npm run qa` were not executed because they create `dist/` and Lighthouse artifacts, which would violate the explicit single-file modification boundary for this task. The build script and Lighthouse configuration were inspected statically, but no current build or performance score is claimed.
+- The aggregate `npm run qa` was not executed as a single command. Its constituent stages were run individually, including the production build and the Lighthouse collection that were unavailable at the original audit date; the first Lighthouse execution and its clean rerun are both recorded under Verification performed.
+- The ESLint stage of `qa:fast` cannot report results from a worktree checked out beneath a dot-directory such as `.claude/worktrees/`. The project's `.eslintrc.cjs` sets no `root: true`, so ESLint also resolves the parent checkout's configuration, shifts its ignore base path to that parent, and then treats every worktree source path as an ignored dot-path. A controlled comparison reproduced the behavior with both the previous and the current `minimatch` versions and confirmed that the same sources and dependency graph lint cleanly at an unaffected path. This is an environment limitation of dot-path worktrees, not a lint failure and not a dependency regression, and it does not affect CI, which checks out at an ordinary path.
 - Live checks are supplementary. The supplied deployment may not be byte-for-byte identical to the audited detached commit, and no deployment action or revision comparison was performed.
 - Browser execution used Chromium only. Firefox, WebKit, mobile operating systems, browser zoom/reflow, reduced-data behavior, and installation through a real PWA prompt were not verified.
 - No real reservation was delivered to or inspected in Netlify Forms. Accepted, rejected, network-failure, native-fallback, and no-JavaScript request behavior was tested locally or intercepted, so backend delivery and stored-data handling remain outside the verified scope.
@@ -67,15 +81,7 @@ None detected.
 
 ## 5. P1 — Important before release
 
-### P1-01 — The development toolchain contains unresolved high-severity advisories
-
-**Classification:** Source-visible risk  
-**Affected area:** Dependency security, local build tooling, CI, image processing, and release verification  
-**Evidence:** `package.json:27-42` declares the build and QA toolchain. On 2026-08-27, `npm audit --json` reported 33 findings in the development graph: 22 high, 6 moderate, 5 low, and 0 critical. Direct installed packages include `postcss@8.5.6`, affected by current file-disclosure/path-traversal advisories, and `sharp@0.33.5`, affected by inherited libvips advisories; `@lhci/cli@0.13.0` also carries a vulnerable transitive graph. `npm audit --omit=dev --json` reported 0 production findings.  
-**Current behavior:** The shipped static site has no npm runtime dependencies, but repository-controlled tooling processes CSS, images, build inputs, browser artifacts, and Lighthouse data with versions that the current advisory registry marks as vulnerable.  
-**Impact:** Exposure is concentrated in developer and CI environments, not in browser runtime. Malicious or untrusted build inputs could nevertheless affect confidentiality, integrity, or availability of a developer machine or release pipeline, and a green functional suite does not resolve these advisories.  
-**Recommended direction:** Triage the current advisory paths and make the smallest supported direct-package updates that remove applicable high-severity findings. Review `postcss`, `sharp`, and the Lighthouse CI chain separately; do not rely on the registry's suggested `@lhci/cli@0.1.0` downgrade or use a forced bulk remediation without validating the tool contract.  
-**Verification criteria:** A fresh full `npm audit` has no unresolved high or critical findings, or each remaining finding has a written applicability decision and compensating control; `npm ls --depth=0`, the production build, `qa:fast`, browser suites, image verification, and Lighthouse collection still pass with unchanged intended thresholds.
+None detected.
 
 ## 6. P2 — Minor refinements
 
@@ -125,12 +131,14 @@ None detected.
 
 ## 8. Production readiness assessment
 
-**Needs important fixes.** The site is functionally mature and no catastrophic blocker was found, but the release cannot be described as final while high-severity development-tool advisories remain unresolved.
+**Release-ready with minor refinements outstanding.** No P0 or P1 finding remains open. The production build succeeds with the updated toolchain, the eight-URL three-run Lighthouse contract passes on a clean host with unchanged thresholds, the end-to-end, no-JavaScript, accessibility, and image-verification suites pass, and the production dependency audit is at 0 vulnerabilities. The remaining development-only advisories are recorded as an accepted residual with a written applicability decision rather than as an open blocker.
 
-After the remaining P1 item is resolved, the full production build and three-run/eight-URL Lighthouse contract should be executed in a verification context that permits generated artifacts. The P2 items should then be closed or explicitly accepted with evidence. Final sign-off should preserve the existing CSP, custom 404 status, offline fallback, form-host integration, and intentional noindex semantics of utility pages.
+The four P2 items should still be closed or explicitly accepted with evidence before final sign-off, and the residual `@lhci/cli` chain should be revisited when an upstream `extract-zip` fix, or a Lighthouse CI release that drops those paths, becomes available. Final sign-off should preserve the existing CSP, custom 404 status, offline fallback, form-host integration, and intentional noindex semantics of utility pages.
 
 ## 9. Final quality rating
 
-**6/10**
+**8/10**
 
-The implementation demonstrates solid engineering discipline, good static QA, focused browser coverage, and a functioning PWA baseline. The rating remains held below release-ready territory by the unresolved high-severity development-toolchain advisories. The absence of a current production build and Lighthouse run also limits confidence in final performance readiness, without being counted as a defect by itself.
+Both conditions that held the previous 6/10 below release-ready territory no longer apply. The high-severity development-toolchain advisories that constituted the open P1 finding were remediated as far as upstream support allows, with the remainder accepted as a documented development-only residual, and the previously missing evidence now exists: the production build passes and the eight-URL, three-run Lighthouse contract passes on a clean host with its original thresholds, alongside passing end-to-end, no-JavaScript, accessibility, and image-verification suites and a zero-vulnerability production dependency audit.
+
+The rating stops short of the 9-10 range because four P2 findings remain open, including a user-visible gallery status defect and an accessibility gate that scans the modal-dominated state rather than the full pages; because seven development-only high audit rows persist upstream and cannot yet be closed by a supported update; and because browser verification remains Chromium-only, with the environment limitations recorded in section 2.
