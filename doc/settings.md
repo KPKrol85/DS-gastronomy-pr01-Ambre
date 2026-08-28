@@ -24,9 +24,9 @@ Plik `package.json` jest wykonywalnym źródłem prawdy. Poniższy opis rozróż
 
 ### `test:e2e`
 
-- **Command:** `npm run test:e2e:reservation && npm run test:e2e:demo-legal && npm run test:e2e:scroll-to-top`
-- **Purpose:** Uruchamia deterministycznie trzy skupione regresje przeglądarkowe.
-- **Use:** Po zmianach interakcji formularza, dialogu lub wspólnego sterowania przewijaniem.
+- **Command:** `npm run test:e2e:reservation && npm run test:e2e:demo-legal && npm run test:e2e:scroll-to-top && npm run test:e2e:legal-tables`
+- **Purpose:** Uruchamia deterministycznie cztery skupione regresje przeglądarkowe.
+- **Use:** Po zmianach interakcji formularza, dialogu, wspólnego sterowania przewijaniem lub responsywnego osadzania tabel prawnych.
 
 ### `qa`
 
@@ -57,6 +57,7 @@ Plik `package.json` jest wykonywalnym źródłem prawdy. Poniższy opis rozróż
 - `test:e2e:reservation` — regresje wysyłania formularza rezerwacji i natywnego fallbacku.
 - `test:e2e:demo-legal` — regresje początkowego dialogu informacyjnego i jego pamięci akceptacji.
 - `test:e2e:scroll-to-top` — regresje wspólnego przycisku przewijania do góry.
+- `test:e2e:legal-tables` — regresje poziomego przepełnienia, dostępności i obsługi klawiaturą tabel na stronach prawnych przy szerokościach 320 px i 390 px.
 
 ## CSP
 

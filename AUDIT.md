@@ -9,9 +9,9 @@
 
 Ambre has a strong static-site foundation: its source/build boundary is explicit, core features are modular, the configured fast QA suite passes, the focused interaction tests pass, the no-JavaScript navigation baseline works, and the deployed site provides a functional custom 404 and offline navigation fallback. Responsive navigation, gallery filtering, lightbox focus return, and the first-visit legal modal were also exercised successfully in Chromium.
 
-The project is not yet ready for an unqualified final release. Two P1 findings remain: the development toolchain contains current high-severity advisories, and two legal pages overflow the mobile viewport. Four P2 findings affect audit coverage, lightbox state restoration, gallery polish, and current documentation accuracy.
+The project is not yet ready for an unqualified final release. One P1 finding remains: the development toolchain contains current high-severity advisories. Four P2 findings affect audit coverage, lightbox state restoration, gallery polish, and current documentation accuracy.
 
-No P0 blocker was confirmed. Current finding count: **0 P0, 2 P1, 4 P2, 0 optional improvements**.
+No P0 blocker was confirmed. Current finding count: **0 P0, 1 P1, 4 P2, 0 optional improvements**.
 
 ## 2. Audit scope and verification
 
@@ -32,7 +32,7 @@ No P0 blocker was confirmed. Current finding count: **0 P0, 2 P1, 4 P2, 0 option
 - `npm ls --depth=0` — passed; the installed direct dependency graph is internally resolved.
 - `npm audit --json` — completed against the current registry and reported 33 development-tool findings: 22 high, 6 moderate, 5 low, and 0 critical.
 - `npm audit --omit=dev --json` — passed with 0 production dependency findings; the delivered site has no npm runtime dependency graph.
-- `npm run test:e2e` — passed all nine configured scenarios: four reservation outcomes, two legal-modal scenarios, and three scroll-to-top scenarios.
+- `npm run test:e2e` — passed all 13 configured scenarios: four reservation outcomes, two legal-modal scenarios, three scroll-to-top scenarios, and four legal-table page/viewport scenarios at 320 px and 390 px.
 - `npm run qa:nojs` — passed after an environment-only Chromium `spawn EPERM` on the sandboxed attempt; the exact command was rerun outside that launch restriction.
 - `npm run qa:a11y` — passed its configured eight-page axe scan after the same environment-only Chromium launch restriction was bypassed. A separate scope comparison confirmed that this command scans the first-visit modal state rather than the complete page state; see P2-01.
 - Supplementary Chromium checks covered all eight live pages at 390 × 844 and 1440 × 1000, mobile-drawer keyboard behavior, gallery filters, lightbox opening/closing and focus return, custom 404 status, Service Worker control and cache activation, and an uncached offline navigation.
@@ -53,7 +53,7 @@ No P0 blocker was confirmed. Current finding count: **0 P0, 2 P1, 4 P2, 0 option
 
 1. **Clear source/build boundary.** `scripts/build-dist.mjs` produces an ignored production directory from source HTML/CSS/JS, applies minification and path rewrites, copies static assets, and adjusts Service Worker asset paths rather than treating generated files as authoring sources.
 2. **Broad fast QA contract.** `package.json:7-25` composes linting, eight-page HTML validation, links, SEO, structured-data policy, and CSP-hash verification. The complete `qa:fast` command passed on the audited checkout.
-3. **Feature isolation and focused regressions.** `js/script.js` initializes independent modules through guarded feature boundaries. Reservation outcomes, legal-modal behavior, and scroll-to-top behavior all passed their configured end-to-end scenarios.
+3. **Feature isolation and focused regressions.** `js/script.js` initializes independent modules through guarded feature boundaries. Reservation outcomes, legal-modal behavior, scroll-to-top behavior, and responsive legal-table containment all passed their configured end-to-end scenarios.
 4. **Good interaction mechanics in checked states.** The mobile drawer exposed the correct expanded state, trapped interaction in the open drawer, closed on Escape, and restored focus. The lightbox used a native dialog, focused its close control, loaded the selected image, and returned focus to the triggering gallery item.
 5. **Working progressive navigation baseline.** The configured no-JavaScript suite passed navigation, reservation-section discovery, required-control presence, blocked invalid submission, intercepted valid native submission, and legal-link traversal.
 6. **Functional offline and error fallbacks.** The deployed Service Worker controlled the application, an uncached offline navigation reached the dedicated offline page at the requested URL, and an unknown route returned the custom page with HTTP 404 rather than a soft 200.
@@ -76,16 +76,6 @@ None detected.
 **Impact:** Exposure is concentrated in developer and CI environments, not in browser runtime. Malicious or untrusted build inputs could nevertheless affect confidentiality, integrity, or availability of a developer machine or release pipeline, and a green functional suite does not resolve these advisories.  
 **Recommended direction:** Triage the current advisory paths and make the smallest supported direct-package updates that remove applicable high-severity findings. Review `postcss`, `sharp`, and the Lighthouse CI chain separately; do not rely on the registry's suggested `@lhci/cli@0.1.0` downgrade or use a forced bulk remediation without validating the tool contract.  
 **Verification criteria:** A fresh full `npm audit` has no unresolved high or critical findings, or each remaining finding has a written applicability decision and compensating control; `npm ls --depth=0`, the production build, `qa:fast`, browser suites, image verification, and Lighthouse collection still pass with unchanged intended thresholds.
-
-### P1-05 — Legal tables force document-wide horizontal scrolling on mobile
-
-**Classification:** Defect  
-**Affected area:** Responsive layout, cookies policy, privacy policy, readability, and mobile accessibility  
-**Evidence:** `cookies.html:269-314` contains one wide table and `polityka-prywatnosci.html:269-325` contains two. `css/pages/legal.css:1-117` defines the legal container but no responsive table or overflow containment. At a 390 px viewport, the cookies page had a 654 px document scroll width and the privacy page had a 467 px document scroll width. The tables were the measured overflow sources; the other six audited pages did not overflow at that viewport.  
-**Current behavior:** Wide table content expands the entire document beyond the viewport instead of remaining within a controlled reading region.  
-**Impact:** Mobile readers must pan the whole page, text and controls can move outside the visible canvas, and legal information becomes materially harder to read and navigate.  
-**Recommended direction:** Use a semantically labelled, keyboard-reachable horizontal scroll wrapper for tabular data or adopt a responsive table presentation that preserves header/cell relationships. Prevent overflow at the document level rather than clipping content.  
-**Verification criteria:** At 320 px and 390 px widths, `document.documentElement.scrollWidth` does not exceed the viewport, every table cell remains reachable, focus indicators remain visible, and table semantics are preserved for accessibility APIs.
 
 ## 6. P2 — Minor refinements
 
@@ -135,12 +125,12 @@ None detected.
 
 ## 8. Production readiness assessment
 
-**Needs important fixes.** The site is functionally mature and no catastrophic blocker was found, but the release cannot be described as final while high-severity development-tool advisories remain unresolved and legal pages overflow on common mobile widths.
+**Needs important fixes.** The site is functionally mature and no catastrophic blocker was found, but the release cannot be described as final while high-severity development-tool advisories remain unresolved.
 
-After the two P1 items are resolved, the full production build and three-run/eight-URL Lighthouse contract should be executed in a verification context that permits generated artifacts. The P2 items should then be closed or explicitly accepted with evidence. Final sign-off should preserve the existing CSP, custom 404 status, offline fallback, form-host integration, and intentional noindex semantics of utility pages.
+After the remaining P1 item is resolved, the full production build and three-run/eight-URL Lighthouse contract should be executed in a verification context that permits generated artifacts. The P2 items should then be closed or explicitly accepted with evidence. Final sign-off should preserve the existing CSP, custom 404 status, offline fallback, form-host integration, and intentional noindex semantics of utility pages.
 
 ## 9. Final quality rating
 
 **6/10**
 
-The implementation demonstrates solid engineering discipline, good static QA, focused browser coverage, and a functioning PWA baseline. The rating is held below release-ready territory by two independent P1 findings spanning supply-chain hygiene and responsive legal content. The absence of a current production build and Lighthouse run also limits confidence in final performance readiness, without being counted as a defect by itself.
+The implementation demonstrates solid engineering discipline, good static QA, focused browser coverage, and a functioning PWA baseline. The rating remains held below release-ready territory by the unresolved high-severity development-toolchain advisories. The absence of a current production build and Lighthouse run also limits confidence in final performance readiness, without being counted as a defect by itself.
