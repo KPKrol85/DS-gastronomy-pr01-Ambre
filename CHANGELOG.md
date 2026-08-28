@@ -12,6 +12,7 @@ All significant changes to this project are documented in this file.
 - Added focused browser regression coverage for the reservation submission paths, the initial project-information dialog's keyboard behavior, and the shared scroll-to-top control.
 - Added focused browser regression coverage for Service Worker activation, including current-cache usability, obsolete and legacy Ambre cache cleanup, and preservation of unknown same-origin caches.
 - Added a repository-wide `.gitattributes` policy that checks out text files with LF endings on every platform, so inline-script hash generation produces identical values on Windows and in CI.
+- Added an `npm run dev` local development-server workflow that serves the canonical source root with automatic browser reload after HTML, CSS, and JavaScript source changes, bound to `127.0.0.1:4183` as a dedicated development port outside the existing QA and Lighthouse server port block, and configured to ignore `node_modules` and `dist` so the watcher reloads only on source changes; added `live-server` as a development dependency.
 
 ### Changed
 

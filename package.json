@@ -6,6 +6,7 @@
   "author": "Kamil Król | KP_Code Digital Studio",
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
+    "dev": "live-server --host=127.0.0.1 --port=4183 --ignore=node_modules,dist",
     "build": "node scripts/build-dist.mjs",
     "lint": "npm run lint:js && npm run lint:css && npm run lint:text",
     "lint:js": "eslint --max-warnings 0 \"js/**/*.js\" \"scripts/**/*.mjs\"",
@@ -45,6 +46,7 @@
     "esbuild": "^0.27.2",
     "eslint": "^8.57.0",
     "html-validate": "^10.5.0",
+    "live-server": "^1.2.2",
     "playwright": "^1.55.0",
     "postcss": "^8.5.26",
     "postcss-import": "^16.1.1",
