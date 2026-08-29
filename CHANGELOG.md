@@ -44,6 +44,7 @@ All significant changes to this project are documented in this file.
 - Refined the shared site footer across all pages: improved informational-column alignment and responsive spacing, reordered the Contact and Location columns, moved Social Media into a separate centered row below the main grid, removed the NIP line from the location details, and reduced the footer map size.
 - Standardized the footer's Google Maps iframe across all pages so the external map loads only after explicit user activation, using the project's existing deferred map-loading pattern.
 - Refined the Opinie section to a single Google reviews link, removed Tripadvisor, introduced the shared `js/icons.js` SVG icon system, and synchronized the related documentation.
+- Migrated the footer opening-hours, phone, e-mail, Facebook, GitHub, X, and LinkedIn icons to the shared `js/icons.js` SVG system, replacing the old inline SVG implementation across all footer pages and removing the obsolete footer icon markup and CSS while preserving the existing footer layout and behavior.
 
 ### Documentation
 

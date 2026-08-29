@@ -6,6 +6,8 @@
   --ft-underline: linear-gradient(90deg, var(--c-accent) 0%, #f8d580 100%);
   /* Shared leading of a single informational-column content row. */
   --ft-row-lead: var(--space-01);
+  /* Box reserved for a registry icon, so hydration cannot shift a row. */
+  --ft-icon-size: 20px;
   border-top: 1px solid #2a2e36;
   background: radial-gradient(circle at top right, color-mix(in oklab, var(--c-accent), transparent 94%) 0%, transparent 42%), linear-gradient(180deg, #14161b 0%, #1b1f27 100%);
   color: var(--ft-ink);
@@ -197,21 +199,36 @@ html[data-theme="light"] .site-footer {
 
 .site-footer__contact li {
   display: grid;
-  grid-template-columns: 20px 1fr;
+  grid-template-columns: var(--ft-icon-size) 1fr;
   align-items: center;
   column-gap: var(--space-02);
   padding-block: var(--ft-row-lead);
   text-align: left;
 }
 
-.site-footer__contact li span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.site-footer__contact-icon {
+  display: block;
+  inline-size: var(--ft-icon-size);
+  block-size: var(--ft-icon-size);
+  color: var(--ft-ink-muted);
+  transition: color 0.18s ease;
 }
 
-.site-footer__contact li svg {
+.site-footer__contact-icon svg {
   display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.site-footer__contact li:has(a:hover) .site-footer__contact-icon,
+.site-footer__contact li:has(a:focus-visible) .site-footer__contact-icon {
+  color: var(--ft-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-footer__contact-icon {
+    transition: none;
+  }
 }
 
 .site-footer__socialbar {
