@@ -810,13 +810,18 @@
           <div class="site-footer__map">
             <iframe
               title="Mapa lokalizacji – Ambre Restauracja"
-              src="https://www.google.com/maps?q=ul.+Marynarki+Wojennej+12,+33-100+Tarnów,+Polska&z=15&output=embed"
+              data-map-src="https://www.google.com/maps?q=ul.+Marynarki+Wojennej+12,+33-100+Tarnów,+Polska&z=15&output=embed"
               loading="lazy"
               referrerpolicy="no-referrer-when-downgrade"
               allowfullscreen
               width="100%"
               height="260"
+              hidden
               class="map-embed"></iframe>
+            <button class="site-footer__map-loader" type="button" data-map-load hidden>Załaduj interaktywną mapę</button>
+            <noscript>
+              <a class="site-footer__map-fallback" href="https://www.google.com/maps/search/?api=1&amp;query=ul.+Marynarki+Wojennej+12,+33-100+Tarnów,+Polska" target="_blank" rel="noopener noreferrer">Otwórz lokalizację w Google Maps</a>
+            </noscript>
           </div>
         </div>
       </div>

@@ -42,6 +42,7 @@ All significant changes to this project are documented in this file.
 - Retained the existing production build, end-to-end, no-JavaScript, accessibility, image-verification, CI, and Lighthouse contracts across the toolchain update; no thresholds, URL set, run count, assertions, or QA steps were changed.
 - Documented that the remaining high audit rows originate from the `@lhci/cli` dependency chain and were left in place with a written applicability decision rather than removed through the registry's suggested forced `@lhci/cli` downgrade or an unsupported transitive override.
 - Refined the shared site footer across all pages: improved informational-column alignment and responsive spacing, reordered the Contact and Location columns, moved Social Media into a separate centered row below the main grid, removed the NIP line from the location details, and reduced the footer map size.
+- Standardized the footer's Google Maps iframe across all pages so the external map loads only after explicit user activation, using the project's existing deferred map-loading pattern.
 
 ### Documentation
 
