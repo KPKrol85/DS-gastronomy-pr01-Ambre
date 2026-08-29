@@ -47,6 +47,7 @@ All significant changes to this project are documented in this file.
 - Migrated the footer opening-hours, phone, e-mail, Facebook, GitHub, X, and LinkedIn icons to the shared `js/icons.js` SVG system, replacing the old inline SVG implementation across all footer pages and removing the obsolete footer icon markup and CSS while preserving the existing footer layout and behavior.
 - Replaced the previous theme-toggle icons with an animated sun/moon SVG switch, preserving the existing theme persistence and system-preference behavior, adding reduced-motion support, and removing the obsolete theme-toggle icon code.
 - Refined the reservation form's layout and visual hierarchy, improved responsive field grouping and information-panel balance, added the shared `js/icons.js` chevron treatment to the guests select, and improved native date/time picker visibility in both themes.
+- Refined the homepage menu preview and updated the full menu page to the same premium dish-card and category-filter language, preserving responsive behavior, light and dark themes, and the existing menu interactions.
 
 ### Documentation
 
