@@ -73,10 +73,10 @@ html[data-theme="dark"] .site-button:hover {
   inline-size: 44px;
   block-size: 44px;
   padding: var(--space-02);
-  border: 1px solid color-mix(in oklab, var(--c-accent), #000 25%);
+  border: none;
   border-radius: var(--radius-full);
-  color: #1b1b1f;
-  background: color-mix(in oklab, var(--c-accent)65%, transparent);
+  color: var(--c-inc);
+  background: color-mix(in oklab, var(--c-accent) 5%, transparent);
   box-shadow: var(--shadow-sm);
   opacity: 0;
   visibility: hidden;
@@ -99,15 +99,29 @@ html[data-theme="dark"] .site-button:hover {
   transform: translateY(0);
 }
 
-.scroll-btn :is(img, svg) {
-  display: block;
-  inline-size: 20px;
-  block-size: 20px;
-}
-
 .scroll-btn:focus-visible {
   outline: var(--outline-focus);
   outline-offset: 3px;
+}
+
+.scroll-btn__icon {
+  display: grid;
+  place-items: center;
+  inline-size: 18px;
+  block-size: 18px;
+}
+
+.scroll-btn__icon svg {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+@media (hover: hover) {
+  .scroll-btn:hover {
+    background: color-mix(in oklab, var(--c-accent) 12%, transparent);
+    box-shadow: var(--shadow-md);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

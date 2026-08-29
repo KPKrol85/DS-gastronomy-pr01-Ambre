@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
   <head>
     <meta charset="utf-8" />
@@ -593,7 +593,8 @@
                   <input class="booking-form__field" id="consent" name="consent" type="checkbox" required aria-describedby="consent-error form-msg" />
                   <span>
                     Wyrazam zgode na przetwarzanie moich danych osobowych zgodnie z
-                    <a href="/polityka-prywatnosci.html" target="_blank" rel="noopener noreferrer">Polityka prywatności</a>.
+                    <a href="/polityka-prywatnosci.html" target="_blank" rel="noopener noreferrer">Polityka prywatności</a>
+                    .
                   </span>
                 </label>
                 <p id="consent-error" class="booking-form__message booking-form__message--error" aria-live="polite"></p>
@@ -610,7 +611,9 @@
                   <span class="booking__info-label">Rezerwacje telefoniczne:</span>
                   <span class="booking__info-value">
                     wt–nd
-                    <time datetime="14:00">14:00</time>–<time datetime="22:00">22:00</time>
+                    <time datetime="14:00">14:00</time>
+                    –
+                    <time datetime="22:00">22:00</time>
                   </span>
                 </li>
                 <li class="booking__info-item">Dress code: smart casual</li>
@@ -740,7 +743,13 @@
               class="map-embed"></iframe>
             <button class="site-footer__map-loader" type="button" data-map-load hidden>Załaduj interaktywną mapę</button>
             <noscript>
-              <a class="site-footer__map-fallback" href="https://www.google.com/maps/search/?api=1&amp;query=ul.+Marynarki+Wojennej+12,+33-100+Tarnów,+Polska" target="_blank" rel="noopener noreferrer">Otwórz lokalizację w Google Maps</a>
+              <a
+                class="site-footer__map-fallback"
+                href="https://www.google.com/maps/search/?api=1&amp;query=ul.+Marynarki+Wojennej+12,+33-100+Tarnów,+Polska"
+                target="_blank"
+                rel="noopener noreferrer">
+                Otwórz lokalizację w Google Maps
+              </a>
             </noscript>
           </div>
         </div>
@@ -795,9 +804,7 @@
 
     <!-- Scroll to top -->
     <button class="scroll-btn scroll-up" data-testid="scroll-up" type="button" aria-label="Przewiń na górę" title="Na górę" aria-hidden="true" tabindex="-1" hidden>
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
-      </svg>
+      <span class="scroll-btn__icon" data-icon="arrow-up" aria-hidden="true"></span>
     </button>
 
     <!-- Mobile drawer -->
