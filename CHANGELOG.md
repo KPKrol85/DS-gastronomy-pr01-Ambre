@@ -41,6 +41,7 @@ All significant changes to this project are documented in this file.
 - Updated the directly affected supported development toolchain dependencies — `postcss` to `^8.5.26`, `sharp` to `^0.35.4`, and `@lhci/cli` to `^0.15.1` — reducing the full development audit from 22 high findings to 7 while keeping 0 critical findings and preserving a zero-vulnerability production dependency audit.
 - Retained the existing production build, end-to-end, no-JavaScript, accessibility, image-verification, CI, and Lighthouse contracts across the toolchain update; no thresholds, URL set, run count, assertions, or QA steps were changed.
 - Documented that the remaining high audit rows originate from the `@lhci/cli` dependency chain and were left in place with a written applicability decision rather than removed through the registry's suggested forced `@lhci/cli` downgrade or an unsupported transitive override.
+- Refined the shared site footer across all pages: improved informational-column alignment and responsive spacing, reordered the Contact and Location columns, moved Social Media into a separate centered row below the main grid, removed the NIP line from the location details, and reduced the footer map size.
 
 ### Documentation
 
