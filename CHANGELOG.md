@@ -46,6 +46,7 @@ All significant changes to this project are documented in this file.
 - Refined the Opinie section to a single Google reviews link, removed Tripadvisor, introduced the shared `js/icons.js` SVG icon system, and synchronized the related documentation.
 - Migrated the footer opening-hours, phone, e-mail, Facebook, GitHub, X, and LinkedIn icons to the shared `js/icons.js` SVG system, replacing the old inline SVG implementation across all footer pages and removing the obsolete footer icon markup and CSS while preserving the existing footer layout and behavior.
 - Replaced the previous theme-toggle icons with an animated sun/moon SVG switch, preserving the existing theme persistence and system-preference behavior, adding reduced-motion support, and removing the obsolete theme-toggle icon code.
+- Refined the reservation form's layout and visual hierarchy, improved responsive field grouping and information-panel balance, added the shared `js/icons.js` chevron treatment to the guests select, and improved native date/time picker visibility in both themes.
 
 ### Documentation
 

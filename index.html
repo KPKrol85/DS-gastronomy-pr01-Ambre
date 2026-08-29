@@ -534,18 +534,20 @@
 
       <!-- Form -->
       <div id="rezerwacja" class="l-section booking">
-        <div class="container grid-2 booking__layout">
-          <div>
+        <div class="container booking__layout">
+          <div class="booking__header">
             <h2 id="booking-title" class="section-title booking__title">Rezerwacja</h2>
             <p class="u-lead booking__lead">Wypełnij formularz. Oddzwonimy z potwierdzeniem.</p>
+          </div>
+          <div class="booking__body">
             <form id="booking-form" class="booking-form" data-testid="booking-form" name="reservation" method="POST" data-netlify="true">
               <input type="hidden" name="form-name" value="reservation" class="booking-form__field" />
               <input type="text" name="company" class="booking-form__hp booking-form__field" aria-hidden="true" tabindex="-1" autocomplete="off" />
-              <div class="booking-form__row">
+              <div class="booking-form__row booking-form__row--half">
                 <label class="booking-form__label" for="name">Imię i nazwisko</label>
                 <input class="booking-form__field" id="name" name="name" type="text" required autocomplete="name" placeholder="Jan Kowalski" aria-describedby="form-msg" />
               </div>
-              <div class="booking-form__row">
+              <div class="booking-form__row booking-form__row--half">
                 <label class="booking-form__label" for="phone">Telefon</label>
                 <input
                   class="booking-form__field"
@@ -557,27 +559,30 @@
                   inputmode="tel"
                   placeholder="+48 123 456 789"
                   aria-describedby="form-msg phone-error" />
-                <p id="phone-error" class="booking-form__message" aria-live="polite"></p>
+                <p id="phone-error" class="booking-form__message booking-form__message--error" aria-live="polite"></p>
               </div>
-              <div class="booking-form__row">
+              <div class="booking-form__row booking-form__row--third">
                 <label class="booking-form__label" for="date">Data</label>
                 <input class="booking-form__field" id="date" name="date" type="date" required aria-describedby="form-msg" />
               </div>
-              <div class="booking-form__row">
+              <div class="booking-form__row booking-form__row--third">
                 <label class="booking-form__label" for="time">Godzina</label>
                 <input class="booking-form__field" id="time" name="time" type="time" required min="14:00" max="22:00" step="900" aria-describedby="form-msg" />
               </div>
-              <div class="booking-form__row">
+              <div class="booking-form__row booking-form__row--third">
                 <label class="booking-form__label" for="guests">Liczba gości</label>
-                <select class="booking-form__field" id="guests" name="guests" required>
-                  <option value="" disabled selected hidden>Wybierz…</option>
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                  <option>6+</option>
-                </select>
+                <div class="booking-form__select">
+                  <select class="booking-form__field booking-form__field--select" id="guests" name="guests" required>
+                    <option value="" disabled selected hidden>Wybierz…</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6+</option>
+                  </select>
+                  <span class="booking-form__select-icon" data-icon="chevron-down" aria-hidden="true"></span>
+                </div>
               </div>
               <div class="booking-form__row">
                 <label class="booking-form__label" for="notes">Uwagi (opcjonalnie)</label>
@@ -588,35 +593,35 @@
                   <input class="booking-form__field" id="consent" name="consent" type="checkbox" required aria-describedby="consent-error form-msg" />
                   <span>
                     Wyrazam zgode na przetwarzanie moich danych osobowych zgodnie z
-                    <a href="/polityka-prywatnosci.html" target="_blank" rel="noopener noreferrer">Polityka prywatności</a>
-                    .
+                    <a href="/polityka-prywatnosci.html" target="_blank" rel="noopener noreferrer">Polityka prywatności</a>.
                   </span>
                 </label>
-                <p id="consent-error" class="booking-form__message" aria-live="polite"></p>
+                <p id="consent-error" class="booking-form__message booking-form__message--error" aria-live="polite"></p>
               </div>
               <div class="booking-form__actions">
                 <button class="site-button site-button--form" type="submit">Wyślij rezerwację</button>
                 <p id="form-msg" class="booking-form__message booking-form__message--status" role="status" aria-live="polite"></p>
               </div>
             </form>
+            <aside class="booking__aside">
+              <h3 class="booking__aside-title">Informacje</h3>
+              <ul class="booking__info-list">
+                <li class="booking__info-item">
+                  <span class="booking__info-label">Rezerwacje telefoniczne:</span>
+                  <span class="booking__info-value">
+                    wt–nd
+                    <time datetime="14:00">14:00</time>–<time datetime="22:00">22:00</time>
+                  </span>
+                </li>
+                <li class="booking__info-item">Dress code: smart casual</li>
+                <li class="booking__info-item">Menu degustacyjne: 7 dań (opcje vege)</li>
+              </ul>
+              <a href="/#top" class="booking__logo" aria-label="Strona główna Ambre">
+                <img class="logo logo-light" src="/assets/img/logo-img/logo-light.svg" alt="Ambre – logo restauracji" width="140" height="140" decoding="async" />
+                <img class="logo logo-dark" src="/assets/img/logo-img/logo-dark.svg" alt="" aria-hidden="true" width="140" height="140" decoding="async" />
+              </a>
+            </aside>
           </div>
-          <aside class="booking__aside">
-            <h3 class="booking__aside-title">Informacje</h3>
-            <ul class="bullets booking__info-list">
-              <li>
-                Rezerwacje telefoniczne: wt–nd
-                <time datetime="14:00">14:00</time>
-                –
-                <time datetime="22:00">22:00</time>
-              </li>
-              <li>Dress code: smart casual</li>
-              <li>Menu degustacyjne: 7 dań (opcje vege)</li>
-            </ul>
-            <a href="/#top" class="booking__logo" aria-label="Strona główna Ambre">
-              <img class="logo logo-light" src="/assets/img/logo-img/logo-light.svg" alt="Ambre – logo restauracji" width="140" height="140" decoding="async" />
-              <img class="logo logo-dark" src="/assets/img/logo-img/logo-dark.svg" alt="" aria-hidden="true" width="140" height="140" decoding="async" />
-            </a>
-          </aside>
         </div>
       </div>
 
