@@ -1,10 +1,14 @@
 /* FAQ */
 
+.faq__grid {
+  gap: var(--space-01);
+}
+
 .faq__details {
   border: 1px solid var(--c-border);
   border-radius: var(--radius-xs);
   background: color-mix(in oklab, var(--c-surface), white 4%);
-  margin: var(--space-03);
+  margin: var(--space-02);
   overflow: hidden;
   transition:
     border-color 0.18s ease,

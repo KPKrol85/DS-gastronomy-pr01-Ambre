@@ -76,7 +76,7 @@ html[data-theme="dark"] .site-button:hover {
   border: 1px solid color-mix(in oklab, var(--c-accent), #000 25%);
   border-radius: var(--radius-full);
   color: #1b1b1f;
-  background: var(--c-accent);
+  background: color-mix(in oklab, var(--c-accent)65%, transparent);
   box-shadow: var(--shadow-sm);
   opacity: 0;
   visibility: hidden;
