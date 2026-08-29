@@ -92,18 +92,23 @@
             <span class="site-header__phone">+48&nbsp;533&nbsp;537&nbsp;091</span>
           </a>
           <button class="site-header__theme-toggle" data-testid="site-header__theme-toggle" type="button" aria-label="Przełącz motyw" aria-pressed="false" title="Motyw">
-            <span aria-hidden="true">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon icon--sun" aria-hidden="true">
-                <path
-                  d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM18.894 6.166a.75.75 0 0 0-1.06-1.06l-1.591 1.59a.75.75 0 1 0 1.06 1.061l1.591-1.59ZM21.75 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5H21a.75.75 0 0 1 .75.75ZM17.834 18.894a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 1 0-1.061 1.06l1.59 1.591ZM12 18a.75.75 0 0 1 .75.75V21a.75.75 0 0 1-1.5 0v-2.25A.75.75 0 0 1 12 18ZM7.758 17.303a.75.75 0 0 0-1.061-1.06l-1.591 1.59a.75.75 0 0 0 1.06 1.061l1.591-1.59ZM6 12a.75.75 0 0 1-.75.75H3a.75.75 0 0 1 0-1.5h2.25A.75.75 0 0 1 6 12ZM6.697 7.757a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 0 0-1.061 1.06l1.59 1.591Z" />
-              </svg>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon icon--moon" aria-hidden="true">
-                <path
-                  fill-rule="evenodd"
-                  d="M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.98 10.503 10.503 0 0 1-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 0 1 .818.162Z"
-                  clip-rule="evenodd" />
-              </svg>
-            </span>
+            <svg class="theme-switch" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+              <mask id="theme-switch-cutout" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+                <rect x="0" y="0" width="24" height="24" fill="#ffffff" />
+                <circle class="theme-switch__cutout" cx="24" cy="9" r="6.5" fill="#000000" />
+              </mask>
+              <circle class="theme-switch__core" cx="12" cy="12" r="5" fill="currentColor" mask="url(#theme-switch-cutout)" />
+              <g class="theme-switch__rays" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                <line x1="12" y1="1.7" x2="12" y2="4.5" />
+                <line x1="12" y1="22.3" x2="12" y2="19.5" />
+                <line x1="22.3" y1="12" x2="19.5" y2="12" />
+                <line x1="1.7" y1="12" x2="4.5" y2="12" />
+                <line x1="19.28" y1="4.72" x2="17.3" y2="6.7" />
+                <line x1="4.72" y1="19.28" x2="6.7" y2="17.3" />
+                <line x1="19.28" y1="19.28" x2="17.3" y2="17.3" />
+                <line x1="4.72" y1="4.72" x2="6.7" y2="6.7" />
+              </g>
+            </svg>
           </button>
           <button class="site-header__nav-toggle" data-testid="site-header__nav-toggle" type="button" aria-controls="site-header-nav" aria-expanded="false" aria-label="Menu">
             <span aria-hidden="true">
