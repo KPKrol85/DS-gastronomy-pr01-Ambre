@@ -1,5 +1,10 @@
 /* About */
 
+.about {
+  /* Box reserved for a registry icon, so hydration cannot shift a bullet row. */
+  --about-icon-size: 20px;
+}
+
 .about .grid-2 > div {
   text-align: center;
 }
@@ -58,17 +63,17 @@
 }
 
 .about__bullet-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   flex: 0 0 auto;
+  inline-size: var(--about-icon-size);
+  block-size: var(--about-icon-size);
   color: var(--c-ink);
 }
 
 .about__bullet-icon svg {
-  width: 20px;
-  height: 20px;
   display: block;
+  inline-size: 100%;
+  block-size: 100%;
 }
 
 @media (min-width: 1024px) {
