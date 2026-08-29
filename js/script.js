@@ -1,4 +1,5 @@
 import { initHelpers, reportError } from "./modules/utils.js";
+import { initIcons } from "./icons.js";
 import { initThemeSwitcher } from "./modules/theme.js";
 import { initMobileNav, initScrollspy, initSmartNav, initAriaCurrent, initStickyShadow } from "./modules/nav.js";
 import { initFooterMap, initFooterYear } from "./modules/footer.js";
@@ -14,6 +15,7 @@ import { initDemoLegalModal } from "./modules/demo-legal.js";
 
 const FEATURES = [
   { name: "HELPERS", init: initHelpers },
+  { name: "ICONS", init: initIcons },
   { name: "THEME SWITCHER", init: initThemeSwitcher },
 
   { name: "MOBILE NAV", init: initMobileNav },

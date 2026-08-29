@@ -20,7 +20,7 @@ Repozytorium zawiera implementację interfejsu, zasoby lokalne, konfigurację PW
 
 ### Architektura i pliki źródłowe
 
-Główne pliki HTML są przechowywane w katalogu głównym. Kod źródłowy stylów zaczyna się w `css/style.css`, a punkt wejścia JavaScript znajduje się w `js/script.js`; moduły funkcji są w `js/modules/`.
+Główne pliki HTML są przechowywane w katalogu głównym. Kod źródłowy stylów zaczyna się w `css/style.css`, a punkt wejścia JavaScript znajduje się w `js/script.js`; moduły funkcji są w `js/modules/`, a współdzielony rejestr ikon SVG w `js/icons.js`.
 
 Strony źródłowe używają czytelnych plików `css/style.css` i `js/script.js`. Polecenie `npm run build` tworzy katalog `dist/` z minifikowanymi plikami `css/style.min.css` i `js/script.min.js`, kopią wymaganych plików statycznych oraz stronami HTML przepisanymi na te artefakty produkcyjne.
 
@@ -120,7 +120,7 @@ The repository contains the interface implementation, local assets, PWA configur
 
 ### Architecture and source files
 
-The main HTML files live in the repository root. The CSS source starts at `css/style.css`, while `js/script.js` is the JavaScript entry point and feature modules live in `js/modules/`.
+The main HTML files live in the repository root. The CSS source starts at `css/style.css`, while `js/script.js` is the JavaScript entry point, feature modules live in `js/modules/`, and the shared SVG icon registry lives in `js/icons.js`.
 
 Source pages load the readable `css/style.css` and `js/script.js` files. `npm run build` creates `dist/` with the minified `css/style.min.css` and `js/script.min.js` artifacts, required static files, and HTML rewritten to use the production assets.
 

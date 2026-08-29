@@ -1,12 +1,13 @@
 # Architecture map (HTML hooks -> JS modules)
 
 This map links key UI features to the JS module init points wired in `js/script.js`.
-Scope: non-minified runtime modules in `js/modules/` and the selectors/attributes they read at runtime.
+Scope: non-minified runtime modules in `js/modules/`, the shared icon registry in `js/icons.js`, and the selectors/attributes they read at runtime.
 Use this as a quick lookup when changing markup so module hooks are not broken.
 
 | Feature / Section | Page(s) | DOM Hook(s) | JS Module | Init Function / Entry | Notes |
 |---|---|---|---|---|---|
 | JS baseline helpers | all pages | `html.no-js`, `body.no-js` | `js/modules/utils.js` | `initHelpers()` via `boot()` in `js/script.js` | Removes `no-js` classes for progressive enhancement baseline. |
+| SVG icon registry | pages using icon placeholders (currently `index.html` testimonials) | `[data-icon]`; optional `data-icon-class`, `data-icon-title`; `data-icon-ready` guard | `js/icons.js` | `initIcons()` | Renders registered SVG icons into placeholder hosts; icons are decorative unless `data-icon-title` is set. |
 | Theme switcher | all pages with header | `[data-testid="site-header__theme-toggle"]` or `.site-header__theme-toggle`; optional `.theme-icon`; root `html[data-theme]` | `js/modules/theme.js` | `initThemeSwitcher()` | Persists theme in `localStorage` key `theme`; updates `aria-pressed`. |
 | Mobile nav / drawer | pages with site header nav | `[data-testid="site-header__nav-toggle"]` / `.site-header__nav-toggle`; `[data-testid="site-header-nav"]` / `#site-header-nav`; `.site-header__overlay`; `.site-header__drawer`; `.site-header__drawer-inner`; `.site-header__item--has-submenu` | `js/modules/nav.js` | `initMobileNav()` | Injects drawer submenu triggers and toggles `body.site-header-nav-open`. |
 | Header link current-state | pages with `.site-header__nav` | `.site-header__nav a`; hash/path matching against `href` | `js/modules/nav.js` | `initAriaCurrent()` | Sets `aria-current="page"` for current route/hash link. |
