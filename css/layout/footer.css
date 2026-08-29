@@ -318,6 +318,14 @@ html[data-theme="light"] .site-footer {
     align-items: start;
     text-align: left;
   }
+  .site-footer__column--brand {
+    align-items: flex-start;
+    text-align: left;
+  }
+  .site-footer__description {
+    margin-inline: 0;
+    text-align: left;
+  }
   .site-footer :where(.site-footer__nav, .site-footer__contact) {
     justify-items: start;
   }
@@ -336,7 +344,8 @@ html[data-theme="light"] .site-footer {
 
 @media (min-width: 1024px) {
   .site-footer__grid {
-    grid-template-columns: 1.7fr 1fr 1fr 1.2fr;
+    grid-template-columns: repeat(4, max-content);
+    justify-content: space-between;
   }
   .site-footer__column--brand {
     grid-column: auto;
