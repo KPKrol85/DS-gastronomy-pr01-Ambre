@@ -106,6 +106,10 @@
     transform 0.2s ease;
 }
 
+.site-lightbox__nav-button[hidden] {
+  display: none;
+}
+
 .site-lightbox__nav-button--prev {
   left: 12px;
 }

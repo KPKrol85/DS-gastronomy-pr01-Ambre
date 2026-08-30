@@ -9,6 +9,8 @@ const host = "127.0.0.1";
 const port = Number(process.env.QA_LIGHTBOX_PORT || 4181);
 const baseUrl = `http://${host}:${port}`;
 const galleryPage = "galeria.html";
+const homePage = "index.html";
+const menuPage = "menu.html";
 
 const mimeTypes = new Map([
   [".html", "text/html; charset=utf-8"],
@@ -56,16 +58,19 @@ const createStaticServer = () => {
   });
 };
 
-const createFreshPage = async (browser, reducedMotion = "no-preference") => {
+const createPageAt = async (browser, pagePath, readySelector, reducedMotion = "no-preference") => {
   const context = await browser.newContext({ reducedMotion, serviceWorkers: "block" });
   await context.addInitScript(() => {
     localStorage.setItem("demoLegalAccepted", "true");
   });
   const page = await context.newPage();
-  await page.goto(`${baseUrl}/${galleryPage}`, { waitUntil: "domcontentloaded" });
-  await page.locator(".gallery__grid .gallery__item").first().waitFor({ state: "visible" });
+  await page.goto(`${baseUrl}/${pagePath}`, { waitUntil: "domcontentloaded" });
+  await page.locator(readySelector).first().waitFor({ state: "visible" });
   return { context, page };
 };
+
+const createFreshPage = (browser, reducedMotion = "no-preference") =>
+  createPageAt(browser, galleryPage, ".gallery__grid .gallery__item", reducedMotion);
 
 const galleryItem = (page, index) => page.locator(".gallery__grid .gallery__item").nth(index);
 
@@ -268,6 +273,207 @@ const runRepeatedSessionsTest = async (browser) => {
   }
 };
 
+const GALLERY_ITEM = ".gallery__grid .gallery__item";
+const DISH_THUMB = ".menu__grid .dish__thumb";
+
+const waitForDialogOpen = (page) => page.waitForFunction(() => document.getElementById("lb").open === true);
+
+const waitForDialogClosed = (page) => page.waitForFunction(() => document.getElementById("lb").open === false);
+
+const waitForCounterText = (page, expected) =>
+  page.waitForFunction(
+    (value) => (document.querySelector("#lb .site-lightbox__counter")?.textContent || "") === value,
+    expected
+  );
+
+const readModeState = (page) =>
+  page.evaluate(() => {
+    const dialog = document.getElementById("lb");
+    const image = dialog.querySelector(".site-lightbox__image");
+    const counter = dialog.querySelector(".site-lightbox__counter");
+    const navButtons = Array.from(dialog.querySelectorAll(".site-lightbox__nav-button"));
+
+    return {
+      dialogOpen: dialog.open,
+      mode: dialog.dataset.lightboxMode || "",
+      imageSrc: image?.getAttribute("src") || "",
+      imageAlt: image?.getAttribute("alt") || "",
+      navCount: navButtons.length,
+      navExposed: navButtons.filter((button) => !button.hidden).length,
+      navFocusable: navButtons.filter((button) => !button.hidden && !button.disabled).length,
+      navRendered: navButtons.filter((button) => getComputedStyle(button).display !== "none").length,
+      counterHidden: counter ? counter.hidden : true,
+      counterText: counter?.textContent || "",
+      focusOnCloseButton: document.activeElement === dialog.querySelector(".site-lightbox__close")
+    };
+  });
+
+const assertSingleMode = async (page, label) => {
+  const state = await readModeState(page);
+
+  assert.equal(state.dialogOpen, true, `${label}: the dish image should open the lightbox`);
+  assert.equal(state.navCount, 2, `${label}: the shared navigation controls should still exist`);
+  assert.equal(state.navExposed, 0, `${label}: previous/next must not be exposed to assistive technology`);
+  assert.equal(state.navFocusable, 0, `${label}: previous/next must not stay keyboard focusable`);
+  assert.equal(state.navRendered, 0, `${label}: previous/next must not render`);
+  assert.equal(state.counterHidden, true, `${label}: the collection counter must be hidden`);
+  assert.equal(state.counterText, "", `${label}: the collection counter must carry no stale value`);
+  assert.equal(state.focusOnCloseButton, true, `${label}: opening should move focus into the dialog`);
+  assert.equal(state.mode, "single", `${label}: the session should report single-image mode`);
+
+  return state;
+};
+
+const assertGalleryMode = async (page, label, expectedCounter) => {
+  const state = await readModeState(page);
+
+  assert.equal(state.dialogOpen, true, `${label}: the gallery image should open the lightbox`);
+  assert.equal(state.navExposed, 2, `${label}: previous/next must stay available`);
+  assert.equal(state.navRendered, 2, `${label}: previous/next must stay visible`);
+  assert.equal(state.counterHidden, false, `${label}: the collection counter must stay visible`);
+  assert.equal(state.counterText, expectedCounter, `${label}: the counter should report the selected image`);
+  assert.equal(state.mode, "gallery", `${label}: the session should report grouped gallery mode`);
+
+  return state;
+};
+
+const runSingleModeTest = async (browser, pagePath, label) => {
+  const { context, page } = await createPageAt(browser, pagePath, DISH_THUMB);
+
+  try {
+    const thumbs = page.locator(DISH_THUMB);
+    assert.ok((await thumbs.count()) > 1, `${label}: the fixture needs more than one dish image`);
+
+    const trigger = thumbs.nth(1);
+    const expectedSrc = `${baseUrl}${await trigger.getAttribute("data-full")}.jpg`;
+    const expectedAlt = await trigger.locator("img").getAttribute("alt");
+
+    await trigger.click();
+    await waitForDialogOpen(page);
+
+    const opened = await assertSingleMode(page, label);
+    assert.equal(opened.imageSrc, expectedSrc, `${label}: the selected dish image must open`);
+    assert.equal(opened.imageAlt, expectedAlt, `${label}: the dish image metadata must be preserved`);
+
+    await page.keyboard.press("ArrowRight");
+    await page.keyboard.press("ArrowLeft");
+
+    const afterArrows = await readModeState(page);
+    assert.equal(afterArrows.imageSrc, expectedSrc, `${label}: arrow keys must not switch dishes`);
+    assert.equal(afterArrows.counterText, "", `${label}: arrow keys must not surface a collection counter`);
+
+    await page.keyboard.press("Escape");
+    await waitForDialogClosed(page);
+
+    const focusReturned = await page.evaluate(
+      (selector) => document.activeElement === document.querySelectorAll(selector)[1],
+      DISH_THUMB
+    );
+    assert.equal(focusReturned, true, `${label}: focus must return to the dish trigger`);
+  } finally {
+    await context.close();
+  }
+};
+
+const runGalleryModeTest = async (browser, pagePath, label) => {
+  const { context, page } = await createPageAt(browser, pagePath, GALLERY_ITEM);
+
+  try {
+    const galleryItems = page.locator(GALLERY_ITEM);
+    const total = await galleryItems.count();
+    assert.ok(total > 1, `${label}: the fixture needs a grouped collection`);
+
+    await galleryItems.first().click();
+    await waitForDialogOpen(page);
+
+    const opened = await assertGalleryMode(page, label, `1 / ${total}`);
+
+    await page.keyboard.press("ArrowRight");
+    await waitForCounterText(page, `2 / ${total}`);
+    const afterRight = await readModeState(page);
+    assert.notEqual(afterRight.imageSrc, opened.imageSrc, `${label}: Right must move to the next image`);
+
+    await page.locator("#lb .site-lightbox__nav-button--prev").click();
+    await waitForCounterText(page, `1 / ${total}`);
+    const afterPrev = await readModeState(page);
+    assert.equal(afterPrev.imageSrc, opened.imageSrc, `${label}: the previous control must step back`);
+
+    await page.keyboard.press("Escape");
+    await waitForDialogClosed(page);
+
+    const focusReturned = await page.evaluate(
+      (selector) => document.activeElement === document.querySelector(selector),
+      GALLERY_ITEM
+    );
+    assert.equal(focusReturned, true, `${label}: focus must return to the gallery trigger`);
+  } finally {
+    await context.close();
+  }
+};
+
+const runModeSwitchTest = async (browser) => {
+  const label = "mode switching in one session";
+  const { context, page } = await createPageAt(browser, homePage, GALLERY_ITEM);
+
+  try {
+    const galleryItems = page.locator(GALLERY_ITEM);
+    const thumbs = page.locator(DISH_THUMB);
+    const total = await galleryItems.count();
+
+    await galleryItems.first().click();
+    await waitForDialogOpen(page);
+    await assertGalleryMode(page, `${label} — first gallery session`, `1 / ${total}`);
+    await page.keyboard.press("Escape");
+    await waitForDialogClosed(page);
+
+    await thumbs.first().click();
+    await waitForDialogOpen(page);
+    const single = await assertSingleMode(page, `${label} — menu session`);
+    await page.keyboard.press("ArrowRight");
+    const afterArrow = await readModeState(page);
+    assert.equal(
+      afterArrow.imageSrc,
+      single.imageSrc,
+      `${label}: a stale gallery collection must not survive into the menu session`
+    );
+    await page.keyboard.press("Escape");
+    await waitForDialogClosed(page);
+
+    await galleryItems.nth(1).click();
+    await waitForDialogOpen(page);
+    await assertGalleryMode(page, `${label} — second gallery session`, `2 / ${total}`);
+    await page.keyboard.press("ArrowRight");
+    await waitForCounterText(page, `3 / ${total}`);
+    await page.keyboard.press("Escape");
+    await waitForDialogClosed(page);
+  } finally {
+    await context.close();
+  }
+};
+
+const modeScenarios = [
+  {
+    label: "menu dishes open as single-image previews on menu.html",
+    run: (browser) => runSingleModeTest(browser, menuPage, "menu.html dish")
+  },
+  {
+    label: "menu dishes open as single-image previews on the homepage preview",
+    run: (browser) => runSingleModeTest(browser, homePage, "homepage menu preview dish")
+  },
+  {
+    label: "gallery images keep grouped navigation on the homepage preview",
+    run: (browser) => runGalleryModeTest(browser, homePage, "homepage gallery preview")
+  },
+  {
+    label: "gallery images keep grouped navigation on galeria.html",
+    run: (browser) => runGalleryModeTest(browser, galleryPage, "galeria.html gallery")
+  },
+  {
+    label: "gallery -> menu -> gallery leaves no stale mode state",
+    run: (browser) => runModeSwitchTest(browser)
+  }
+];
+
 const run = async () => {
   console.log("QA LIGHTBOX E2E: starting static server...");
   const server = await createStaticServer();
@@ -298,7 +504,13 @@ const run = async () => {
     console.log("QA LIGHTBOX E2E: repeated sessions across every close path");
     await runRepeatedSessionsTest(browser);
 
-    console.log(`QA LIGHTBOX E2E: PASS (${scenarios.length + 1}/${scenarios.length + 1} scenarios)`);
+    for (const modeScenario of modeScenarios) {
+      console.log(`QA LIGHTBOX E2E: ${modeScenario.label}`);
+      await modeScenario.run(browser);
+    }
+
+    const total = scenarios.length + 1 + modeScenarios.length;
+    console.log(`QA LIGHTBOX E2E: PASS (${total}/${total} scenarios)`);
   } finally {
     if (browser) await browser.close();
     await new Promise((resolve, reject) => {
