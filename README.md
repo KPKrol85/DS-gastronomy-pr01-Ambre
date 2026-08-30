@@ -53,11 +53,14 @@ Projekt zawiera `package-lock.json`, dlatego do odtworzenia zależności użyj:
 npm ci
 ```
 
-Nie zdefiniowano skryptu lokalnego serwera deweloperskiego. Pliki HTML można serwować dowolnym serwerem statycznym, a skrypty QA uruchamiają własne serwery lokalne tam, gdzie są potrzebne.
+Polecenie `npm run dev` uruchamia lokalny serwer deweloperski z przeładowaniem pod adresem `http://127.0.0.1:4183`. Pliki HTML można też serwować dowolnym innym serwerem statycznym, a skrypty QA uruchamiają własne serwery lokalne tam, gdzie są potrzebne.
 
 ### Polecenia
 
 ```bash
+# uruchom lokalny serwer deweloperski z przeładowaniem
+npm run dev
+
 # zbuduj produkcyjny katalog dist z minifikowanymi CSS i JavaScript
 npm run build
 
@@ -67,7 +70,7 @@ npm run lint
 # szybka codzienna kontrola statyczna i integralności projektu
 npm run qa:fast
 
-# skupione regresje przeglądarkowe rezerwacji, dialogu i przewijania
+# skupione regresje przeglądarkowe rezerwacji, dialogu, przewijania, tabel prawnych, lightboxa i statusu galerii
 npm run test:e2e
 
 # pełna bramka jakości: szybkie QA, no-JS, E2E, a11y i Lighthouse CI
@@ -80,7 +83,7 @@ W projekcie są także polecenia `img:opt`, `img:webp`, `img:avif`, `img:clean` 
 
 ### Kontrola jakości
 
-`qa:fast` obejmuje lint JavaScriptu, CSS i tekstu, HTML, linki, SEO, politykę JSON-LD oraz kontrolę CSP bez uruchamiania szerokich testów przeglądarkowych. `test:e2e` uruchamia deterministycznie trzy skupione regresje. Pełne `qa` rozszerza szybki zestaw o zachowanie bez JavaScriptu, E2E, automatyczne reguły dostępności z axe-core i Lighthouse CI na ośmiu stronach.
+`qa:fast` obejmuje lint JavaScriptu, CSS i tekstu, HTML, linki, SEO, politykę JSON-LD oraz kontrolę CSP bez uruchamiania szerokich testów przeglądarkowych. `test:e2e` uruchamia deterministycznie sześć skupionych regresji. Pełne `qa` rozszerza szybki zestaw o zachowanie bez JavaScriptu, E2E, automatyczne reguły dostępności z axe-core i Lighthouse CI na ośmiu stronach.
 
 Lista poleceń opisuje dostępne kontrole w repozytorium; nie jest zapisem ich wyniku dla konkretnego środowiska lub wdrożenia.
 
@@ -153,11 +156,14 @@ The project includes `package-lock.json`; install the locked dependency set with
 npm ci
 ```
 
-No local development-server script is defined. The HTML files can be served by any static server, while the relevant QA scripts start their own local servers when needed.
+`npm run dev` starts a local development server with live reload at `http://127.0.0.1:4183`. The HTML files can also be served by any other static server, while the relevant QA scripts start their own local servers when needed.
 
 ### Commands
 
 ```bash
+# start the local development server with live reload
+npm run dev
+
 # build the production dist directory with minified CSS and JavaScript
 npm run build
 
@@ -167,7 +173,7 @@ npm run lint
 # fast everyday static and project-integrity checks
 npm run qa:fast
 
-# focused browser regressions for reservations, the dialog, and scrolling
+# focused browser regressions for reservations, the dialog, scrolling, legal tables, the lightbox, and gallery status
 npm run test:e2e
 
 # full quality gate: fast QA, no-JS, E2E, accessibility, and Lighthouse CI
@@ -180,7 +186,7 @@ The repository also provides `img:opt`, `img:webp`, `img:avif`, `img:clean`, and
 
 ### Quality assurance
 
-`qa:fast` covers JavaScript, CSS, and text linting, HTML, links, SEO, the JSON-LD policy, and read-only CSP verification without launching broad browser checks. `test:e2e` runs the three focused regressions in a deterministic order. The full `qa` command extends the fast set with no-JavaScript behavior, E2E, automated axe-core accessibility rules, and Lighthouse CI across eight pages.
+`qa:fast` covers JavaScript, CSS, and text linting, HTML, links, SEO, the JSON-LD policy, and read-only CSP verification without launching broad browser checks. `test:e2e` runs the six focused regressions in a deterministic order. The full `qa` command extends the fast set with no-JavaScript behavior, E2E, automated axe-core accessibility rules, and Lighthouse CI across eight pages.
 
 The command list documents checks available in the repository; it does not record their result for a particular environment or deployment.
 

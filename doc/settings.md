@@ -4,6 +4,12 @@ Plik `package.json` jest wykonywalnym źródłem prawdy. Poniższy opis rozróż
 
 ## Główne punkty wejścia
 
+### `dev`
+
+- **Command:** `live-server --host=127.0.0.1 --port=4183 --ignore=node_modules,dist`
+- **Purpose:** Serwuje katalog źródłowy pod `http://127.0.0.1:4183` z przeładowaniem po zmianie plików; port leży poza zakresem serwerów QA.
+- **Use:** Codzienna praca nad źródłami. Nie buduje `dist/` i nie zastępuje serwerów uruchamianych przez skrypty QA.
+
 ### `build`
 
 - **Command:** `node scripts/build-dist.mjs`
@@ -26,7 +32,7 @@ Plik `package.json` jest wykonywalnym źródłem prawdy. Poniższy opis rozróż
 
 - **Command:** `npm run test:e2e:reservation && npm run test:e2e:demo-legal && npm run test:e2e:scroll-to-top && npm run test:e2e:legal-tables && npm run test:e2e:lightbox && npm run test:e2e:gallery-status`
 - **Purpose:** Uruchamia deterministycznie sześć skupionych regresji przeglądarkowych.
-- **Use:** Po zmianach interakcji formularza, dialogu, wspólnego sterowania przewijaniem, responsywnego osadzania tabel prawnych, lightboxa galerii lub statusu ukończenia galerii.
+- **Use:** Po zmianach interakcji formularza, dialogu, wspólnego sterowania przewijaniem, responsywnego osadzania tabel prawnych, lightboxa galerii i podglądu dania lub statusu ukończenia galerii.
 
 ### `qa`
 
@@ -58,7 +64,7 @@ Plik `package.json` jest wykonywalnym źródłem prawdy. Poniższy opis rozróż
 - `test:e2e:demo-legal` — regresje początkowego dialogu informacyjnego i jego pamięci akceptacji.
 - `test:e2e:scroll-to-top` — regresje wspólnego przycisku przewijania do góry.
 - `test:e2e:legal-tables` — regresje poziomego przepełnienia, dostępności i obsługi klawiaturą tabel na stronach prawnych przy szerokościach 320 px i 390 px.
-- `test:e2e:lightbox` — regresje przywracania stanu dokumentu przez lightbox galerii: dokładna poprzednia wartość `scroll-behavior` w stylu inline elementu głównego, zachowana pozycja przewijania i powrót fokusu do klikniętego elementu galerii we wszystkich obsługiwanych ścieżkach zamknięcia (przycisk zamykania, Escape/cancel, tło i natywne zamknięcie dialogu).
+- `test:e2e:lightbox` — regresje przywracania stanu dokumentu przez lightbox galerii: dokładna poprzednia wartość `scroll-behavior` w stylu inline elementu głównego, zachowana pozycja przewijania i powrót fokusu do klikniętego elementu galerii we wszystkich obsługiwanych ścieżkach zamknięcia (przycisk zamykania, Escape/cancel, tło i natywne zamknięcie dialogu). Sprawdza też kontrakt trybów: galeria otwiera sesję przeglądaną z licznikiem oraz nawigacją, a podgląd dania w menu pozostaje pojedynczy, z ukrytymi i niedostępnymi z klawiatury przyciskami nawigacji.
 - `test:e2e:gallery-status` — regresje ukończonego statusu galerii: treść statusu dokładnie równa `Wszystko załadowane`, bez zbędnych znaków i obcych węzłów tekstowych, dekoracyjna ikona SVG wykluczona z drzewa dostępności oraz niezmienione filtrowanie galerii i moment pojawienia się stanu ukończonego.
 
 ## CSP
