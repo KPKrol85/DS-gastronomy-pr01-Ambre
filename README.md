@@ -70,7 +70,7 @@ Treści menu i galerii są zapisane w HTML; filtry operują na atrybutach elemen
 ├── _redirects
 ├── package.json
 ├── package-lock.json
-├── LICENSE
+├── LICENSE.md
 └── README.md
 ```
 
@@ -166,7 +166,7 @@ Po zmianie skryptów inline należy zweryfikować i w razie potrzeby odświeży�
 
 ### Licencja
 
-Projekt podlega [Własnościowej Licencji Projektu KP_CODE](LICENSE), wersja 1.0, i nie jest udostępniany jako open source. Warunki określają zakres prywatnej oceny i lokalnego uruchamiania oraz ograniczenia dalszego wykorzystania. Materiały podmiotów trzecich podlegają odrębnym licencjom i warunkom.
+Projekt podlega [Własnościowej Licencji Projektu KP_CODE](LICENSE.md), wersja 1.0, i nie jest udostępniany jako open source. Warunki określają zakres prywatnej oceny i lokalnego uruchamiania oraz ograniczenia dalszego wykorzystania. Materiały podmiotów trzecich podlegają odrębnym licencjom i warunkom.
 
 ## EN
 
@@ -238,7 +238,7 @@ Menu and gallery content lives in HTML; filters read element attributes. `js/sw-
 ├── _redirects
 ├── package.json
 ├── package-lock.json
-├── LICENSE
+├── LICENSE.md
 └── README.md
 ```
 
@@ -334,4 +334,4 @@ After inline script changes, verify and refresh CSP hashes as needed. The source
 
 ### License
 
-The project is governed by the [KP_CODE Proprietary Project License](LICENSE), version 1.0, and is not released as open source. The terms define private evaluation and local execution permissions and restrictions on further use. Third-party materials remain subject to their separate licenses and terms.
+The project is governed by the [KP_CODE Proprietary Project License](LICENSE.md), version 1.0, and is not released as open source. The terms define private evaluation and local execution permissions and restrictions on further use. Third-party materials remain subject to their separate licenses and terms.

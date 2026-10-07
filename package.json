@@ -4,7 +4,7 @@
   "private": true,
   "description": "Ambre — front-end project (HTML, CSS, Vanilla JS). Live demo: https://ds-gastronomy-pr01-ambre.netlify.app/",
   "author": "Kamil Król | KP_Code Digital Studio",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
     "dev": "live-server --host=127.0.0.1 --port=4183 --ignore=node_modules,dist",
     "build": "node scripts/build-dist.mjs",
