@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const PROJECT_ROOT = process.cwd();
-const APPROVED_ORIGIN = "https://gastronomy-pr01-ambre.netlify.app/";
+const APPROVED_ORIGIN = "https://ds-gastronomy-pr01-ambre.netlify.app/";
 const OPERATOR_URL = "https://kp-code.pl/";
 const WEBSITE_ID = `${APPROVED_ORIGIN}#website`;
 const PROJECT_ID = `${APPROVED_ORIGIN}#project`;
