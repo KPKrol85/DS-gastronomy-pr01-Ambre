@@ -1,205 +1,337 @@
 # Ambre
 
-## Polski
+## PL
 
-### O projekcie
+### Przegląd projektu
 
-**Ambre** to statyczny, wielostronicowy projekt front-endowy prezentujący restaurację fine dining. Aplikacja została zbudowana bez frameworka: wykorzystuje semantyczny HTML, CSS oraz modułowy JavaScript, który jest bundlowany do pliku produkcyjnego.
+**Ambre** to demonstracyjna, wielostronicowa strona fikcyjnej restauracji fine dining, przygotowana przez KP_Code Digital Studio jako projekt portfolio. Interfejs w języku polskim wykorzystuje HTML, CSS i modułowy Vanilla JavaScript bez frameworka aplikacyjnego.
 
-Repozytorium zawiera implementację interfejsu, zasoby lokalne, konfigurację PWA, reguły hostingu statycznego oraz skrypty budowania i kontroli jakości. Nie stanowi deklaracji działającego, publicznego wdrożenia.
+Repozytorium zawiera osiem stron, lokalne zasoby, build produkcyjny i narzędzia QA. Treści restauracyjne są poglądowe. Formularz prezentuje obsługę zgłoszenia; projekt nie zawiera własnego backendu rezerwacji, bazy danych, kont użytkowników ani płatności.
 
-### Zakres implementacji
+### Wersja online
 
-- strony: strona główna, menu, galeria, polityka cookies, polityka prywatności, regulamin, strona offline i 404;
-- responsywna nawigacja, przełącznik motywu, aktywny stan nawigacji oraz obsługa przewijania;
-- filtrowanie pozycji menu i galerii, stopniowe pokazywanie elementów oraz lightbox obsługiwany z klawiatury;
-- formularz rezerwacji z walidacją po stronie klienta, ochroną honeypot i natywnym awaryjnym wysłaniem formularza;
-- meta dane SEO, canonicale, Open Graph, Twitter Cards i dane strukturalne JSON-LD na stronach indeksowalnych;
-- manifest, przycisk instalacji PWA oraz Service Worker z cache aplikacji i obrazów, widokiem offline i obsługą aktualizacji;
-- lokalne fonty, grafiki, ikony aplikacji oraz konfiguracja nagłówków bezpieczeństwa i przekierowań dla hostingu statycznego.
+[Demo Ambre](https://ds-gastronomy-pr01-ambre.netlify.app/) — adres wskazany w `package.json` i `regulamin.html`. Dostępność adresu oraz zgodność wdrożenia z bieżącą rewizją repozytorium nie zostały potwierdzone.
 
-### Architektura i pliki źródłowe
+### Kluczowe funkcje
 
-Główne pliki HTML są przechowywane w katalogu głównym. Kod źródłowy stylów zaczyna się w `css/style.css`, a punkt wejścia JavaScript znajduje się w `js/script.js`; moduły funkcji są w `js/modules/`, a współdzielony rejestr ikon SVG w `js/icons.js`.
+- Strona główna z prezentacją restauracji, podglądem menu i galerii, FAQ oraz formularzem rezerwacji; osobne strony menu, galerii i informacji prawnych, a także widoki 404 i offline.
+- Nawigacja mobilna, oznaczanie aktualnej strony i sekcji, przełączanie jasnego i ciemnego motywu oraz przyciski przewijania.
+- Filtry kategorii dań i zdjęć, rozwijane szczegóły dań oraz lightbox z obsługą klawiatury: przeglądanie grupy zdjęć galerii lub podgląd pojedynczego dania.
+- Formularz z walidacją wymaganych pól, formatowaniem polskiego numeru telefonu, sprawdzaniem zgody, polem honeypot i komunikatami wysyłania.
+- Dialog informujący o demonstracyjnym charakterze serwisu oraz mapa Google ładowana po kliknięciu użytkownika.
 
-Strony źródłowe używają czytelnych plików `css/style.css` i `js/script.js`. Polecenie `npm run build` tworzy katalog `dist/` z minifikowanymi plikami `css/style.min.css` i `js/script.min.js`, kopią wymaganych plików statycznych oraz stronami HTML przepisanymi na te artefakty produkcyjne.
+### Stack technologiczny
 
-### Stos technologiczny
+- **Interfejs:** HTML, CSS z custom properties i media queries, Vanilla JavaScript oraz ES modules.
+- **Build:** Node.js, npm, PostCSS z postcss-import, Autoprefixer i cssnano, esbuild.
+- **Development i zasoby:** live-server oraz Sharp do konwersji obrazów.
+- **QA:** ESLint, Stylelint, HTML-Validate, własne walidatory Node.js, Playwright z Chromium, axe-core i Lighthouse CI.
+- **Mechanizmy przeglądarkowe:** Web App Manifest, Service Worker, Cache Storage i localStorage.
 
-- HTML5 i CSS;
-- Vanilla JavaScript oraz ES modules;
-- PostCSS, Autoprefixer i cssnano dla CSS;
-- esbuild dla bundla JavaScript;
-- Service Worker i Web App Manifest dla mechanizmów PWA;
-- Playwright i axe-core, HTML-Validate, ESLint, Stylelint oraz Lighthouse CI w narzędziach jakości.
+### Architektura
 
-### PWA i zachowanie offline
+Strony HTML w katalogu głównym są źródłem treści i struktury. `css/style.css` importuje warstwy bazowe, tokeny, typografię, układy, komponenty i style stron. `js/script.js` uruchamia moduły z `js/modules/` po `DOMContentLoaded`, obsługując błąd każdego inicjalizatora osobno. `js/icons.js` zawiera współdzielony rejestr ikon SVG.
 
-`sw.js` precache’uje strony i kluczowe zasoby aplikacji. Dla nawigacji oraz plików stylów, skryptów i workerów stosuje pobieranie z sieci z awaryjnym odczytem cache; dla obrazów stosuje odczyt z cache z późniejszym pobraniem. Gdy brak jest dokumentu w cache podczas nawigacji offline, używana jest strona `offline.html`.
+Treści menu i galerii są zapisane w HTML; filtry operują na atrybutach elementów. `js/sw-register.js` i `js/pwa-install.js` są osobnymi skryptami. Źródła pozostają czytelne, a bundlowanie i minifikacja odbywają się przy tworzeniu dystrybucji.
 
-`manifest.webmanifest` definiuje nazwę aplikacji, ikony, skróty i zrzuty ekranu. Przycisk instalacji jest pokazywany dopiero po otrzymaniu przez przeglądarkę zdarzenia `beforeinstallprompt`.
+### Struktura projektu
 
-### Formularz rezerwacji
+```text
+.
+├── index.html
+├── menu.html
+├── galeria.html
+├── cookies.html
+├── polityka-prywatnosci.html
+├── regulamin.html
+├── 404.html
+├── offline.html
+├── assets/
+├── css/
+│   ├── style.css
+│   ├── base/
+│   ├── layout/
+│   ├── components/
+│   └── pages/
+├── js/
+│   ├── script.js
+│   ├── icons.js
+│   ├── modules/
+│   ├── sw-register.js
+│   └── pwa-install.js
+├── scripts/
+├── docs/
+├── .github/workflows/main.yml
+├── sw.js
+├── manifest.webmanifest
+├── robots.txt
+├── sitemap.xml
+├── _headers
+├── _redirects
+├── package.json
+├── package-lock.json
+├── LICENSE
+└── README.md
+```
 
-Formularz w `index.html` ma atrybuty zgodne z przetwarzaniem formularzy Netlify. Skrypt sprawdza wymagane pola, format polskiego numeru telefonu i zgodę, a następnie wysyła dane metodą POST, jeśli dostępne są `fetch` i `FormData`; w razie błędu korzysta z natywnego wysłania formularza.
+### Instalacja
 
-Odbiór zgłoszeń zależy od konfiguracji środowiska hostującego i nie jest potwierdzany przez sam kod źródłowy tego repozytorium.
-
-### Wymagania i uruchomienie
-
-Projekt zawiera `package-lock.json`, dlatego do odtworzenia zależności użyj:
+Wymagane są Node.js i npm. Workflow CI używa Node.js 22; `package.json` nie deklaruje zakresu `engines`. Zależności odtworzysz z `package-lock.json`, wykonując w katalogu głównym:
 
 ```bash
 npm ci
 ```
 
-Polecenie `npm run dev` uruchamia lokalny serwer deweloperski z przeładowaniem pod adresem `http://127.0.0.1:4183`. Pliki HTML można też serwować dowolnym innym serwerem statycznym, a skrypty QA uruchamiają własne serwery lokalne tam, gdzie są potrzebne.
+Kontrole przeglądarkowe wymagają dostępnego Chromium dla Playwright, a Lighthouse CI — przeglądarki Chrome/Chromium.
 
-### Polecenia
+### Development lokalny
 
 ```bash
-# uruchom lokalny serwer deweloperski z przeładowaniem
 npm run dev
-
-# zbuduj produkcyjny katalog dist z minifikowanymi CSS i JavaScript
-npm run build
-
-# lint JavaScriptu, CSS i tekstu
-npm run lint
-
-# szybka codzienna kontrola statyczna i integralności projektu
-npm run qa:fast
-
-# skupione regresje przeglądarkowe rezerwacji, dialogu, przewijania, tabel prawnych, lightboxa i statusu galerii
-npm run test:e2e
-
-# pełna bramka jakości: szybkie QA, no-JS, E2E, a11y i Lighthouse CI
-npm run qa
 ```
 
-Pojedyncze kontrole są dostępne jako `lint:*`, `qa:*` i `test:e2e:*`. `qa:csp` wyłącznie weryfikuje aktualność CSP, a mutujące `csp:hash` świadomie regeneruje hashe. Polecenie `qa:server` sprawdza lokalny serwer statyczny używany przez narzędzia jakości; nie weryfikuje publicznego wdrożenia.
+Serwer live-server udostępnia źródła pod `http://127.0.0.1:4183` i przeładowuje stronę po zmianach. Nie buduje dystrybucji ani nie emuluje przetwarzania formularzy i reguł hostingu Netlify. Korzystaj z serwera HTTP, ponieważ strony używają modułów JavaScript i ścieżek względem katalogu głównego serwisu.
 
-W projekcie są także polecenia `img:opt`, `img:webp`, `img:avif`, `img:clean` i `img:verify` do przygotowania oraz kontroli wariantów obrazów. `img:clean` usuwa katalog wygenerowanych obrazów, więc używaj go świadomie.
+### Dostępne skrypty
 
-### Kontrola jakości
+| Polecenie | Zakres |
+| --- | --- |
+| `npm run build` | Odtworzenie produkcyjnego katalogu `dist/`. |
+| `npm run lint` | Lint JavaScriptu, CSS i wybranych błędów w publicznych tekstach. |
+| `npm run qa:fast` | Lint, HTML, lokalne linki i kotwice, SEO, polityka JSON-LD oraz kontrola hashy CSP. |
+| `npm run test:e2e` | Sześć regresji: formularz, dialog demonstracyjny, przewijanie, tabele prawne, lightbox i status galerii. |
+| `npm run qa` | Szybkie QA, zachowanie bez JavaScriptu, E2E, axe-core i Lighthouse CI. |
+| `npm run qa:service-worker` | Osobny test aktywacji Service Workera i własności cache; poza agregatem `qa`. |
+| `npm run qa:server` | Kontrola odpowiedzi lokalnego serwera dystrybucji; wymaga istniejącego `dist/`. |
+| `npm run qa:csp` | Weryfikacja hashy skryptów inline w `_headers` bez zapisu. |
+| `npm run csp:hash` | Aktualizacja hashy skryptów inline w `_headers`; zmienia plik. |
+| `npm run img:opt` | Generowanie WebP i AVIF w `assets/img/_optimized/`. |
+| `npm run img:webp` / `npm run img:avif` | Generowanie wybranego formatu obrazów. |
+| `npm run img:verify` | Sprawdzenie istnienia katalogu obrazów wynikowych i policzenie plików. |
+| `npm run img:clean` | Usunięcie całego `assets/img/_optimized/`. |
 
-`qa:fast` obejmuje lint JavaScriptu, CSS i tekstu, HTML, linki, SEO, politykę JSON-LD oraz kontrolę CSP bez uruchamiania szerokich testów przeglądarkowych. `test:e2e` uruchamia deterministycznie sześć skupionych regresji. Pełne `qa` rozszerza szybki zestaw o zachowanie bez JavaScriptu, E2E, automatyczne reguły dostępności z axe-core i Lighthouse CI na ośmiu stronach.
+Pojedyncze kontrole są dostępne jako `lint:*`, `qa:*` i `test:e2e:*`. Pełny kontrakt poleceń opisuje [przewodnik skryptów](docs/settings.md); wykonywalnym źródłem prawdy jest `package.json`.
 
-Lista poleceń opisuje dostępne kontrole w repozytorium; nie jest zapisem ich wyniku dla konkretnego środowiska lub wdrożenia.
+### Build produkcyjny
 
-### Hosting i bezpieczeństwo
+`scripts/build-dist.mjs` usuwa poprzedni `dist/`, przetwarza CSS do `dist/css/style.min.css`, bundluje JavaScript do `dist/js/script.min.js` i kopiuje osiem stron oraz wymagane pliki statyczne. W kopiach HTML i `dist/sw.js` zastępuje odwołania do źródeł odwołaniami do plików minifikowanych. Osobne skrypty PWA są kopiowane bez bundlowania.
 
-Pliki `_headers` i `_redirects` dostarczają konfigurację dla hostingu statycznego: przekierowania adresów, stronę 404 oraz nagłówki bezpieczeństwa, w tym Content Security Policy. Nie przesądza to o tym, że konfiguracja została zastosowana przez konkretną usługę hostingową.
+Build kopiuje istniejący `assets/`; nie uruchamia konwersji obrazów. `dist/` jest ignorowany przez Git i stanowi wygenerowany pakiet do publikacji. Nie edytuj go ręcznie ani nie dodawaj plików minifikowanych do źródłowych katalogów `css/` i `js/`.
+
+### Testy i walidacja
+
+Testy Playwright korzystają z lokalnych serwerów i Chromium. Regresje formularza przechwytują odpowiedzi POST, więc sprawdzają zachowanie klienta, nie rzeczywisty odbiór przez Netlify. `qa:a11y` obejmuje osiem stron oraz stan otwartego dialogu i stan po akceptacji tam, gdzie dialog występuje. Lighthouse CI buduje dystrybucję i zbiera po trzy pomiary dla ośmiu stron; progi w `lighthouserc.json` są wymaganiami konfiguracji, nie deklarowanymi wynikami.
+
+[Workflow CI](.github/workflows/main.yml) jest skonfigurowany dla push i pull request do `main`: instalacja zależności, szybkie QA i build. Nie uruchamia pełnego zestawu QA. Dostępne kontrole nie stanowią deklaracji ich zaliczenia ani zgodności dostępności.
+
+### Wdrożenie
+
+Pakiet do hostingu statycznego powstaje w `dist/`. Build przenosi do niego `_headers` i `_redirects` z regułami dla Netlify: przekierowaniami adresów, odpowiedzią 404 i nagłówkami, w tym CSP. Strony zakładają publikację w katalogu głównym domeny. Workflow CI nie zawiera kroku wdrożenia.
+
+Formularz w `index.html` ma `data-netlify="true"` i ukryte `form-name`. `js/modules/form.js` wysyła dane przez `fetch` metodą POST na `/`, uznaje za sukces tylko `response.ok`, a przy błędzie zachowuje pola i wyświetla komunikat. Natywne wysłanie pozostaje dostępne bez JavaScriptu lub bez `fetch`/`FormData`; błąd żądania nie powoduje automatycznego ponownego wysłania. Odbiór danych wymaga konfiguracji hostingu i nie potwierdza rezerwacji stolika.
+
+### Dostępność
+
+Implementacja zawiera semantyczne regiony, linki pomijające nawigację, etykiety formularza, widoczne style fokusu oraz synchronizację `aria-current`, `aria-expanded` i `aria-pressed`. Dialog demonstracyjny ogranicza fokus do panelu, oznacza tło jako `inert` i przy zamknięciu przywraca fokus; lightbox obsługuje klawiaturę i przywraca fokus po zamknięciu.
+
+Błędy formularza korzystają z `aria-invalid` i komunikatów `aria-live`. Tabele prawne mają fokusowalne obszary przewijania poziomego. Animacje i przewijanie uwzględniają `prefers-reduced-motion`. Są to mechanizmy implementacji, bez deklaracji formalnej zgodności WCAG.
+
+### SEO
+
+Strony mają tytuły, opisy, canonicale, Open Graph i Twitter Cards; repozytorium zawiera `robots.txt` i `sitemap.xml`. Sześć stron treściowych używa JSON-LD z `WebSite`, `CreativeWork`, `WebPage` i osobną `Organization` dla KP_Code Digital Studio. Model opisuje projekt demonstracyjny, nie działającą restaurację.
+
+`404.html` i `offline.html` mają `noindex`, nie występują w sitemapie i nie zawierają JSON-LD. `scripts/schema-policy-check.mjs` egzekwuje podział stron oraz odrzuca fikcyjne encje biznesowe i dane operacyjne.
+
+### PWA i obsługa offline
+
+`manifest.webmanifest` definiuje ikony, skróty, zrzuty ekranu oraz `start_url` i `scope` ustawione na `/`. Przycisk instalacji pojawia się po `beforeinstallprompt`, jeśli aplikacja nie działa już w trybie standalone.
+
+`sw.js` precache’uje strony i podstawowe zasoby. Nawigacja, CSS i JavaScript korzystają najpierw z sieci, a przy błędzie sieci z cache; obrazy korzystają najpierw z cache, a następnie z sieci. Brak dokumentu lub obrazu w trybie offline prowadzi do odpowiednich zasobów zastępczych. Cache mają prefiks `ambre-`; aktywacja usuwa przestarzałe cache projektu i jawnie wskazane stare klucze, zachowując nieznane cache tego samego originu.
+
+`js/sw-register.js` pomija rejestrację na lokalnych hostach i prywatnych adresach IP oraz wyrejestrowuje tam istniejące Service Workery. Zwykły development lokalny nie sprawdza więc działania offline. Zasoby spoza precache zależą od wcześniejszego pobrania; instalacja, cache i zewnętrzna mapa wymagają osobnej weryfikacji w docelowym środowisku.
+
+### Wydajność
+
+Produkcja używa minifikowanego CSS i bundla JavaScript. HTML zawiera obrazy AVIF/WebP z wariantami `srcset`, wymiarami i selektywnym `loading="lazy"`; fonty są lokalne i używają `font-display: swap`. Zewnętrzny iframe mapy jest aktywowany dopiero na żądanie. README opisuje te mechanizmy bez deklarowania wyników pomiarów.
+
+### Dane i trwałość stanu
+
+Treści stron, dania i zdjęcia pochodzą z lokalnego HTML i zasobów. `localStorage` przechowuje wybór motywu pod kluczem `theme` oraz akceptację informacji demonstracyjnej pod `demoLegalAccepted`. Cache Storage służy Service Workerowi do przechowywania odpowiedzi. Nie jest to baza rezerwacji ani synchronizacja między urządzeniami.
+
+### Utrzymanie projektu
+
+[Mapa architektury](docs/ARCHITECTURE_MAP.md) wskazuje powiązania hooków HTML z modułami. Przy dodawaniu strony trzeba uwzględnić jawne listy stron w buildzie, walidatorach, konfiguracji Lighthouse i precache Service Workera.
+
+Po zmianie skryptów inline należy zweryfikować i w razie potrzeby odświeżyć hashe CSP. Wersję i zakres cache utrzymuje źródłowy `sw.js`; produkcyjna kopia jest tworzona przez build. Dokumenty w `docs/archive/` są zapisami historycznymi.
 
 ### Licencja
 
-Projekt jest objęty własnościową licencją KP_Code. Szczegółowe warunki znajdują się w pliku [LICENSE](LICENSE). Oprogramowanie nie jest udostępniane jako open source.
+Projekt podlega [Własnościowej Licencji Projektu KP_CODE](LICENSE), wersja 1.0, i nie jest udostępniany jako open source. Warunki określają zakres prywatnej oceny i lokalnego uruchamiania oraz ograniczenia dalszego wykorzystania. Materiały podmiotów trzecich podlegają odrębnym licencjom i warunkom.
 
-### Ograniczenia
+## EN
 
-- Repozytorium zawiera wyłącznie warstwę statycznego front-endu; nie zawiera backendu, bazy danych, autoryzacji ani integracji płatności.
-- Działanie formularza w środowisku produkcyjnym, instalacja PWA i zachowanie cache zależą od przeglądarki oraz konfiguracji hostingu i nie są potwierdzane w tym README.
-- Dane prezentowane w interfejsie i danych strukturalnych należy zweryfikować przed użyciem w rzeczywistym serwisie operacyjnym.
+### Project Overview
 
----
+**Ambre** is a demonstration multi-page website for a fictional fine-dining restaurant, created by KP_Code Digital Studio as a portfolio project. Its Polish-language interface uses HTML, CSS, and modular Vanilla JavaScript without an application framework.
 
-## English
+The repository contains eight pages, local assets, a production build, and QA tooling. Restaurant content is illustrative. The form demonstrates submission handling; the project does not include its own reservation backend, database, user accounts, or payments.
 
-### About the project
+### Live Version
 
-**Ambre** is a static, multi-page front-end project presenting a fine-dining restaurant. It is built without a framework, using semantic HTML, CSS, and modular JavaScript bundled into a production asset.
+[Ambre demo](https://ds-gastronomy-pr01-ambre.netlify.app/) — the address listed in `package.json` and `regulamin.html`. Availability and alignment of the deployment with the current repository revision have not been confirmed.
 
-The repository contains the interface implementation, local assets, PWA configuration, static-hosting rules, and build and quality-assurance scripts. It does not assert that a public deployment is currently operating.
+### Key Features
 
-### Implemented scope
+- A homepage with restaurant presentation, menu and gallery previews, FAQ, and a reservation form; separate menu, gallery, and legal pages, plus 404 and offline views.
+- Mobile navigation, current page and section indicators, light and dark theme switching, and scroll controls.
+- Dish and image category filters, expandable dish details, and a keyboard-operated lightbox for browsing a gallery group or viewing a single dish.
+- A form with required-field validation, Polish phone-number formatting, consent checks, a honeypot field, and submission status messages.
+- A dialog explaining the demonstration nature of the site and a Google map loaded after user activation.
 
-- pages for the home view, menu, gallery, cookie policy, privacy policy, terms, offline view, and 404 view;
-- responsive navigation, theme switching, current navigation state, and scroll controls;
-- menu and gallery filtering, progressive item reveal, and a keyboard-operable lightbox;
-- a reservation form with client-side validation, a honeypot field, and native submission fallback;
-- SEO metadata, canonicals, Open Graph, Twitter Cards, and JSON-LD structured data on indexable pages;
-- a manifest, PWA install prompt, and a Service Worker with application and image caches, an offline view, and update handling;
-- local fonts, images, application icons, and static-hosting configuration for security headers and redirects.
+### Tech Stack
 
-### Architecture and source files
+- **Interface:** HTML, CSS custom properties and media queries, Vanilla JavaScript, and ES modules.
+- **Build:** Node.js, npm, PostCSS with postcss-import, Autoprefixer and cssnano, esbuild.
+- **Development and assets:** live-server and Sharp for image conversion.
+- **QA:** ESLint, Stylelint, HTML-Validate, custom Node.js validators, Playwright with Chromium, axe-core, and Lighthouse CI.
+- **Browser mechanisms:** Web App Manifest, Service Worker, Cache Storage, and localStorage.
 
-The main HTML files live in the repository root. The CSS source starts at `css/style.css`, while `js/script.js` is the JavaScript entry point, feature modules live in `js/modules/`, and the shared SVG icon registry lives in `js/icons.js`.
+### Architecture
 
-Source pages load the readable `css/style.css` and `js/script.js` files. `npm run build` creates `dist/` with the minified `css/style.min.css` and `js/script.min.js` artifacts, required static files, and HTML rewritten to use the production assets.
+Root-level HTML pages own content and structure. `css/style.css` imports base styles, tokens, typography, layouts, components, and page styles. `js/script.js` initializes modules from `js/modules/` after `DOMContentLoaded`, handling each initializer's errors separately. `js/icons.js` contains the shared SVG icon registry.
 
-### Technology stack
+Menu and gallery content lives in HTML; filters read element attributes. `js/sw-register.js` and `js/pwa-install.js` are separate scripts. Sources remain readable, while bundling and minification happen when the distribution is built.
 
-- HTML5 and CSS;
-- Vanilla JavaScript and ES modules;
-- PostCSS, Autoprefixer, and cssnano for CSS processing;
-- esbuild for JavaScript bundling;
-- Service Worker and Web App Manifest for PWA mechanisms;
-- Playwright and axe-core, HTML-Validate, ESLint, Stylelint, and Lighthouse CI for quality tooling.
+### Project Structure
 
-### PWA and offline behavior
+```text
+.
+├── index.html
+├── menu.html
+├── galeria.html
+├── cookies.html
+├── polityka-prywatnosci.html
+├── regulamin.html
+├── 404.html
+├── offline.html
+├── assets/
+├── css/
+│   ├── style.css
+│   ├── base/
+│   ├── layout/
+│   ├── components/
+│   └── pages/
+├── js/
+│   ├── script.js
+│   ├── icons.js
+│   ├── modules/
+│   ├── sw-register.js
+│   └── pwa-install.js
+├── scripts/
+├── docs/
+├── .github/workflows/main.yml
+├── sw.js
+├── manifest.webmanifest
+├── robots.txt
+├── sitemap.xml
+├── _headers
+├── _redirects
+├── package.json
+├── package-lock.json
+├── LICENSE
+└── README.md
+```
 
-`sw.js` precaches application pages and key assets. Navigation plus style, script, and worker requests use network retrieval with a cache fallback; image requests use cache retrieval before a network attempt. If no cached document is available during offline navigation, the worker serves `offline.html`.
+### Installation
 
-`manifest.webmanifest` defines the application name, icons, shortcuts, and screenshots. The install control is only shown after the browser emits the `beforeinstallprompt` event.
-
-### Reservation form
-
-The form in `index.html` uses attributes compatible with Netlify Forms processing. Its script validates required fields, the Polish telephone-number format, and consent; it then submits a POST request when `fetch` and `FormData` are available, with native form submission as a fallback.
-
-Receipt of submissions depends on the hosting environment configuration and is not established by this repository's source code alone.
-
-### Requirements and local use
-
-The project includes `package-lock.json`; install the locked dependency set with:
+Node.js and npm are required. The CI workflow uses Node.js 22; `package.json` does not declare an `engines` range. Restore dependencies from `package-lock.json` in the repository root:
 
 ```bash
 npm ci
 ```
 
-`npm run dev` starts a local development server with live reload at `http://127.0.0.1:4183`. The HTML files can also be served by any other static server, while the relevant QA scripts start their own local servers when needed.
+Browser checks require Chromium for Playwright, while Lighthouse CI requires Chrome/Chromium.
 
-### Commands
+### Local Development
 
 ```bash
-# start the local development server with live reload
 npm run dev
-
-# build the production dist directory with minified CSS and JavaScript
-npm run build
-
-# lint JavaScript, CSS, and public text
-npm run lint
-
-# fast everyday static and project-integrity checks
-npm run qa:fast
-
-# focused browser regressions for reservations, the dialog, scrolling, legal tables, the lightbox, and gallery status
-npm run test:e2e
-
-# full quality gate: fast QA, no-JS, E2E, accessibility, and Lighthouse CI
-npm run qa
 ```
 
-Individual checks are available under `lint:*`, `qa:*`, and `test:e2e:*`. `qa:csp` only verifies the current CSP, while the mutating `csp:hash` command deliberately regenerates hashes. `qa:server` checks the local static server used by quality tooling; it does not verify a public deployment.
+live-server serves sources at `http://127.0.0.1:4183` and reloads the page after changes. It does not build the distribution or emulate Netlify form processing and hosting rules. Use an HTTP server because the pages use JavaScript modules and paths relative to the site root.
 
-The repository also provides `img:opt`, `img:webp`, `img:avif`, `img:clean`, and `img:verify` for generating and checking image variants. `img:clean` removes the generated-image directory, so use it deliberately.
+### Available Scripts
 
-### Quality assurance
+| Command | Scope |
+| --- | --- |
+| `npm run build` | Recreate the production `dist/` directory. |
+| `npm run lint` | Lint JavaScript, CSS, and selected errors in public text. |
+| `npm run qa:fast` | Lint, HTML, local links and anchors, SEO, JSON-LD policy, and CSP hash checks. |
+| `npm run test:e2e` | Six regressions: form, demonstration dialog, scrolling, legal tables, lightbox, and gallery status. |
+| `npm run qa` | Fast QA, no-JavaScript behavior, E2E, axe-core, and Lighthouse CI. |
+| `npm run qa:service-worker` | Separate Service Worker activation and cache ownership test; outside the `qa` aggregate. |
+| `npm run qa:server` | Check responses from the local distribution server; requires an existing `dist/`. |
+| `npm run qa:csp` | Verify inline script hashes in `_headers` without writing. |
+| `npm run csp:hash` | Update inline script hashes in `_headers`; modifies the file. |
+| `npm run img:opt` | Generate WebP and AVIF files in `assets/img/_optimized/`. |
+| `npm run img:webp` / `npm run img:avif` | Generate the selected image format. |
+| `npm run img:verify` | Check that the output image directory exists and count its files. |
+| `npm run img:clean` | Delete the entire `assets/img/_optimized/` directory. |
 
-`qa:fast` covers JavaScript, CSS, and text linting, HTML, links, SEO, the JSON-LD policy, and read-only CSP verification without launching broad browser checks. `test:e2e` runs the six focused regressions in a deterministic order. The full `qa` command extends the fast set with no-JavaScript behavior, E2E, automated axe-core accessibility rules, and Lighthouse CI across eight pages.
+Individual checks are available as `lint:*`, `qa:*`, and `test:e2e:*`. The [script guide](docs/settings.md) describes the full command contract; `package.json` is the executable source of truth.
 
-The command list documents checks available in the repository; it does not record their result for a particular environment or deployment.
+### Production Build
 
-### Hosting and security
+`scripts/build-dist.mjs` removes the previous `dist/`, processes CSS into `dist/css/style.min.css`, bundles JavaScript into `dist/js/script.min.js`, and copies eight pages and required static files. It rewrites source asset references in copied HTML and `dist/sw.js` to the minified files. Separate PWA scripts are copied without bundling.
 
-`_headers` and `_redirects` provide static-hosting configuration for route redirects, a 404 page, and security headers including a Content Security Policy. Their presence does not establish that the configuration has been applied by a specific hosting provider.
+The build copies the existing `assets/`; it does not run image conversion. `dist/` is ignored by Git and is the generated package for publication. Do not edit it manually or add minified files to the source `css/` and `js/` directories.
+
+### Testing and Validation
+
+Playwright tests use local servers and Chromium. Form regressions intercept POST responses, testing client behavior rather than actual Netlify receipt. `qa:a11y` covers eight pages, including the open-dialog and accepted states where a dialog exists. Lighthouse CI builds the distribution and collects three measurements per page across eight pages; thresholds in `lighthouserc.json` are configured requirements, not reported results.
+
+The [CI workflow](.github/workflows/main.yml) is configured for pushes and pull requests to `main`: dependency installation, fast QA, and a build. It does not run the full QA suite. Available checks do not establish that they passed or that accessibility conformance was achieved.
+
+### Deployment
+
+The static-hosting package is built into `dist/`. The build copies `_headers` and `_redirects` with Netlify rules: URL redirects, a 404 response, and headers including CSP. Pages assume publication at the domain root. The CI workflow has no deployment step.
+
+The form in `index.html` has `data-netlify="true"` and a hidden `form-name`. `js/modules/form.js` uses `fetch` to send a POST to `/`, treats only `response.ok` as success, and preserves fields while displaying a message on failure. Native submission remains available without JavaScript or without `fetch`/`FormData`; a request failure does not trigger an automatic resubmission. Data receipt requires hosting configuration and does not confirm a table reservation.
+
+### Accessibility
+
+The implementation includes semantic regions, skip links, form labels, visible focus styles, and synchronized `aria-current`, `aria-expanded`, and `aria-pressed`. The demonstration dialog contains focus within its panel, marks the background `inert`, and restores focus on close; the lightbox supports keyboard input and restores focus when closed.
+
+Form errors use `aria-invalid` and `aria-live` messages. Legal tables have focusable horizontal scrolling regions. Animations and scrolling account for `prefers-reduced-motion`. These are implementation mechanisms, without a claim of formal WCAG conformance.
+
+### SEO
+
+Pages include titles, descriptions, canonicals, Open Graph, and Twitter Cards; the repository contains `robots.txt` and `sitemap.xml`. Six content pages use JSON-LD with `WebSite`, `CreativeWork`, `WebPage`, and a separate `Organization` for KP_Code Digital Studio. The model describes a demonstration project, not an operating restaurant.
+
+`404.html` and `offline.html` use `noindex`, are absent from the sitemap, and contain no JSON-LD. `scripts/schema-policy-check.mjs` enforces the page classification and rejects fictional business entities and operational data.
+
+### PWA and Offline Support
+
+`manifest.webmanifest` defines icons, shortcuts, screenshots, and `start_url` and `scope` set to `/`. The install control appears after `beforeinstallprompt` if the application is not already running in standalone mode.
+
+`sw.js` precaches pages and basic assets. Navigation, CSS, and JavaScript use the network first with a cache fallback on network failure; images use the cache first, then the network. Missing offline documents or images lead to their respective fallback assets. Cache names use the `ambre-` prefix; activation removes obsolete project caches and explicitly listed legacy keys while preserving unknown caches on the same origin.
+
+`js/sw-register.js` skips registration on local hosts and private IP addresses and unregisters existing Service Workers there. Ordinary local development therefore does not exercise offline behavior. Assets outside precache depend on earlier retrieval; installation, caching, and the external map require separate verification in the target environment.
+
+### Performance
+
+Production uses minified CSS and a JavaScript bundle. HTML contains AVIF/WebP images with `srcset` variants, dimensions, and selective `loading="lazy"`; fonts are local and use `font-display: swap`. The external map iframe is activated only on request. This README describes these mechanisms without asserting measured results.
+
+### Data and State Persistence
+
+Page content, dishes, and images come from local HTML and assets. `localStorage` stores the theme choice under `theme` and acceptance of the demonstration notice under `demoLegalAccepted`. Cache Storage holds Service Worker responses. This is neither a reservation database nor synchronization between devices.
+
+### Project Maintenance
+
+The [architecture map](docs/ARCHITECTURE_MAP.md) links HTML hooks to modules. Adding a page requires considering explicit page lists in the build, validators, Lighthouse configuration, and Service Worker precache.
+
+After inline script changes, verify and refresh CSP hashes as needed. The source `sw.js` owns cache versioning and scope; its production copy is generated by the build. Documents in `docs/archive/` are historical records.
 
 ### License
 
-The project is covered by the proprietary KP_Code license. See [LICENSE](LICENSE) for its full terms. The software is not released as open source.
-
-### Limitations
-
-- The repository contains only the static front-end layer; it does not include a backend, database, authentication, or payment integration.
-- Production form delivery, PWA installation, and cache behavior depend on the browser and hosting configuration and are not confirmed by this README.
-- Information presented in the interface and structured data should be verified before use in an operational public service.
+The project is governed by the [KP_CODE Proprietary Project License](LICENSE), version 1.0, and is not released as open source. The terms define private evaluation and local execution permissions and restrictions on further use. Third-party materials remain subject to their separate licenses and terms.
