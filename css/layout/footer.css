@@ -189,6 +189,13 @@ html[data-theme="light"] .site-footer {
   display: none;
 }
 
+.site-footer__author-note {
+  margin: var(--space-02) 0 0;
+  font-size: var(--fs-xs);
+  line-height: var(--lh-normal);
+  color: var(--ft-ink-muted);
+}
+
 .site-footer__contact {
   display: grid;
   width: 100%;
