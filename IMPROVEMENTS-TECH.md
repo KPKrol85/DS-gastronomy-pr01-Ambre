@@ -17,6 +17,8 @@ No existing technical improvement report or active plan was found. The completed
 
 ### IMP-TECH-01 — Share normalized category matching across existing filters
 
+**Status:** COMPLETED (2026-10-09) — Consolidated normalized category matching into `js/modules/category-match.js` and integrated it across the three existing filtering paths while preserving their behavior.
+
 - **Affected area:** Menu and gallery filtering in `js/modules/tabs.js` and gallery visibility calculation in `js/modules/load-more.js`.
 - **Evidence:** `js/modules/tabs.js:14-36`, `js/modules/tabs.js:68-91`, `js/modules/load-more.js:104-124`; current category consumers in `index.html:267-280`, `menu.html:203-210`, and `galeria.html:202-209`.
 - **Current implementation:** Three paths repeat the same NFD normalization, combining-mark removal, lowercasing, trimming, category token splitting, and empty/`all` matching. Each then combines the match with its own loading state. The menu load-more path separately uses exact `data-cat` equality at `js/modules/load-more.js:55-61`.

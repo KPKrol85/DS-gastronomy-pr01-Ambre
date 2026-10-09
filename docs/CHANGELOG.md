@@ -1,6 +1,27 @@
 # Changelog
 
-All significant changes to this project are documented in this file.
+All significant changes to Ambre are documented in this file.
+
+This is the canonical record of significant completed changes. Evaluate each implementation task for a changelog update and record verified changes when its scope permits. If the task excludes this file, report any required update without editing it. Omit routine cleanup, pending work, and unsupported claims.
+
+## Entry policy
+
+A change is significant when a future maintainer or the project owner would reasonably need to know that one of the following changed:
+
+- user-visible behavior, including meaningful UI, UX, or public content changes;
+- accessibility behavior or accessibility contracts;
+- build behavior, build guards, or npm scripts;
+- test infrastructure or verification tooling;
+- the dependency set;
+- deployment or hosting workflow;
+- PWA, service-worker, cache, or offline behavior;
+- architecture, sources of truth, or important project maintenance contracts.
+
+Judge by impact, not by file count: a visually small change is recorded when it changes user-visible or accessibility behavior, and editing a file is not by itself a reason for an entry.
+
+Not recorded: improvement-report status updates and archiving, commit-only or tracking-document bookkeeping, temporary verification probes, minor wording corrections in internal documentation, and isolated cosmetic or implementation details, such as a single spacing or border correction, that do not change behavior, accessibility, or a shared component contract.
+
+When an implementation task is defined, apply this policy and state `Changelog: yes` or `Changelog: no`. Add an entry only within an approved task marked `Changelog: yes`; this policy does not authorize changelog edits outside that scope.
 
 ## [Unreleased]
 
@@ -16,6 +37,7 @@ All significant changes to this project are documented in this file.
 
 ### Changed
 
+- Consolidated normalized category matching into a shared JavaScript helper used by menu and gallery filters and gallery load-more logic, eliminating duplicated comparisons while preserving existing filtering, loading, and accessibility behavior.
 - Changed Lighthouse CI to build and audit the production `dist/` path with text compression, while preserving the existing eight URLs and category thresholds; the current contract collects three runs per URL, for 24 Lighthouse collections per complete run.
 - Changed the first menu thumbnail to load eagerly after Lighthouse identified it as the LCP element, and deferred the menu page's embedded Google Map behind an accessible, no-JavaScript-safe user action.
 - Deferred the 404 footer's Google Maps iframe using the existing map facade pattern, preventing Google Maps requests before explicit user activation while preserving the no-JavaScript fallback; focused 404 Lighthouse Performance stabilized at `0.99` across six runs, and the complete eight-URL, 24-run Lighthouse suite passes.
