@@ -1,4 +1,5 @@
 import { $, $$, byTestId, log } from "./utils.js";
+import { matchesCategory } from "./category-match.js";
 
 export function initTabs() {
   const grid = document.querySelector(".menu__grid, .menu-grid");
@@ -11,14 +12,6 @@ export function initTabs() {
   const dishes = $$(".dish", grid);
   if (!dishes.length) return;
 
-  const normalize = (value) =>
-    (value || "")
-      .toString()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase()
-      .trim();
-
   const apply = (tab) => {
     tabs.forEach((btn) => {
       const isActive = btn === tab;
@@ -26,12 +19,10 @@ export function initTabs() {
       btn.setAttribute("aria-pressed", isActive ? "true" : "false");
     });
 
-    const filter = normalize(tab?.dataset?.filter || "");
-    const showAll = filter === "" || filter === "all";
+    const filter = tab?.dataset?.filter || "";
     dishes.forEach((dish) => {
       const raw = dish.dataset.cat || dish.dataset.filter || "";
-      const normalized = normalize(raw).split(/[\s,]+/).filter(Boolean);
-      const matches = showAll || normalized.includes(filter);
+      const matches = matchesCategory(raw, filter);
       const loadVisible = dish.dataset.loadHidden !== "true";
       dish.hidden = !(matches && loadVisible);
     });
@@ -65,14 +56,6 @@ export function initGalleryFilter() {
   const tabs = Array.from(tabsRoot.querySelectorAll(".tabs__tab"));
   const items = Array.from(page.querySelectorAll(".gallery__section .gallery__item"));
 
-  const normalize = (value) =>
-    (value || "")
-      .toString()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase()
-      .trim();
-
   const apply = (tab) => {
     tabs.forEach((btn) => {
       const isActive = btn === tab;
@@ -80,13 +63,11 @@ export function initGalleryFilter() {
       btn.classList.toggle("tabs__tab--active", isActive);
     });
 
-    const filter = normalize(tab.dataset.filter || "");
-    const showAll = filter === "" || filter === "all";
+    const filter = tab.dataset.filter || "";
 
     items.forEach((item) => {
       const raw = item.dataset.cat || item.dataset.filter || "";
-      const normalized = normalize(raw).split(/[\s,]+/).filter(Boolean);
-      const matches = showAll || normalized.includes(filter);
+      const matches = matchesCategory(raw, filter);
       const loadVisible = item.dataset.loadHidden !== "true";
       item.hidden = !(loadVisible && matches);
     });

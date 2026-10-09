@@ -1,4 +1,5 @@
 import { log } from "./utils.js";
+import { matchesCategory } from "./category-match.js";
 
 const DEFAULT_STEP = 12;
 const DONE_STATUS_TEXT = "Wszystko załadowane";
@@ -101,25 +102,15 @@ export function initLoadMoreGallery() {
     return active?.dataset.filter || "all";
   };
 
-  const normalize = (value) =>
-    (value || "")
-      .toString()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase()
-      .trim();
-
   const apply = () => {
-    const filter = normalize(getActiveFilter());
-    const showAll = filter === "" || filter === "all";
+    const filter = getActiveFilter();
 
     items.forEach((item, index) => {
       const loaded = index < visibleCount;
       item.dataset.loadHidden = loaded ? "false" : "true";
 
       const raw = item.dataset.cat || item.dataset.filter || "";
-      const normalized = normalize(raw).split(/[\s,]+/).filter(Boolean);
-      const matches = showAll || normalized.includes(filter);
+      const matches = matchesCategory(raw, filter);
 
       item.hidden = !(loaded && matches);
     });
