@@ -54,6 +54,22 @@ Poniższa tabela pomaga dobrać najmniejszy zalecany zestaw do zakresu i ryzyka 
 
 Agregaty wykonują już swoje składowe: `lint` zawiera `lint:js`, `lint:css` i `lint:text`; `qa:fast` zawiera `lint` i statyczne QA; `qa` zawiera `qa:fast`, `qa:nojs`, `test:e2e`, `qa:a11y` i `qa:lighthouse`. W jednym zestawie kontroli nie powtarzaj etapów zawartych w wybranym agregacie; po kolejnej zmianie ponów dotknięte kontrole.
 
+## Podgląd produkcyjny
+
+W katalogu głównym repozytorium wygeneruj świeże `dist/`, a następnie uruchom istniejący serwer:
+
+```bash
+npm run build
+node scripts/lhci-static-server.mjs
+```
+
+Przy domyślnych ustawieniach otwórz `http://127.0.0.1:4174`. Podgląd serwuje wygenerowane strony HTML oraz minifikowany CSS i główny bundle JavaScript z `dist/`, zamiast plików źródłowych. Zatrzymaj serwer przez `Ctrl+C`.
+
+- Podgląd nie ma automatycznego buildu ani live reload. Po zmianie źródeł ponów `npm run build` i ręcznie odśwież stronę.
+- Przed `npm run qa:lighthouse` zatrzymaj podgląd — Lighthouse uruchamia ten sam serwer na porcie 4174.
+- `npm run qa:server` domyślnie uruchamia serwer na porcie 4180, sprawdza `/` i `/menu.html`, po czym go zatrzymuje; jest to tymczasowa kontrola dwóch tras, nie stały podgląd w przeglądarce.
+- Serwer nie emuluje przekierowań, nagłówków bezpieczeństwa ani przetwarzania formularzy Netlify. `js/sw-register.js` wyłącza lokalną rejestrację Service Workera, więc podgląd nie weryfikuje działania offline.
+
 ## Skrypty lintujące
 
 - `lint:js` — `eslint --max-warnings 0 "js/**/*.js" "scripts/**/*.mjs"`.

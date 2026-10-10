@@ -118,6 +118,8 @@ Pojedyncze kontrole są dostępne jako `lint:*`, `qa:*` i `test:e2e:*`. Pełny k
 
 Build kopiuje istniejący `assets/`; nie uruchamia konwersji obrazów. `dist/` jest ignorowany przez Git i stanowi wygenerowany pakiet do publikacji. Nie edytuj go ręcznie ani nie dodawaj plików minifikowanych do źródłowych katalogów `css/` i `js/`.
 
+Ręczny podgląd produkcyjnego `dist/` opisuje [procedura podglądu](docs/settings.md#podgląd-produkcyjny).
+
 ### Testy i walidacja
 
 Testy Playwright korzystają z lokalnych serwerów i Chromium. Regresje formularza przechwytują odpowiedzi POST, więc sprawdzają zachowanie klienta, nie rzeczywisty odbiór przez Netlify. `qa:a11y` obejmuje osiem stron oraz stan otwartego dialogu i stan po akceptacji tam, gdzie dialog występuje. Lighthouse CI buduje dystrybucję i zbiera po trzy pomiary dla ośmiu stron; progi w `lighthouserc.json` są wymaganiami konfiguracji, nie deklarowanymi wynikami.
@@ -285,6 +287,8 @@ Individual checks are available as `lint:*`, `qa:*`, and `test:e2e:*`. The [scri
 `scripts/build-dist.mjs` removes the previous `dist/`, processes CSS into `dist/css/style.min.css`, bundles JavaScript into `dist/js/script.min.js`, and copies eight pages and required static files. It rewrites source asset references in copied HTML and `dist/sw.js` to the minified files. Separate PWA scripts are copied without bundling.
 
 The build copies the existing `assets/`; it does not run image conversion. `dist/` is ignored by Git and is the generated package for publication. Do not edit it manually or add minified files to the source `css/` and `js/` directories.
+
+For a manual preview of production `dist/`, see the [preview procedure](docs/settings.md#podgląd-produkcyjny).
 
 ### Testing and Validation
 

@@ -25,13 +25,9 @@ The completed plan and archived technical report were checked against current co
 
 ### IMP-WORKFLOW-02 — Document production preview using the existing server
 
-- **Affected workflow:** Manual inspection of the generated distribution before publication.
-- **Evidence:** `package.json:9-10`, `package.json:25-26`; `scripts/lhci-static-server.mjs:6-8`, `scripts/lhci-static-server.mjs:38-80`; `scripts/check-server-prod.mjs:4-7`, `scripts/check-server-prod.mjs:43-80`; `lighthouserc.json:3-16`; `README.md:87-129`.
-- **Current workflow:** `dev` serves sources on port 4183. The existing static server serves `dist/` on port 4174 by default and is used by Lighthouse; `qa:server` launches it separately on port 4180, checks two routes, then stops it. Neither the script guide nor README provides a persistent manual distribution-preview procedure.
-- **Proposed improvement:** Document the existing sequence: create a fresh distribution with `npm run build`, then keep `node scripts/lhci-static-server.mjs` running for manual inspection at `http://127.0.0.1:4174`. Explain stopping the server before Lighthouse uses the same default port.
-- **Expected practical value:** Make the production bundle easy to inspect without installing another server or running the full Lighthouse collection merely to obtain a preview.
-- **Implementation scope:** Add the procedure to `docs/settings.md` and concise equivalent pointers in both README language sections. Reuse the existing server unchanged; do not add a preview dependency, change build behavior, or alter deployment configuration.
-- **Acceptance criteria:** The documented procedure serves freshly generated HTML and minified CSS/JavaScript from `dist/`, not the source root; it explains that preview does not rebuild on edits, how to stop the process, and the shared Lighthouse port. It distinguishes the persistent preview from the two-route `qa:server` check and states that the local server does not emulate Netlify redirects, headers or form processing. It does not claim local preview verifies offline behavior, since `js/sw-register.js:5-20` disables local registration.
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** Documented the existing production-preview procedure in `docs/settings.md` with equivalent README PL/EN links, rebuild and shutdown instructions, the shared Lighthouse port, and local hosting/offline limits. Distinguished preview from `qa:server`; source ownership, tooling and application behavior were preserved.
+- **Verification:** Static inspection confirmed consistency with current build, server, Lighthouse and Service Worker configuration. Local Markdown links and anchors, README PL/EN technical parity, and `git diff --check` passed. Builds, server execution, application QA, browser tests, Lighthouse and dependency installation were not run; verification covered documentation accuracy only.
 - **Impact:** Medium
 - **Effort:** Small
 
