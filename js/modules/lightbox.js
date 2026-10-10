@@ -52,6 +52,19 @@ export function initLightbox() {
       .replace(/(\/assets\/img\/)(?:_optimized\/)+/g, "$1_optimized/");
   };
 
+  const resolveImageVariants = (value) => {
+    if (!value) return null;
+    const base = basePath(value);
+    if (!base) return null;
+
+    const optimizedBase = toOptimizedBase(base);
+    return {
+      jpeg: `${base}.jpg`,
+      webp: `${optimizedBase}.webp`,
+      avif: `${optimizedBase}.avif`
+    };
+  };
+
   const getFull = (node) => {
     if (!node) return "";
     try {
@@ -70,16 +83,13 @@ export function initLightbox() {
   };
 
   const setImage = (value, alt = "") => {
-    if (!value) return;
-    const base = basePath(value);
-    if (!base) return;
+    const variants = resolveImageVariants(value);
+    if (!variants) return;
 
-    const optimizedBase = toOptimizedBase(base);
-
-    if (sourceAvif) sourceAvif.srcset = `${optimizedBase}.avif`;
-    if (sourceWebp) sourceWebp.srcset = `${optimizedBase}.webp`;
+    if (sourceAvif) sourceAvif.srcset = variants.avif;
+    if (sourceWebp) sourceWebp.srcset = variants.webp;
     if (img) {
-      img.src = `${base}.jpg`;
+      img.src = variants.jpeg;
       img.alt = alt || "";
     }
   };
@@ -266,12 +276,10 @@ export function initLightbox() {
     const src = getFull(node) || "";
     if (!src) return;
 
-    const base = basePath(src);
-    if (!base) return;
+    const variants = resolveImageVariants(src);
+    if (!variants) return;
 
-    const optimizedBase = toOptimizedBase(base);
-
-    [`${optimizedBase}.webp`, `${optimizedBase}.avif`, `${base}.jpg`].forEach((value) => {
+    [variants.webp, variants.avif, variants.jpeg].forEach((value) => {
       const image = new Image();
       image.src = value;
     });
