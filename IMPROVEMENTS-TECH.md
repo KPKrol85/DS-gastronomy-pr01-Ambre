@@ -33,13 +33,9 @@ No existing technical improvement report or active plan was found. The completed
 
 ### IMP-TECH-03 — Define source-to-production asset paths once in the build
 
-- **Affected area:** CSS/JavaScript bundle destinations and reference rewriting in `scripts/build-dist.mjs`.
-- **Evidence:** HTML replacements at `scripts/build-dist.mjs:85-98`, CSS paths at `scripts/build-dist.mjs:100-115`, JavaScript paths at `scripts/build-dist.mjs:118-134`, and Service Worker replacements at `scripts/build-dist.mjs:137-150`; precache inputs at `sw.js:12-25`.
-- **Current implementation:** The same two source-to-production relationships are separately written in bundle path construction, copied-HTML replacements, and Service Worker replacements. Existing checks also repeat the associated path literals. This is working packaging logic, with multiple declarations of one asset naming contract.
-- **Proposed improvement:** Introduce one small asset mapping inside the existing build script and derive the relevant bundle paths, reference replacements, and associated checks from it. Keep HTML and Service Worker replacement rules specific to their respective syntax.
-- **Expected engineering value:** A bundle naming change would have one source of truth shared by asset production and its consumers, reducing the number of independently maintained path pairs.
-- **Implementation scope:** Only `scripts/build-dist.mjs`; two fixed CSS/JavaScript mappings, without a generic build framework. Preserve page lists, copy lists, PostCSS/esbuild options, replacement coverage, validation behavior, and source-only asset safeguards. Do not change canonical HTML, `sw.js`, output names, caching policy, or npm/CI commands.
-- **Acceptance criteria:** Both asset pairs are declared once and consumed by bundle creation and both rewriting paths. A subsequent authorized `npm run build` still packages all eight pages, emits `css/style.min.css` and `js/script.min.js`, and rewrites copied HTML and Service Worker references to those same files. Existing source-minified-asset, unprocessed-import, and source-reference safeguards remain effective; canonical source files remain unchanged by the build. Generated output is never edited by hand.
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** Defined one `assetPaths` mapping with CSS/JavaScript `source` and `production` paths in `scripts/build-dist.mjs`, reused for bundles, HTML and Service Worker replacements, asset-path safeguards, and output directories. Preserved filenames, replacement coverage, validation behavior, copy lists, build options, and execution order.
+- **Verification:** `npm run lint:js`, `npm run build`, and `git diff --check` passed. All 235 production files were byte-identical to the pre-refactor build, including eight HTML pages, both bundles, and the rewritten Service Worker; canonical application sources remained unchanged. All 28 in-memory comparisons against the original script passed, covering existing safeguards, replacement semantics, error messages, build options, and execution order without modifying source fixtures. Build emitted an existing Browserslist data-age warning; browser and broader QA suites were not run.
 - **Impact:** Medium
 - **Effort:** Small
 

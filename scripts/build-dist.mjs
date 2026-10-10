@@ -13,6 +13,11 @@ const distDir = path.join(rootDir, "dist");
 const require = createRequire(import.meta.url);
 const postcssConfig = require(path.join(rootDir, "postcss.config.cjs"));
 
+const assetPaths = {
+  css: { source: "css/style.css", production: "css/style.min.css" },
+  js: { source: "js/script.js", production: "js/script.min.js" },
+};
+
 const htmlFiles = [
   "index.html",
   "menu.html",
@@ -67,7 +72,7 @@ async function copyRelativeDirectory(relativePath) {
 }
 
 async function assertNoSourceMinifiedAssets() {
-  const obsoleteAssets = ["css/style.min.css", "js/script.min.js"];
+  const obsoleteAssets = [assetPaths.css.production, assetPaths.js.production];
   const presentAssets = [];
 
   for (const relativePath of obsoleteAssets) {
@@ -87,8 +92,8 @@ async function copyHtmlFile(relativePath) {
   const targetPath = resolveFromDist(relativePath);
   const sourceHtml = await readFile(sourcePath, "utf8");
   const builtHtml = sourceHtml
-    .replace('href="/css/style.css"', 'href="/css/style.min.css"')
-    .replace('src="/js/script.js"', 'src="/js/script.min.js"');
+    .replace(`href="/${assetPaths.css.source}"`, `href="/${assetPaths.css.production}"`)
+    .replace(`src="/${assetPaths.js.source}"`, `src="/${assetPaths.js.production}"`);
 
   if (builtHtml === sourceHtml) {
     throw new Error(`${relativePath} does not reference canonical source CSS and JavaScript assets`);
@@ -98,8 +103,8 @@ async function copyHtmlFile(relativePath) {
 }
 
 async function buildCss() {
-  const sourcePath = resolveFromRoot("css", "style.css");
-  const targetPath = resolveFromDist("css", "style.min.css");
+  const sourcePath = resolveFromRoot(assetPaths.css.source);
+  const targetPath = resolveFromDist(assetPaths.css.production);
   const sourceCss = await readFile(sourcePath, "utf8");
 
   const result = await postcss(postcssConfig.plugins).process(sourceCss, {
@@ -109,15 +114,15 @@ async function buildCss() {
   });
 
   if (/@import/i.test(result.css)) {
-    throw new Error("Found @import in dist/css/style.min.css");
+    throw new Error(`Found @import in dist/${assetPaths.css.production}`);
   }
 
   await writeFile(targetPath, result.css);
 }
 
 async function buildJs() {
-  const sourcePath = resolveFromRoot("js", "script.js");
-  const targetPath = resolveFromDist("js", "script.min.js");
+  const sourcePath = resolveFromRoot(assetPaths.js.source);
+  const targetPath = resolveFromDist(assetPaths.js.production);
 
   await esbuild.build({
     entryPoints: [sourcePath],
@@ -130,7 +135,7 @@ async function buildJs() {
 
   const bundledJs = await readFile(targetPath, "utf8");
   if (/\bimport\s|from\s+["']\.\/modules\//.test(bundledJs)) {
-    throw new Error("Found import syntax in dist/js/script.min.js");
+    throw new Error(`Found import syntax in dist/${assetPaths.js.production}`);
   }
 }
 
@@ -140,10 +145,10 @@ async function buildServiceWorker() {
   const sourceSw = await readFile(sourcePath, "utf8");
 
   const builtSw = sourceSw
-    .replace('"/css/style.css"', '"/css/style.min.css"')
-    .replace('"/js/script.js"', '"/js/script.min.js"');
+    .replace(`"/${assetPaths.css.source}"`, `"/${assetPaths.css.production}"`)
+    .replace(`"/${assetPaths.js.source}"`, `"/${assetPaths.js.production}"`);
 
-  if (builtSw.includes('"/css/style.css"') || builtSw.includes('"/js/script.js"')) {
+  if (builtSw.includes(`"/${assetPaths.css.source}"`) || builtSw.includes(`"/${assetPaths.js.source}"`)) {
     throw new Error("dist/sw.js still references source CSS or JS assets");
   }
 
@@ -155,8 +160,8 @@ async function main() {
   await rm(distDir, { recursive: true, force: true });
   await Promise.all([
     ensureDirectory(distDir),
-    ensureDirectory(resolveFromDist("css")),
-    ensureDirectory(resolveFromDist("js")),
+    ensureDirectory(path.dirname(resolveFromDist(assetPaths.css.production))),
+    ensureDirectory(path.dirname(resolveFromDist(assetPaths.js.production))),
   ]);
 
   await buildCss();
