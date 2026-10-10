@@ -17,13 +17,9 @@ The completed archived plan, technical/workflow reports and relevant audit/chang
 
 ### IMP-QUALITY-01 — Protect reservation validation and correction before submission
 
-- **Affected area:** JavaScript-enhanced reservation input validation and accessible error recovery.
-- **Evidence:** `js/modules/form.js:3-27`, `js/modules/form.js:62-87`, `js/modules/form.js:101-140`, `js/modules/form.js:161-162`; `scripts/qa-reservation-e2e.mjs:79-87`, `scripts/qa-reservation-e2e.mjs:223-243`; `scripts/qa-nojs-e2e.mjs:151-181`.
-- **Current implementation:** The initializer enables custom submission handling with `noValidate`, normalizes Polish phone numbers, sets phone/consent validity and ARIA errors, and calls native validity APIs for required fields. Editing the phone or checking consent clears their errors. The reservation regression starts with valid inputs and covers four delivery/fallback outcomes; the empty-invalid submission assertion belongs to the separate no-JavaScript path.
-- **Proposed improvement:** Extend the existing reservation regression to protect the enhanced invalid-input-to-corrected-input workflow before any POST is sent.
-- **Expected quality value:** Detect regressions in the validation boundary and error clearing that successful-delivery and no-JavaScript scenarios do not exercise.
-- **Implementation scope:** Add scenarios to `scripts/qa-reservation-e2e.mjs` using its real page, initializer and intercepted requests. Preserve field constraints, normalization, Polish messages, Netlify payload and all four existing outcomes. No application changes or additional validation library.
-- **Acceptance criteria:** With JavaScript initialized, an empty form, an otherwise valid form with a short phone number, and an otherwise valid form without consent each send zero POSTs and retain entered values. Phone/consent cases assert custom validity, `aria-invalid`, their existing error text and a usable submit control. Correction clears the corresponding validity/ARIA/message state. Local, `+48` and `0048` representations of the same nine-digit number produce the existing formatted value; corrected valid input sends exactly one intercepted POST with the expected phone and consent values. Existing delivery/fallback scenarios remain passing.
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** Expanded `scripts/qa-reservation-e2e.mjs` from four to nine isolated scenarios on the real initialized homepage. Invalid empty, short-phone and missing-consent submissions send zero POSTs, retain values and leave the submit button usable. Phone/consent correction clears custom validity, `aria-invalid` and Polish field errors; local, `+48` and `0048` phone representations normalize to `+48 123 456 789`. Each corrected submission sends exactly one intercepted POST with the full existing Netlify payload. Application behavior and all four delivery/fallback scenarios are preserved.
+- **Verification:** `npm run test:e2e:reservation` passed (9/9, including the original four scenarios); `npm run lint:js` and `git diff --check` passed. Chromium required a run outside the sandbox for localhost access. Requests were intercepted locally; live Netlify delivery, the separate no-JavaScript test, other browser engines, builds and broader QA were not verified.
 - **Impact:** High
 - **Effort:** Small
 

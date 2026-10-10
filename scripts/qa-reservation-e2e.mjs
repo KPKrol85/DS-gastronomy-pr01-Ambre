@@ -112,6 +112,124 @@ const assertButtonUsable = async (page) => {
   assert.equal(await submitButton.textContent(), "Wyślij rezerwację");
 };
 
+const interceptPosts = async (context) => {
+  const posts = [];
+  context.on("request", (request) => {
+    if (request.method() === "POST") posts.push(request);
+  });
+  await context.route("**/*", async (route) => {
+    if (route.request().method() !== "POST") {
+      await route.continue();
+      return;
+    }
+
+    await route.fulfill({ status: 204, body: "" });
+  });
+  return posts;
+};
+
+const assertInvalidSubmission = async (page, posts, expectedState) => {
+  const prevented = await page.locator("#booking-form").evaluate((form) => {
+    let submissionEvent;
+    form.addEventListener("submit", (event) => {
+      submissionEvent = event;
+    }, { once: true });
+    form.requestSubmit();
+    return submissionEvent?.defaultPrevented === true;
+  });
+
+  assert.equal(prevented, true, "Enhanced validation must prevent the invalid submission");
+  assert.equal(await page.locator("#form-msg").textContent(), "Uzupełnij wymagane pola.");
+  assert.equal(await page.locator("#booking-form").evaluate((form) => form.checkValidity()), false);
+  assert.deepEqual(await readFormState(page), expectedState, "Invalid submission must retain entered values");
+  await assertButtonUsable(page);
+  assert.equal(posts.length, 0, "Invalid submission must send zero POST requests");
+};
+
+const assertFieldError = async (page, field, validityMessage, errorMessage) => {
+  assert.deepEqual(await page.locator(`#${field}`).evaluate((input) => ({
+    customError: input.validity.customError,
+    valid: input.validity.valid,
+    validationMessage: input.validationMessage,
+    ariaInvalid: input.getAttribute("aria-invalid")
+  })), {
+    customError: Boolean(validityMessage),
+    valid: !validityMessage,
+    validationMessage: validityMessage,
+    ariaInvalid: validityMessage ? "true" : null
+  }, `${field} must expose the expected validity and ARIA state`);
+  assert.equal(await page.locator(`#${field}-error`).textContent(), errorMessage);
+};
+
+const assertCorrectedSubmission = async (page, posts) => {
+  assert.equal(await page.locator("#booking-form").evaluate((form) => form.checkValidity()), true);
+  await page.locator('.site-button--form[type="submit"]').click();
+  await page.locator("#form-msg").filter({ hasText: successMessage }).waitFor();
+  await assertButtonUsable(page);
+
+  assert.equal(posts.length, 1, "Corrected submission must send exactly one POST request");
+  const [request] = posts;
+  assert.equal(request.url(), `${baseUrl}/`);
+  assert.match((await request.headerValue("content-type")) || "", /^application\/x-www-form-urlencoded/);
+  const payload = new URLSearchParams(request.postData() || "");
+  assert.equal([...payload].length, 9, "The Netlify payload must retain all fields without duplicates");
+  assert.deepEqual(Object.fromEntries(payload), {
+    "form-name": "reservation",
+    company: "",
+    name: "Jan Kowalski",
+    phone: "+48 123 456 789",
+    date: "2026-12-12",
+    time: "18:00",
+    guests: "2",
+    notes: "Stolik przy oknie",
+    consent: "on"
+  });
+};
+
+const runEmptyFormTest = async (browser) => {
+  const { context, page } = await openFormPage(browser);
+  try {
+    const posts = await interceptPosts(context);
+    const expectedState = await readFormState(page);
+    await assertInvalidSubmission(page, posts, expectedState);
+    assert.equal(await page.locator("#name").evaluate((input) => input.validity.valueMissing), true);
+  } finally {
+    await context.close();
+  }
+};
+
+const runCorrectionTest = async (browser, field, phone = "123456789") => {
+  const { context, page } = await openFormPage(browser);
+  try {
+    const posts = await interceptPosts(context);
+    await fillValidForm(page);
+    if (field === "phone") await page.locator("#phone").fill("123");
+    else await page.locator("#consent").uncheck();
+
+    const expectedState = await readFormState(page);
+    await assertInvalidSubmission(page, posts, expectedState);
+    await assertFieldError(page, field,
+      field === "phone" ? "Podaj poprawny numer telefonu." : "Wyraź zgodę na przetwarzanie danych.",
+      field === "phone" ? "Podaj poprawny numer telefonu (np. +48 123 456 789)." : "Aby wysłać formularz, zaznacz zgodę."
+    );
+
+    if (field === "phone") await page.locator("#phone").fill(phone);
+    else await page.locator("#consent").check();
+
+    await assertFieldError(page, field, "", "");
+    assert.deepEqual(await readFormState(page), {
+      ...expectedState,
+      phone: "+48 123 456 789",
+      consent: true
+    }, "Correction must normalize the phone and preserve the remaining entered values");
+    assert.equal(posts.length, 0, "Correcting a field must not submit the form");
+    await assertButtonUsable(page);
+    await assertCorrectedSubmission(page, posts);
+  } finally {
+    await context.close();
+  }
+};
+
 const runAcceptedResponseTest = async (browser) => {
   const { context, page } = await openFormPage(browser);
   let releaseResponse;
@@ -228,19 +346,24 @@ const run = async () => {
   try {
     browser = await chromium.launch({ headless: true });
 
-    console.log("QA RESERVATION E2E: accepted HTTP response");
-    await runAcceptedResponseTest(browser);
+    const scenarios = [
+      ["accepted HTTP response", () => runAcceptedResponseTest(browser)],
+      ["rejected HTTP response", () => runFailureTest(browser, "http")],
+      ["network failure", () => runFailureTest(browser, "network")],
+      ["native fallback without fetch", () => runNativeFallbackTest(browser)],
+      ["empty form sends no POST and retains values", () => runEmptyFormTest(browser)],
+      ...["123456789", "+48 123 456 789", "0048123456789"].map((phone) => [
+        `short phone rejection and correction with ${phone}`,
+        () => runCorrectionTest(browser, "phone", phone)
+      ]),
+      ["missing consent rejection and correction", () => runCorrectionTest(browser, "consent")]
+    ];
+    for (const [label, scenario] of scenarios) {
+      console.log(`QA RESERVATION E2E: ${label}`);
+      await scenario();
+    }
 
-    console.log("QA RESERVATION E2E: rejected HTTP response");
-    await runFailureTest(browser, "http");
-
-    console.log("QA RESERVATION E2E: network failure");
-    await runFailureTest(browser, "network");
-
-    console.log("QA RESERVATION E2E: native fallback without fetch");
-    await runNativeFallbackTest(browser);
-
-    console.log("QA RESERVATION E2E: PASS (4/4)");
+    console.log(`QA RESERVATION E2E: PASS (${scenarios.length}/${scenarios.length})`);
   } finally {
     if (browser) await browser.close();
     await new Promise((resolve, reject) => {
