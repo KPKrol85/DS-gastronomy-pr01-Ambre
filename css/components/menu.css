@@ -5,11 +5,6 @@
   margin-inline: auto;
 }
 
-.tabs__tab:focus-visible {
-  outline: 3px solid var(--c-accent-contrast);
-  outline-offset: 3px;
-}
-
 .menu__grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -202,46 +197,13 @@
 :is(.menu--home, .page-menu) .tabs__tab {
   --menu-tab-gap: var(--space-02);
 
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 40px;
   padding: var(--menu-tab-gap) var(--space-01);
-  border: 0;
   border-radius: 0;
-  background: none;
   box-shadow: none;
-  color: var(--c-muted);
-  font-family: inherit;
-  font-size: var(--fs-sm);
-  font-weight: 600;
-  line-height: var(--lh-normal);
-  letter-spacing: var(--ls-wide);
-  text-transform: uppercase;
-  transition: color var(--dur-normal) var(--ease-standard);
 }
 
 :is(.menu--home, .page-menu) .tabs__tab::after {
-  content: "";
-  position: absolute;
-  inset-inline: 0;
   bottom: var(--menu-tab-gap);
-  height: var(--border-medium);
-  border-radius: var(--radius-xs);
-  background: var(--c-accent);
-  transform: scaleX(0);
-  transform-origin: 50% 100%;
-  transition: transform var(--dur-normal) var(--ease-standard);
-  pointer-events: none;
-}
-
-:is(.menu--home, .page-menu) .tabs__tab[aria-pressed="true"] {
-  color: var(--c-accent-contrast);
-}
-
-:is(.menu--home, .page-menu) .tabs__tab[aria-pressed="true"]::after {
-  transform: scaleX(1);
 }
 
 :is(.menu--home, .page-menu) .menu__grid {
@@ -332,23 +294,10 @@
 @media (pointer: coarse) {
   :is(.menu--home, .page-menu) .tabs__tab {
     --menu-tab-gap: var(--space-03);
-
-    min-height: 44px;
   }
 }
 
 @media (hover: hover) {
-  :is(.menu--home, .page-menu) .tabs__tab:hover {
-    color: var(--c-ink);
-  }
-  :is(.menu--home, .page-menu) .tabs__tab:hover::after {
-    transform: scaleX(1);
-    background: color-mix(in oklab, var(--c-accent), transparent 55%);
-  }
-  :is(.menu--home, .page-menu) .tabs__tab[aria-pressed="true"]:hover::after {
-    background: var(--c-accent);
-  }
-
   /* Warming the hairline is the whole hover — no lift, no glossy panel. */
   :is(.menu--home, .page-menu) .dish:hover {
     transform: none;
@@ -362,8 +311,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :is(.menu--home, .page-menu) .tabs__tab,
-  :is(.menu--home, .page-menu) .tabs__tab::after,
   :is(.menu--home, .page-menu) .dish {
     transition: none;
   }

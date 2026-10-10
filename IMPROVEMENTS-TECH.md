@@ -31,6 +31,8 @@ No existing technical improvement report or active plan was found. The completed
 
 ### IMP-TECH-02 — Give category-tab styling one shared component owner
 
+**Status:** COMPLETED (2026-10-09) — Consolidated shared category-tab styling in `css/components/tabs.css`, retaining feature-specific differences; CSS lint and focused Chromium comparison confirmed equivalent styles, rendering, and category states.
+
 - **Affected area:** Styles for the existing `.tabs__tab` controls in menu and gallery components.
 - **Evidence:** `css/components/menu.css:195-245`, `css/components/menu.css:332-350`, `css/components/menu.css:364-368`; `css/components/gallery.css:73-119`, `css/components/gallery.css:129-147`, `css/components/gallery.css:160-166`; stylesheet assembly in `css/style.css:10-29`.
 - **Current implementation:** Menu and gallery independently declare equivalent control typography, spacing, accent underline, pressed state, hover treatment, coarse-pointer sizing, and reduced-motion behavior. The menu also owns the shared `.tabs__tab:focus-visible` rule at `css/components/menu.css:8-11`. Some declarations, including menu border-radius and box-shadow resets, differ and must remain deliberate differences.

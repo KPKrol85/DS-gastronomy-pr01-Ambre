@@ -37,6 +37,7 @@ When an implementation task is defined, apply this policy and state `Changelog: 
 
 ### Changed
 
+- Consolidated shared menu and gallery category-tab styling in `css/components/tabs.css`, preserving existing selectors, feature-specific spacing and resets, visual states, responsive sizing, themes, and reduced-motion behavior.
 - Consolidated normalized category matching into a shared JavaScript helper used by menu and gallery filters and gallery load-more logic, eliminating duplicated comparisons while preserving existing filtering, loading, and accessibility behavior.
 - Changed Lighthouse CI to build and audit the production `dist/` path with text compression, while preserving the existing eight URLs and category thresholds; the current contract collects three runs per URL, for 24 Lighthouse collections per complete run.
 - Changed the first menu thumbnail to load eagerly after Lighthouse identified it as the LCP element, and deferred the menu page's embedded Google Map behind an accessible, no-JavaScript-safe user action.

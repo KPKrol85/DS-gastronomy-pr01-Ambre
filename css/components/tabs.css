@@ -1,0 +1,81 @@
+/* Shared category tabs; feature styles own their spacing variables and resets. */
+
+:is(.menu--home, .page-menu) .tabs__tab,
+.gallery__tabs .tabs__tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  border: 0;
+  background: none;
+  color: var(--c-muted);
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: var(--lh-normal);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  transition: color var(--dur-normal) var(--ease-standard);
+}
+
+:is(.menu--home, .page-menu) .tabs__tab::after,
+.gallery__tabs .tabs__tab::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  height: var(--border-medium);
+  border-radius: var(--radius-xs);
+  background: var(--c-accent);
+  transform: scaleX(0);
+  transform-origin: 50% 100%;
+  transition: transform var(--dur-normal) var(--ease-standard);
+  pointer-events: none;
+}
+
+:is(.menu--home, .page-menu) .tabs__tab[aria-pressed="true"],
+.gallery__tabs .tabs__tab[aria-pressed="true"] {
+  color: var(--c-accent-contrast);
+}
+
+:is(.menu--home, .page-menu) .tabs__tab[aria-pressed="true"]::after,
+.gallery__tabs .tabs__tab[aria-pressed="true"]::after {
+  transform: scaleX(1);
+}
+
+.tabs__tab:focus-visible {
+  outline: 3px solid var(--c-accent-contrast);
+  outline-offset: 3px;
+}
+
+@media (pointer: coarse) {
+  :is(.menu--home, .page-menu) .tabs__tab,
+  .gallery__tabs .tabs__tab {
+    min-height: 44px;
+  }
+}
+
+@media (hover: hover) {
+  :is(.menu--home, .page-menu) .tabs__tab:hover,
+  .gallery__tabs .tabs__tab:hover {
+    color: var(--c-ink);
+  }
+  :is(.menu--home, .page-menu) .tabs__tab:hover::after,
+  .gallery__tabs .tabs__tab:hover::after {
+    transform: scaleX(1);
+    background: color-mix(in oklab, var(--c-accent), transparent 55%);
+  }
+  :is(.menu--home, .page-menu) .tabs__tab[aria-pressed="true"]:hover::after,
+  .gallery__tabs .tabs__tab[aria-pressed="true"]:hover::after {
+    background: var(--c-accent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.menu--home, .page-menu) .tabs__tab,
+  :is(.menu--home, .page-menu) .tabs__tab::after,
+  .gallery__tabs .tabs__tab,
+  .gallery__tabs .tabs__tab::after {
+    transition: none;
+  }
+}

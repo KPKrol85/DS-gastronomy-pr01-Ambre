@@ -78,44 +78,11 @@
 .gallery__tabs .tabs__tab {
   --gallery-tab-gap: var(--space-02);
 
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 40px;
   padding: var(--gallery-tab-gap) var(--space-01);
-  border: 0;
-  background: none;
-  color: var(--c-muted);
-  font-family: inherit;
-  font-size: var(--fs-sm);
-  font-weight: 600;
-  line-height: var(--lh-normal);
-  letter-spacing: var(--ls-wide);
-  text-transform: uppercase;
-  transition: color var(--dur-normal) var(--ease-standard);
 }
 
 .gallery__tabs .tabs__tab::after {
-  content: "";
-  position: absolute;
-  inset-inline: 0;
   bottom: var(--gallery-tab-gap);
-  height: var(--border-medium);
-  border-radius: var(--radius-xs);
-  background: var(--c-accent);
-  transform: scaleX(0);
-  transform-origin: 50% 100%;
-  transition: transform var(--dur-normal) var(--ease-standard);
-  pointer-events: none;
-}
-
-.gallery__tabs .tabs__tab[aria-pressed="true"] {
-  color: var(--c-accent-contrast);
-}
-
-.gallery__tabs .tabs__tab[aria-pressed="true"]::after {
-  transform: scaleX(1);
 }
 
 /* The same laptop step the full gallery opens its third column on, so both
@@ -129,23 +96,10 @@
 @media (pointer: coarse) {
   .gallery__tabs .tabs__tab {
     --gallery-tab-gap: var(--space-03);
-
-    min-height: 44px;
   }
 }
 
 @media (hover: hover) {
-  .gallery__tabs .tabs__tab:hover {
-    color: var(--c-ink);
-  }
-  .gallery__tabs .tabs__tab:hover::after {
-    transform: scaleX(1);
-    background: color-mix(in oklab, var(--c-accent), transparent 55%);
-  }
-  .gallery__tabs .tabs__tab[aria-pressed="true"]:hover::after {
-    background: var(--c-accent);
-  }
-
   /* Warming the frame is the whole hover — no lift, no overlay, no label; the
      photograph leans in by a hair and nothing else moves. */
   .gallery__item:hover {
@@ -158,8 +112,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .gallery__tabs .tabs__tab,
-  .gallery__tabs .tabs__tab::after,
   .gallery__item,
   .gallery__item img {
     transition: none;
