@@ -30,9 +30,9 @@ Plik `package.json` jest wykonywalnym źródłem prawdy. Poniższy opis rozróż
 
 ### `test:e2e`
 
-- **Command:** `npm run test:e2e:reservation && npm run test:e2e:demo-legal && npm run test:e2e:scroll-to-top && npm run test:e2e:legal-tables && npm run test:e2e:lightbox && npm run test:e2e:gallery-status`
-- **Purpose:** Uruchamia deterministycznie sześć skupionych regresji przeglądarkowych.
-- **Use:** Po zmianach interakcji formularza, dialogu, wspólnego sterowania przewijaniem, responsywnego osadzania tabel prawnych, lightboxa galerii i podglądu dania lub statusu ukończenia galerii.
+- **Command:** `npm run test:e2e:reservation && npm run test:e2e:demo-legal && npm run test:e2e:scroll-to-top && npm run test:e2e:legal-tables && npm run test:e2e:lightbox && npm run test:e2e:gallery-status && npm run test:e2e:mobile-nav`
+- **Purpose:** Uruchamia deterministycznie siedem skupionych regresji przeglądarkowych.
+- **Use:** Po zmianach interakcji formularza, dialogu, wspólnego sterowania przewijaniem, responsywnego osadzania tabel prawnych, lightboxa galerii i podglądu dania, statusu ukończenia galerii lub nawigacji mobilnej.
 
 ### `qa`
 
@@ -96,6 +96,7 @@ Przy domyślnych ustawieniach otwórz `http://127.0.0.1:4174`. Podgląd serwuje 
 - `test:e2e:legal-tables` — regresje poziomego przepełnienia, dostępności i obsługi klawiaturą tabel na stronach prawnych przy szerokościach 320 px i 390 px.
 - `test:e2e:lightbox` — regresje przywracania stanu dokumentu przez lightbox galerii: dokładna poprzednia wartość `scroll-behavior` w stylu inline elementu głównego, zachowana pozycja przewijania i powrót fokusu do klikniętego elementu galerii we wszystkich obsługiwanych ścieżkach zamknięcia (przycisk zamykania, Escape/cancel, tło i natywne zamknięcie dialogu). Sprawdza też kontrakt trybów: galeria otwiera sesję przeglądaną z licznikiem oraz nawigacją, a podgląd dania w menu pozostaje pojedynczy, z ukrytymi i niedostępnymi z klawiatury przyciskami nawigacji.
 - `test:e2e:gallery-status` — regresje ukończonego statusu galerii: treść statusu dokładnie równa `Wszystko załadowane`, bez zbędnych znaków i obcych węzłów tekstowych, dekoracyjna ikona SVG wykluczona z drzewa dostępności oraz niezmienione filtrowanie galerii i moment pojawienia się stanu ukończonego.
+- `test:e2e:mobile-nav` — regresje mobilnego menu przy 390×844: Enter, Tab/Shift+Tab i zawijanie fokusu, oba podmenu, synchronizacja `hidden`/ARIA, Escape i kliknięcie nakładki, powrót fokusu oraz cztery cykle otwarcia/zamknięcia. Sprawdza też zamknięcie po przejściu z 938 do 939 px, istniejącą różnicę progów JavaScript/CSS przy 939 px i zwykłe przechodzenie klawiaturą po nawigacji desktopowej przy 940 px. Używa prawdziwej strony po akceptacji dialogu demonstracyjnego, izolowanych kontekstów Chromium i blokady Service Workerów.
 
 ## CSP
 
