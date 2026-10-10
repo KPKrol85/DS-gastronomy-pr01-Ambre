@@ -20,7 +20,7 @@ Plik `package.json` jest wykonywalnym źródłem prawdy. Poniższy opis rozróż
 
 - **Command:** `npm run lint:js && npm run lint:css && npm run lint:text`
 - **Purpose:** Agreguje lint JavaScriptu, CSS i publicznego tekstu.
-- **Use:** Po zmianach źródłowych, przed `qa:fast`.
+- **Use:** Samodzielna kontrola lint po zmianach źródłowych. `qa:fast` już uruchamia `lint`, więc nie trzeba wykonywać go osobno bezpośrednio wcześniej.
 
 ### `qa:fast`
 
@@ -40,6 +40,20 @@ Plik `package.json` jest wykonywalnym źródłem prawdy. Poniższy opis rozróż
 - **Purpose:** Najpełniejsza skonfigurowana bramka jakości: szybkie QA, zachowanie bez JavaScriptu, skupione E2E, automatyczna dostępność i Lighthouse CI.
 - **Use:** Przed wydaniem lub jako pełny pipeline jakości. Jest wyraźnie droższa od `qa:fast`.
 
+Poniższa tabela pomaga dobrać najmniejszy zalecany zestaw do zakresu i ryzyka zmiany; nie zmienia obowiązujących bramek jakości. Przy zmianie kilku obszarów połącz właściwe kontrole lub wybierz szerszy agregat.
+
+| Rodzaj zmiany | Skupione kontrole statyczne | Weryfikacja w przeglądarce / szerszy zakres |
+| --- | --- | --- |
+| Wyłącznie dokumentacja wewnętrzna | Przegląd treści, odnośników i zgodności z konfiguracją oraz `git diff --check`. | QA aplikacji nie jest automatycznie wymagane; `qa:links` nie waliduje Markdown. |
+| CSS i wygląd | `npm run lint:css`. | Sprawdź zmienione widoki, responsywność, motywy jasny/ciemny/systemowy i widoczność fokusu; przy wpływie na interakcję wybierz właściwy test E2E. |
+| Publiczny HTML, linki, metadane i dane strukturalne | `npm run qa:html`; dla treści `npm run lint:text`, linków `npm run qa:links`, metadanych `npm run qa:seo`, JSON-LD także `npm run qa:schema` i kontrola CSP z wiersza poniżej. | Przy zmianie struktury lub obsługi sprawdź renderowanie i klawiaturę; dobierz E2E. Przy wpływie na dostępność użyj `npm run qa:a11y`, a na zachowanie bez JavaScriptu — `npm run qa:nojs`; zmiana może wymagać obu kontroli. |
+| Moduły JavaScript i pojedyncze interakcje | `npm run lint:js`. | Wybierz właściwe polecenie z [listy skupionych testów E2E](#skupione-testy-e2e), np. `npm run test:e2e:reservation` lub `npm run test:e2e:lightbox`; sprawdź ręcznie zmienione zachowanie poza ich pokryciem. |
+| Skrypty inline i hashe CSP (także JSON-LD) | `npm run qa:csp` — kontrola bez zapisu; ewentualna regeneracja wymaga autoryzacji opisanej w sekcji CSP. | Po zmianie wykonywanego skryptu sprawdź jego działanie i ewentualne blokady CSP w środowisku stosującym `_headers`; lokalny serwer źródeł nie potwierdza tych nagłówków. |
+| Service Worker i cache | `npm run lint:js`. | Jawnie uruchom `npm run qa:service-worker` (poza `qa`); test obejmuje aktywację i własność cache. Zmienione pobieranie zasobów lub fallback offline sprawdź dodatkowo w środowisku z aktywnym SW. |
+| Zmiany przekrojowe i przygotowanie wydania | `npm run qa:fast` podczas pracy; przed wydaniem lub przy szerokim ryzyku wybierz `npm run qa`. | `qa` zawiera testy przeglądarkowe i Lighthouse; przy zmianach SW dodaj osobno `npm run qa:service-worker`. |
+
+Agregaty wykonują już swoje składowe: `lint` zawiera `lint:js`, `lint:css` i `lint:text`; `qa:fast` zawiera `lint` i statyczne QA; `qa` zawiera `qa:fast`, `qa:nojs`, `test:e2e`, `qa:a11y` i `qa:lighthouse`. W jednym zestawie kontroli nie powtarzaj etapów zawartych w wybranym agregacie; po kolejnej zmianie ponów dotknięte kontrole.
+
 ## Skrypty lintujące
 
 - `lint:js` — `eslint --max-warnings 0 "js/**/*.js" "scripts/**/*.mjs"`.
@@ -49,7 +63,7 @@ Plik `package.json` jest wykonywalnym źródłem prawdy. Poniższy opis rozróż
 ## Skrypty QA
 
 - `qa:html` — waliduje osiem stron źródłowych przez HTML-Validate.
-- `qa:links` — sprawdza lokalne linki i kotwice.
+- `qa:links` — sprawdza lokalne linki i kotwice w HTML aplikacji; nie waliduje odnośników Markdown.
 - `qa:seo` — sprawdza metadane SEO, canonicale i JSON-LD.
 - `qa:schema` — egzekwuje politykę obecności JSON-LD na właściwych stronach.
 - `qa:csp` — tylko sprawdza, czy hashe CSP w `_headers` są aktualne; nie zapisuje pliku.
@@ -69,7 +83,7 @@ Plik `package.json` jest wykonywalnym źródłem prawdy. Poniższy opis rozróż
 
 ## CSP
 
-- `csp:hash` — regeneruje hashe skryptów inline w `_headers`; jest jawnym poleceniem utrzymaniowym zmieniającym plik.
+- `csp:hash` — regeneruje hashe skryptów inline w `_headers`; jest jawnym poleceniem utrzymaniowym zmieniającym plik. W razie potrzeby użyj `npm run csp:hash`, a następnie zweryfikuj wynik przez `npm run qa:csp`. Regeneracja wymaga osobnej autoryzacji, jeśli zapis `_headers` nie jest już objęty zatwierdzonym zakresem zadania.
 - `qa:csp` — wykonuje wyłącznie weryfikację i należy do `qa:fast` oraz pełnego `qa`.
 
 ## Obrazy
