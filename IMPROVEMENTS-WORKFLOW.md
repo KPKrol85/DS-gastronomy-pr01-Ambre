@@ -42,13 +42,9 @@ The completed plan and archived technical report were checked against current co
 
 ### IMP-WORKFLOW-04 — Keep no-JavaScript failure screenshots outside tracked source
 
-- **Affected workflow:** Git hygiene for local QA diagnostics.
-- **Evidence:** `scripts/qa-nojs-e2e.mjs:10`, `scripts/qa-nojs-e2e.mjs:98-113`; `.gitignore:18-22`; `package.json:15`, `package.json:23`. Read-only Git inspection found no tracked files under `reports/nojs/` and no ignore rule matching a representative path there.
-- **Current workflow:** On a failed no-JavaScript step, the script writes a screenshot under `reports/nojs/` and prints its path. Existing ignore rules cover `test-results/`, `playwright-report/` and `.lighthouseci/`, but do not classify this screenshot directory. No failure was induced during this review.
-- **Proposed improvement:** Explicitly classify the existing no-JavaScript screenshots as disposable local diagnostics and ignore their exact output directory while keeping them available for inspection.
-- **Expected practical value:** Keep failure evidence accessible without introducing unrelated generated images into routine Git status and source-review work.
-- **Implementation scope:** Add a narrowly scoped rule for `/reports/nojs/` to `.gitignore` and explain its purpose alongside `qa:nojs` in `docs/settings.md`. Preserve the script's screenshot generation, filenames, printed paths and failure exit status. Do not ignore all `reports/`, delete evidence, move archived audits or add cleanup automation.
-- **Acceptance criteria:** `git check-ignore` identifies the intended rule for a representative no-JavaScript screenshot path; the rule does not match other report directories or maintained assets. Existing failure capture and reporting remain unchanged, and locally generated screenshots remain readable. No tracked source or archived evidence is removed.
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** Added `/reports/nojs/` to `.gitignore` and documented local screenshot availability in `docs/settings.md`. Preserved screenshot generation, filenames, printed paths and failure exit behavior; maintained assets and archived evidence were unchanged.
+- **Verification:** `git check-ignore -v` matched the new rule for `reports/nojs/example-failure.png`; five paths outside that directory and all 221 tracked asset/archive paths had no ignore matches using `--no-index`. `git ls-files` found no tracked files under `reports/nojs/`. Source inspection and an unchanged script diff confirmed the diagnostic contract. `git diff --check` passed and Git status contained only approved changes. No browser tests, full QA, Lighthouse, builds or dependency installation were run; no screenshots were created or deleted, and runtime capture/readability was not tested.
 - **Impact:** Low
 - **Effort:** Small
 

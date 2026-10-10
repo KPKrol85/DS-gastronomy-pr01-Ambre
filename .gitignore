@@ -20,6 +20,7 @@ node_modules/
 /test-results/
 /playwright-report/
 /.lighthouseci/
+/reports/nojs/
 
 # Local agent worktrees
 
