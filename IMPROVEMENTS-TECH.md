@@ -49,13 +49,9 @@ No existing technical improvement report or active plan was found. The completed
 
 ### IMP-TECH-05 — Reuse the existing focus-discovery helper in the mobile drawer
 
-- **Affected area:** Focus candidate collection in `js/modules/nav.js`.
-- **Evidence:** Shared helper at `js/modules/utils.js:21-30`; equivalent local collection at `js/modules/nav.js:63-70`, consumed by Tab handling at `js/modules/nav.js:72-95` and opening focus at `js/modules/nav.js:97-110`.
-- **Current implementation:** `utils.js` exports `getFocusable(root)`, while the mobile navigation repeats its selector, hidden/ARIA exclusions, DOM ordering, and missing-root result. The shared export has no current importing consumer. The demonstration modal intentionally uses a different, stricter discovery policy.
-- **Proposed improvement:** Import the existing helper into `nav.js` and use it with the drawer root for the two current collection sites, removing the equivalent local implementation.
-- **Expected engineering value:** The existing drawer-compatible discovery rule would have one maintained definition and a concrete consumer, without adding another focus abstraction.
-- **Implementation scope:** Only the helper import and candidate collection in `nav.js`; retain the helper's semantics. Preserve drawer cloning, submenu behavior, breakpoint handling, open-state guards, Tab/Shift+Tab wrapping, outside-focus handling, Escape, ARIA, listener lifecycle, and focus return. Leave demonstration-modal discovery and native-dialog lightbox behavior unchanged.
-- **Acceptance criteria:** Both drawer collection sites use `getFocusable(drawer)` and return the same ordered candidates, including an empty array without a drawer. A focused mobile check confirms unchanged initial focus, boundary wrapping, native interior Tab traversal, Escape dismissal, and return to the opener. Desktop transition and the closed-drawer keyboard path retain their existing behavior.
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** Imported the existing `getFocusable` helper from `utils.js` into `nav.js`, removed the local duplicate, and used `getFocusable(drawer)` for Tab handling and opening focus. Preserved the selector, filtering, DOM ordering, missing-root result, and existing drawer interaction, ARIA, breakpoint, and listener contracts.
+- **Verification:** `npm run lint:js` and `git diff --check` passed. Focused Chromium verification at 390×844 px confirmed identical ordered candidates on the actual drawer and a discovery-policy fixture, empty results for missing/empty roots, initial focus, Tab/Shift+Tab wrapping, native interior traversal, outside-focus handling, submenu controls, Escape, focus return, closed-drawer behavior, and the 939px desktop transition with mobile reopening. Used existing dependencies from an Ambre checkout with an identical lockfile because local dependencies were absent; browser verification passed outside the sandbox after localhost access was blocked. No dependencies were installed. Other browsers, screen readers, full QA, and production build were not tested.
 - **Impact:** Low
 - **Effort:** Small
 

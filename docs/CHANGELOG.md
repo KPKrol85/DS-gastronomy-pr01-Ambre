@@ -37,6 +37,7 @@ When an implementation task is defined, apply this policy and state `Changelog: 
 
 ### Changed
 
+- Reused the existing `getFocusable(root)` helper for mobile-drawer opening focus and Tab handling, removing duplicated focus discovery while preserving candidate selection, ordering, and existing navigation and accessibility contracts.
 - Consolidated lightbox JPEG, WebP, and AVIF URL resolution into local `resolveImageVariants()`, shared by image display and adjacent-image preloading; preserved URL rules, preload order, and existing lightbox interaction and accessibility contracts.
 - Consolidated CSS and JavaScript source-to-production paths into one mapping in `scripts/build-dist.mjs`, shared by bundle generation, HTML and Service Worker rewriting, and asset-path safeguards; preserved production output, replacement semantics, validation behavior, and build order.
 - Consolidated shared menu and gallery category-tab styling in `css/components/tabs.css`, preserving existing selectors, feature-specific spacing and resets, visual states, responsive sizing, themes, and reduced-motion behavior.

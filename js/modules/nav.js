@@ -1,4 +1,4 @@
-import { $, $$, byTestId, log } from "./utils.js";
+import { $, $$, byTestId, getFocusable, log } from "./utils.js";
 
 const normalizePathname = (pathname) => {
   const withLeading = pathname.startsWith("/") ? pathname : `/${pathname}`;
@@ -60,18 +60,10 @@ export function initMobileNav() {
   }
 
   const mq = window.matchMedia("(min-width: 939px)");
-  const getFocusable = () =>
-    drawer
-      ? Array.from(
-          drawer.querySelectorAll(
-            "a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex='-1'])"
-          )
-        ).filter((el) => !el.hasAttribute("hidden") && el.getAttribute("aria-hidden") !== "true")
-      : [];
   let previouslyFocused = null;
   const trapFocus = (event) => {
     if (event.key !== "Tab" || !document.body.classList.contains("site-header-nav-open")) return;
-    const focusable = getFocusable();
+    const focusable = getFocusable(drawer);
     if (!focusable.length) return;
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
@@ -105,7 +97,7 @@ export function initMobileNav() {
     toggle.setAttribute("aria-expanded", String(open));
     if (drawer) drawer.setAttribute("aria-hidden", String(!open));
     if (open) {
-      const focusable = getFocusable();
+      const focusable = getFocusable(drawer);
       if (focusable.length) focusable[0].focus();
       document.addEventListener("keydown", trapFocus);
     } else {
