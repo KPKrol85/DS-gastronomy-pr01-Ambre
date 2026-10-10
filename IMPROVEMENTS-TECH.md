@@ -17,29 +17,17 @@ No existing technical improvement report or active plan was found. The completed
 
 ### IMP-TECH-01 — Share normalized category matching across existing filters
 
-**Status:** COMPLETED (2026-10-09) — Consolidated normalized category matching into `js/modules/category-match.js` and integrated it across the three existing filtering paths while preserving their behavior.
-
-- **Affected area:** Menu and gallery filtering in `js/modules/tabs.js` and gallery visibility calculation in `js/modules/load-more.js`.
-- **Evidence:** `js/modules/tabs.js:14-36`, `js/modules/tabs.js:68-91`, `js/modules/load-more.js:104-124`; current category consumers in `index.html:267-280`, `menu.html:203-210`, and `galeria.html:202-209`.
-- **Current implementation:** Three paths repeat the same NFD normalization, combining-mark removal, lowercasing, trimming, category token splitting, and empty/`all` matching. Each then combines the match with its own loading state. The menu load-more path separately uses exact `data-cat` equality at `js/modules/load-more.js:55-61`.
-- **Proposed improvement:** Give the repeated normalized category comparison one pure helper, used by both tab filters and the gallery load-more path. Keep DOM updates and loading-state ownership in their current modules.
-- **Expected engineering value:** Changes to the existing category interpretation would have one implementation owner instead of three equivalent copies.
-- **Implementation scope:** The two consumer modules and one narrowly scoped helper in `js/modules/`. Preserve `data-cat` precedence over `data-filter`, `data-load-hidden`, `hidden`, active classes, `aria-pressed`, initializer order, and status text. Retain the menu loader's exact-equality policy rather than silently broadening its semantics. Do not introduce a general filtering controller or change HTML data.
-- **Acceptance criteria:** All three normalized comparisons use the helper and retain equivalent results for empty/`all`, case, combining marks, whitespace/comma tokens, and unmatched values. Current category selections show the same items on the homepage, menu, and gallery; loading state remains an additional visibility condition. The no-button path still loads every item and the completed status remains `Wszystko załadowane`. The existing gallery-status regression remains passing after implementation, with focused menu checks covering its additional consumers.
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** Extracted shared category normalization and matching into `js/modules/category-match.js`, reused across three filtering paths in `tabs.js` and `load-more.js`. Preserved existing filtering, loading states, ARIA behavior, and menu load-more exact matching.
+- **Verification:** JavaScript lint passed; 3,885 matching comparisons and 18 edge cases passed. Focused gallery browser tests passed.
 - **Impact:** Medium
 - **Effort:** Small
 
 ### IMP-TECH-02 — Give category-tab styling one shared component owner
 
-**Status:** COMPLETED (2026-10-09) — Consolidated shared category-tab styling in `css/components/tabs.css`, retaining feature-specific differences; CSS lint and focused Chromium comparison confirmed equivalent styles, rendering, and category states.
-
-- **Affected area:** Styles for the existing `.tabs__tab` controls in menu and gallery components.
-- **Evidence:** `css/components/menu.css:195-245`, `css/components/menu.css:332-350`, `css/components/menu.css:364-368`; `css/components/gallery.css:73-119`, `css/components/gallery.css:129-147`, `css/components/gallery.css:160-166`; stylesheet assembly in `css/style.css:10-29`.
-- **Current implementation:** Menu and gallery independently declare equivalent control typography, spacing, accent underline, pressed state, hover treatment, coarse-pointer sizing, and reduced-motion behavior. The menu also owns the shared `.tabs__tab:focus-visible` rule at `css/components/menu.css:8-11`. Some declarations, including menu border-radius and box-shadow resets, differ and must remain deliberate differences.
-- **Proposed improvement:** Move the common category-tab rules into a small `css/components/tabs.css` source component imported by `css/style.css`. Keep genuinely different declarations and page/grid composition with their existing owners.
-- **Expected engineering value:** Maintaining the shared category-control treatment would no longer require matching edits in two feature stylesheets, and its focus styling would have a clear component owner.
-- **Implementation scope:** The new stylesheet, its import, and removal of the equivalent rules from `components/menu.css` and `components/gallery.css`. Preserve current selector coverage, cascade outcomes, tokens, and custom-property behavior. Leave dish cards, gallery tiles, page layouts, HTML, and JavaScript unchanged; this is a styling-ownership change with the same appearance.
-- **Acceptance criteria:** Common base, underline, pressed, hover, focus, pointer, and motion rules have one owner. Existing menu and gallery controls retain their computed typography, colors, padding, borders, shadows, underline placement, and focus outlines at narrow and desktop widths in light, dark, and system themes. Coarse-pointer controls retain the current 44 px minimum height; reduced-motion transitions remain suppressed. Production CSS is refreshed only through `npm run build` during the separately authorized implementation.
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** Consolidated shared menu and gallery category-tab styles in `css/components/tabs.css`. Preserved feature-specific spacing, resets, cascade, focus, hover, pressed states, responsive sizing, themes, and reduced-motion behavior.
+- **Verification:** CSS lint and `git diff --check` passed. Focused Chromium comparison passed 576/576 checks with zero pixel differences. Earlier intermittent focus-outline rendering variation was also observed in baseline CSS.
 - **Impact:** Medium
 - **Effort:** Medium
 

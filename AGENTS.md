@@ -33,6 +33,24 @@ Use verification appropriate to the scope and risk of the change.
 - Do not weaken checks merely to obtain a passing result.
 - Never claim verification passed unless it was actually performed successfully.
 
+## Completed improvement records
+
+When an approved improvement is implemented and verified, replace its detailed proposal with a concise completion record.
+
+Use this format in `IMPROVEMENTS-*.md`:
+
+### IMP-CATEGORY-XX — Original improvement title
+
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** Concise description of the actual implementation and preserved contracts.
+- **Verification:** Checks performed, actual results, and relevant limitations.
+- **Impact:** Original impact rating.
+- **Effort:** Original effort rating.
+
+Preserve the original identifier, title, impact, and effort. Remove obsolete proposal details, evidence, implementation plans, and acceptance criteria only after verified completion.
+
+Keep open or incomplete proposals unchanged. Never claim completion or verification without evidence. Update improvement records only within the approved task scope.
+
 ## Delivery safety
 
 Do not stage, commit, push, tag, deploy, create or modify branches or worktrees, or perform other repository-delivery actions unless the project owner explicitly requests them.
