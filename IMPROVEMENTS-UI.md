@@ -44,13 +44,9 @@ These are optional presentation improvements, not confirmed defect findings. Imp
 
 ### IMP-UI-04 — Unify lightbox control surfaces across display modes
 
-- **Affected area:** Close, previous/next and counter presentation in gallery and dish lightboxes.
-- **Evidence:** `css/components/lightbox.css:42-151` and `173-218`; `index.html:802-812`; `menu.html:465-471`; `js/modules/lightbox.js:135-148` and `371-407`.
-- **Current state:** Normal-mode close controls use a translucent white surface, navigation uses a black surface at 0.42 opacity and the counter uses black at 0.55. Zoom/fullscreen styling already groups all three on a shared black surface at 0.65. Normal-mode hover treatments and shadows are defined separately.
-- **Proposed improvement:** Define a component-scoped dark media-overlay surface and ink treatment for the controls and counter, with coordinated hover/focus styling for actionable controls and a quieter status treatment. Apply the same visual family in normal, zoom and fullscreen modes while retaining role-specific dimensions and placement.
-- **Expected value:** A more consistent control layer over existing photographs and fewer independent surface recipes to maintain across viewing modes.
-- **Implementation scope:** Presentation rules in `css/components/lightbox.css`. Preserve selectors, dialog markup, image fitting, existing size breakpoints, coarse-pointer navigation visibility, gallery/single mode rules, counter announcements, keyboard/swipe/zoom/fullscreen behavior and focus/scroll restoration. No changes to image assets or variant resolution.
-- **Acceptance criteria:** Visible controls share the chosen surface/ink rules across homepage, gallery and menu lightboxes, including zoom/fullscreen where supported. Counter status remains visually separate from actions. Check the resulting control glyphs and focus indicators against representative light and dark image regions; navigation and counter remain hidden in single-image mode, and existing reduced-motion behavior is retained.
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** Added four lightbox-scoped surface/foreground properties, shared dark control backgrounds and hover states, a theme-independent white focus outline with dark separation, and a quieter passive counter. Removed redundant zoom/fullscreen surface overrides and decorative surface shadows while preserving geometry, responsive visibility, image fitting, markup and interaction contracts.
+- **Verification:** `npm run lint:css`, `npm run test:e2e:lightbox` (11/11) and `git diff --check` passed using existing dependencies from another local Ambre worktree; Chromium ran outside the sandbox because localhost access was blocked. Focused Chromium inspection covered homepage gallery/menu previews, gallery/menu pages, light/dark themes, hover/keyboard focus, zoom fallback, single-image hiding and 390px coarse-pointer controls, with representative screenshots inspected; native fullscreen, WebKit and measured contrast compliance were not verified.
 - **Impact:** Medium
 - **Effort:** Small
 
