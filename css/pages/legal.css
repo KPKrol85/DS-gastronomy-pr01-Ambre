@@ -140,6 +140,23 @@
   -webkit-overflow-scrolling: touch;
 }
 
+.legal__table-scroll table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.legal__table-scroll th,
+.legal__table-scroll td {
+  padding: var(--space-03);
+  text-align: left;
+  vertical-align: top;
+  border-bottom: var(--border-thin) solid var(--c-border);
+}
+
+.legal__table-scroll thead {
+  background-color: var(--c-bg);
+}
+
 .legal__table-scroll:focus-visible {
   outline: 2px solid var(--c-accent-contrast);
   outline-offset: 2px;

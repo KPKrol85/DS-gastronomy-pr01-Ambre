@@ -28,13 +28,9 @@ These are optional presentation improvements, not confirmed defect findings. Imp
 
 ### IMP-UI-02 — Give legal tables a shared visual hierarchy
 
-- **Affected area:** Technology, processing-purpose and provider tables on cookies and privacy pages.
-- **Evidence:** `cookies.html:275-323`; `polityka-prywatnosci.html:276-301` and `311-335`; `css/pages/legal.css:94-148`.
-- **Current state:** Three native tables have scoped column headers and labelled, focusable scroll wrappers. Legal CSS styles surrounding prose and the wrapper's overflow/focus, but imported styles do not define table-cell padding, alignment, row separators or header surfaces.
-- **Proposed improvement:** Add one scoped table treatment with token-based cell padding, left-aligned headers, top-aligned content, restrained row separators and a theme-aware header surface. Keep the existing horizontal scroll presentation on narrow screens.
-- **Expected value:** Clearer association between headers and long cell content, with the tables using the same spacing and surface language as their surrounding legal documents.
-- **Implementation scope:** Table descendants of `.legal__table-scroll` in `css/pages/legal.css`. Preserve all legal text, native table structure, column order, `scope`, region labels, keyboard reachability and wrapper focus styling. Do not convert tables into cards or alter their information structure.
-- **Acceptance criteria:** All three tables use the same padding, alignment and separator rules; headers remain visually distinct in both themes. At 320px and 390px, every column remains reachable within the existing scroll region without document-wide horizontal overflow; desktop tables stay within the legal panel. Region focus remains visible.
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** Added shared token-based padding, left/top alignment, thin row separators and a theme-aware header surface to all three legal tables. Preserved HTML content, native semantics, labelled keyboard-accessible scroll regions, focus styling and Source Sans 3 header emphasis at 500.
+- **Verification:** `npm run lint:css`, `npm run test:e2e:legal-tables` (4/4) and `git diff --check` passed using existing dependencies from another local Ambre worktree; Chromium ran outside the sandbox due to blocked localhost access. Checks at 320px/390px/1440px in light/dark themes, system-theme switching and representative screenshots confirmed consistent presentation, visible focus, mobile column reachability and desktop containment without document overflow. Other browsers and full application QA were not tested.
 - **Impact:** Medium
 - **Effort:** Small
 
