@@ -70,6 +70,7 @@
 }
 
 .testimonials__rating strong {
+  font-weight: var(--fw-sans-emphasis);
   font-size: var(--fs-md);
   color: var(--c-accent-contrast);
 }

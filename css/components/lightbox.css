@@ -141,7 +141,7 @@
   z-index: 3;
   padding: 6px 10px;
   border-radius: var(--radius-xs);
-  font-weight: 600;
+  font-weight: var(--fw-sans-emphasis);
   font-size: 0.9rem;
   line-height: 1.2;
   color: #fff;

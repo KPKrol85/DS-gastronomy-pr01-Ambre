@@ -20,13 +20,9 @@ These are optional presentation improvements, not confirmed defect findings. Imp
 
 ### IMP-UI-01 — Align typographic emphasis with the declared local font weights
 
-- **Affected area:** Shared headings and emphasized labels across the existing interface.
-- **Evidence:** `css/base/tokens.css:149-179`; `css/base/typography.css:1-37`; `css/components/tabs.css:3-18`; `css/layout/footer.css:80-87`; `css/components/forms.css:86-95` and `364-373`.
-- **Current state:** Font faces declare Poppins at 400/600 and Source Sans 3 at 400/500. Heading rules request Poppins 700; category tabs and footer titles request Source Sans 3 600. Booking labels and the information-panel title already explicitly use 500 and 600 respectively.
-- **Proposed improvement:** Extend the booking component's deliberate weight selection to shared typography. Define a small set of family-specific emphasis tokens using the already declared faces, and apply them to headings and emphasized labels while retaining hierarchy through the existing size, spacing and color roles.
-- **Expected value:** More predictable typography and one explicit policy for emphasis, reducing dependence on browser font matching for undeclared weights.
-- **Implementation scope:** `css/base/tokens.css`, `css/base/typography.css` and affected weight declarations in imported component/page styles. Retain both font families, current assets, font loading, text, heading semantics and component layouts; no additional font downloads or dependencies.
-- **Acceptance criteria:** Reviewed heading and label roles resolve to declared weights for their assigned family, including inherited family use. Representative hero, dish, FAQ, booking, footer and legal headings retain distinguishable hierarchy at mobile and desktop widths in light and dark themes. Existing controls and text remain fully visible after any wrapping changes.
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** Added family-specific emphasis tokens for Poppins 600 and Source Sans 3 500 and aligned active heading, label, link and native bold-text roles with declared faces. Preserved font assets/loading, existing type sizes, spacing, colors, responsive layout and interaction contracts; correct booking and dish-price weights remain unchanged.
+- **Verification:** `npm run lint:css` (existing dependencies from another local worktree) and `git diff --check` passed. A focused Chromium comparison on five pages at 390px/1440px in light/dark themes confirmed declared weights, loaded emphasis faces, unchanged wrapping/height, no visible-text clipping or document overflow and system-theme switching; representative screenshots were inspected. Other browsers and full application behavior were not tested.
 - **Impact:** Medium
 - **Effort:** Medium
 

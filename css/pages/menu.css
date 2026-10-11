@@ -53,7 +53,7 @@
   padding-inline: 0;
   color: var(--c-muted);
   font-size: var(--fs-xs);
-  font-weight: 600;
+  font-weight: var(--fw-sans-emphasis);
   letter-spacing: var(--ls-normal);
   cursor: pointer;
   transition: color var(--dur-normal) var(--ease-standard);
@@ -77,6 +77,7 @@
 }
 
 .page-menu .dish-more__content strong {
+  font-weight: var(--fw-sans-emphasis);
   color: var(--c-ink);
   letter-spacing: var(--ls-wide);
 }

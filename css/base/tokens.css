@@ -49,6 +49,9 @@ html {
   --font-sans: "Source Sans 3", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-display: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
+  --fw-display-emphasis: 600;
+  --fw-sans-emphasis: 500;
+
   --fs-xxs: clamp(0.625rem, 0.6rem + 0.1vw, 0.75rem);
   --fs-xs: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);
   --fs-sm: clamp(0.875rem, 0.8rem + 0.3vw, 1rem);

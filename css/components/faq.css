@@ -30,7 +30,7 @@
   cursor: pointer;
   min-height: 56px;
   padding: var(--space-02) var(--space-04);
-  font-weight: 550;
+  font-weight: var(--fw-sans-emphasis);
   position: relative;
   outline: none;
 }
@@ -73,7 +73,7 @@
 .faq__details a {
   text-decoration: none;
   letter-spacing: var(--ls-normal);
-  font-weight: 600;
+  font-weight: var(--fw-sans-emphasis);
   transition: color 0.2s ease;
 }
 

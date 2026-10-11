@@ -26,7 +26,7 @@
 }
 
 .cta__lead a {
-  font-weight: 600;
+  font-weight: var(--fw-sans-emphasis);
   text-decoration: none;
   transition: color 0.2s ease;
   letter-spacing: var(--ls-normal);

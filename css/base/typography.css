@@ -5,7 +5,7 @@ h4,
 h5,
 h6 {
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: var(--fw-display-emphasis);
   line-height: var(--lh-tight);
   margin: 0 0 var(--space-02);
   font-kerning: normal;
@@ -15,24 +15,21 @@ h6 {
 
 h1 {
   font-size: var(--fs-xxl);
-  font-weight: 700;
 }
 
 h2 {
   font-size: var(--fs-xl);
-  font-weight: 700;
 }
 
 h3 {
   font-size: var(--fs-lg);
-  font-weight: 700;
 }
 
 .legal__eyebrow {
   letter-spacing: var(--ls-very-wide);
   text-transform: uppercase;
   opacity: 0.9;
-  font-weight: 600;
+  font-weight: var(--fw-sans-emphasis);
   font-family: var(--font-sans);
   font-size: var(--fs-sm);
 }

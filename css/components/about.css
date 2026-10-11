@@ -78,7 +78,7 @@
 
 .about__bullets a {
   letter-spacing: var(--ls-normal);
-  font-weight: 600;
+  font-weight: var(--fw-sans-emphasis);
   text-decoration: none;
   transition: color var(--dur-normal) var(--ease-standard);
 }

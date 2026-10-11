@@ -52,7 +52,7 @@ html[data-theme="light"] .site-footer {
   flex-direction: column;
   align-items: center;
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: var(--fw-display-emphasis);
   font-size: var(--fs-lg);
   letter-spacing: var(--ls-sm);
   margin-bottom: 0.6rem;
@@ -75,13 +75,14 @@ html[data-theme="light"] .site-footer {
 
 .site-footer strong {
   color: var(--c-accent);
+  font-weight: inherit;
 }
 
 .site-footer__title {
   margin: 0 0 var(--space-03);
   font-family: var(--font-sans);
   font-size: var(--fs-sm);
-  font-weight: 600;
+  font-weight: var(--fw-sans-emphasis);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
