@@ -23,6 +23,7 @@
 @import "components/demo-banner.css";
 
 @import "pages/404.css";
+@import "pages/offline.css";
 @import "pages/menu.css";
 @import "pages/galeria.css";
 @import "pages/legal.css";

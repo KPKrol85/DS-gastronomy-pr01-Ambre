@@ -52,13 +52,9 @@ These are optional presentation improvements, not confirmed defect findings. Imp
 
 ### IMP-UI-05 — Bring the offline message into Ambre's status-panel presentation
 
-- **Affected area:** The existing offline fallback page's main content.
-- **Evidence:** `offline.html:95-99`; `css/base/base.css:57-60`; `css/style.css:25-30`; `css/pages/404.css:1-44`. Source searches across imported CSS found no `.offline-card` or `.offline-page` presentation rules.
-- **Current state:** Offline content consists of a heading, message and existing return link directly inside `main.offline-card`, using global typography and button styling. The 404 view has an explicit centered, constrained status panel with component padding, a surface, border and spacing.
-- **Proposed improvement:** Give the offline message a constrained panel and responsive outer spacing using the existing status-view visual language. Group the heading, explanation and return action with deliberate gaps, without introducing additional actions or status logic.
-- **Expected value:** Consistent utility-page presentation and a clearer visual grouping of the explanation and recovery link.
-- **Implementation scope:** `offline.html` only if a panel wrapper is needed, plus a small page stylesheet imported by `css/style.css`. Reuse existing typography, spacing, surface and button tokens. Preserve Polish content, `main`/skip-link target, `/` return URL, shared header/footer, metadata, `noindex`, theme support and all Service Worker/cache behavior; add no remote assets.
-- **Acceptance criteria:** The message panel has a bounded desktop width and token-based spacing at 320px, 390px and desktop widths, with its action fully visible. Light, dark and system-theme presentation uses existing theme colors. The content and link remain usable without JavaScript using the existing local stylesheet; the page does not change caching or imply that uncached destinations are available offline.
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** Added a neutral panel wrapper and imported, scoped CSS with a centered, bounded layout, responsive token-based spacing and themed status-panel surfaces. Preserved exact content, return URL, landmarks, metadata, shared components and Service Worker behavior; the return button also uses theme-aware backgrounds without JavaScript while retaining shared focus styling.
+- **Verification:** `npm run lint:css`, `npm run qa:html`, `npm run build` and `git diff --check` passed using existing local Ambre dependencies; bundled CSS and production HTML/Service Worker asset paths were checked. Focused Chromium inspection of the production preview at 320px/390px/1440px in light/dark themes with and without JavaScript confirmed panel geometry, spacing, containment, keyboard focus, system-theme switching and stored-theme behavior; representative screenshots were inspected. Runtime offline fallback, other browsers and full application QA were not tested; build reported an outdated Browserslist database warning.
 - **Impact:** Low
 - **Effort:** Small
 
