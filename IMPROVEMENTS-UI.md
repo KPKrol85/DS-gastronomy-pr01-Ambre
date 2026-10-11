@@ -36,13 +36,9 @@ These are optional presentation improvements, not confirmed defect findings. Imp
 
 ### IMP-UI-03 — Give FAQ rows a stable top-aligned spacing rhythm
 
-- **Affected area:** The homepage's four native FAQ disclosures.
-- **Evidence:** `index.html:650-675`; `css/base/base.css:94-99` and `129-133`; `css/components/faq.css:3-16` and `80-93`; `js/modules/faq.js`, `initFaqAria()`.
-- **Current state:** FAQ uses the generic `.grid-2`, inheriting centered item alignment and unequal desktop columns. Its spacing combines a small grid gap, margins on every disclosure and an additional margin on adjacent disclosures. These rules determine presentation independently of the questions' open states.
-- **Proposed improvement:** Give `.faq__grid` explicit top alignment and equal desktop columns, and let its token-based row/column gaps own inter-card spacing instead of layered item margins. Retain the current one-column mobile layout and 760px transition.
-- **Expected value:** A consistent starting line for neighbouring questions and a simpler spacing rule when answers have different lengths or open states.
-- **Implementation scope:** FAQ-specific layout and margin rules in `css/components/faq.css`; leave the generic grid used by other sections unchanged. Preserve content order, native `details`/`summary`, independent opening, chevrons, focus presentation, reduced motion and the existing ARIA synchronizer.
-- **Acceptance criteria:** At desktop widths, paired FAQ cards have equal column widths and aligned top edges with either or both answers open. Inter-card spacing comes from the grid across all four items. Below 760px, disclosures keep their current DOM order in one column; keyboard and no-JavaScript disclosure behavior remain intact.
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** The FAQ grid now top-aligns cards, uses a token-based gap and has equal, overflow-resistant columns from 760px; disclosure margins were removed. Native disclosures, DOM order, ARIA synchronization, focus styling and reduced-motion rules were preserved.
+- **Verification:** CSS lint and `git diff --check` passed. Focused Chromium checks at 390px, 759px, 760px and 1440px covered light/dark presentation, open states, keyboard and no-JavaScript behavior, ARIA, reduced motion and horizontal overflow; other browsers and full QA were not tested.
 - **Impact:** Medium
 - **Effort:** Small
 
