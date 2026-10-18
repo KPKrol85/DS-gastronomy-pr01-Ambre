@@ -103,9 +103,14 @@
   margin-top: var(--space-06);
 }
 
+/* `.site-button` inherits its font family but declares no size, so as buttons
+   the hero CTAs took the user agent's small-control size. They are anchors now,
+   which inherit the document size, so the previous label size is pinned here to
+   keep the hero's appearance unchanged; `rem` keeps it scaling with the root. */
 .site-hero__actions .site-button {
   width: 100%;
   max-width: 220px;
+  font-size: calc(1rem / 1.2);
 }
 
 /* The hero backdrop is a dark photograph in both themes, so the ghost CTA
