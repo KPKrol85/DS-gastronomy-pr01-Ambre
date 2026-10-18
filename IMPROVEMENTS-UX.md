@@ -33,13 +33,9 @@ All five proposals stay inside the current architecture: canonical HTML pages, `
 
 ### IMP-UX-03 — Land legal-document anchors below the fixed header
 
-- **Affected journey:** Table-of-contents and deep-link navigation on `cookies.html`, `polityka-prywatnosci.html` and `regulamin.html`.
-- **Evidence:** `cookies.html:210-221`, `css/pages/legal.css:94-99`, `css/base/base.css:57-60`, `css/base/base.css:88-91`, `css/layout/header.css:16-29`
-- **Current experience:** Each legal page opens with a numbered table of contents linking to the `h2` section headings. The header is fixed, and the homepage sections compensate for it through `scroll-margin-top` on `main` and `.l-section`; the legal headings have no such offset. Verified in Chromium at 1440 × 900 on `cookies.html`: activating the `Podstawy prawne` link leaves the target heading at viewport top `0` while the header's bottom edge sits at `57`, so the heading is behind the header, and its computed `scroll-margin-top` is `0px` against `84px` for a homepage section.
-- **Proposed improvement:** Apply the project's existing header-aware scroll offset to legal section headings so an activated table-of-contents link or a hash URL places the heading in view.
-- **Expected user value:** Readers see the heading of the section they jumped to and can confirm where they are in a long document, instead of starting mid-paragraph with the heading hidden.
-- **Implementation scope:** CSS only — extend the existing `scroll-margin-top` pattern to the legal document's anchored headings in `css/pages/legal.css` (or the shared rule in `css/base/base.css`), reusing the current header-height custom properties. No markup, table-of-contents order, heading level, JavaScript or scroll-behavior change.
-- **Acceptance criteria:** After activating each table-of-contents link on the three legal pages, the target heading's top edge is below the fixed header's bottom edge at 320 px, 390 px and 1440 px, in light and dark themes, and with the header in both its normal and shrunk state. Loading a page directly with a section hash lands the same way. Homepage section anchors, the skip link and the footer anchor keep their current landing positions, and `npm run qa:html` and `npm run lint:css` pass.
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** Added `scroll-margin-top: calc(var(--header-h, 64px) + 12px)` to the existing `.legal__doc h2` rule in `css/pages/legal.css`, reusing the header-height token and the anchor-offset pattern already used for `main` and `.l-section`. Markup, table-of-contents structure, section IDs, heading levels, JavaScript and scroll behavior are unchanged.
+- **Verification:** `git diff --check`, `npm run lint:css` and `npm run qa:html` passed. Chromium measurement of all 40 anchored headings on the three legal pages at 320, 390 and 1440 px, in light and dark themes, placed every heading 10.5-11.5 px below the normal header and 18.5-19.5 px below the shrunk header, while homepage section, skip-link and footer anchors kept their existing 76 px and 84 px offsets. The verification browser ran with its pane hidden, where rAF-driven animation is suspended, so landings were measured with instant scrolling, matching the reduced-motion path rather than the animated transition.
 - **Impact:** Medium
 - **Effort:** Small
 

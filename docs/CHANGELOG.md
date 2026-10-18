@@ -37,6 +37,7 @@ When an implementation task is defined, apply this policy and state `Changelog: 
 
 ### Changed
 
+- Changed the section headings of the cookie, privacy, and terms documents to carry the project's header-aware scroll offset, so table-of-contents links and hash URLs land each heading below the fixed header instead of behind it; smooth and reduced-motion scrolling, themes, responsive layout, and the existing homepage, skip-link, and footer anchor offsets are unchanged.
 - Changed the homepage reservation form to state and enforce the accepted request window: the date and time fields show the accepted days, range and interval, carry native boundaries with a 15-minute step, and are validated on submission against the inclusive today-to-90-days window, the Tuesday–Sunday rule and the 17:00–22:00 hours, with field-specific Polish messages, `aria-invalid` state and retained input instead of a single generic prompt. Without JavaScript the native boundaries remain a static limit that cannot express the Monday exclusion. Restaurant opening hours and telephone reservation information are unchanged.
 - Added `--source <path>` and selection-only `--force` to the image optimizer for safe regeneration of one source's requested WebP/AVIF variants, preserving the existing recursive, timestamp-based workflow.
 - Reused the existing `getFocusable(root)` helper for mobile-drawer opening focus and Tab handling, removing duplicated focus discovery while preserving candidate selection, ordering, and existing navigation and accessibility contracts.

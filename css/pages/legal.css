@@ -97,6 +97,7 @@
   margin-bottom: var(--space-02);
   position: relative;
   padding-bottom: var(--space-02);
+  scroll-margin-top: calc(var(--header-h, 64px) + 12px);
 }
 
 .legal__doc h2::after {
