@@ -567,11 +567,34 @@
               </div>
               <div class="booking-form__row booking-form__row--third">
                 <label class="booking-form__label" for="date">Data</label>
-                <input class="booking-form__field" id="date" name="date" type="date" required aria-describedby="form-msg" />
+                <!-- min/max są statyczną granicą dla wersji bez JavaScriptu; initReservationForm() ustawia je na nowo
+                     według lokalnej daty odwiedzającego. Wykluczenia poniedziałków natywne atrybuty nie obsługują. -->
+                <input
+                  class="booking-form__field"
+                  id="date"
+                  name="date"
+                  type="date"
+                  required
+                  min="2026-10-18"
+                  max="2027-01-16"
+                  aria-describedby="date-hint form-msg date-error" />
+                <p id="date-hint" class="booking-form__message">Wt.–nd., od dziś do 90 dni naprzód.</p>
+                <p id="date-error" class="booking-form__message booking-form__message--error" aria-live="polite"></p>
               </div>
               <div class="booking-form__row booking-form__row--third">
                 <label class="booking-form__label" for="time">Godzina</label>
-                <input class="booking-form__field" id="time" name="time" type="time" required min="14:00" max="22:00" step="900" aria-describedby="form-msg" />
+                <input
+                  class="booking-form__field"
+                  id="time"
+                  name="time"
+                  type="time"
+                  required
+                  min="17:00"
+                  max="22:00"
+                  step="900"
+                  aria-describedby="time-hint form-msg time-error" />
+                <p id="time-hint" class="booking-form__message">17:00–22:00, co 15 minut.</p>
+                <p id="time-error" class="booking-form__message booking-form__message--error" aria-live="polite"></p>
               </div>
               <div class="booking-form__row booking-form__row--third">
                 <label class="booking-form__label" for="guests">Liczba gości</label>

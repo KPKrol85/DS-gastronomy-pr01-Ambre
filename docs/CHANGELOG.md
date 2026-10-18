@@ -37,6 +37,7 @@ When an implementation task is defined, apply this policy and state `Changelog: 
 
 ### Changed
 
+- Changed the homepage reservation form to state and enforce the accepted request window: the date and time fields show the accepted days, range and interval, carry native boundaries with a 15-minute step, and are validated on submission against the inclusive today-to-90-days window, the Tuesday–Sunday rule and the 17:00–22:00 hours, with field-specific Polish messages, `aria-invalid` state and retained input instead of a single generic prompt. Without JavaScript the native boundaries remain a static limit that cannot express the Monday exclusion. Restaurant opening hours and telephone reservation information are unchanged.
 - Added `--source <path>` and selection-only `--force` to the image optimizer for safe regeneration of one source's requested WebP/AVIF variants, preserving the existing recursive, timestamp-based workflow.
 - Reused the existing `getFocusable(root)` helper for mobile-drawer opening focus and Tab handling, removing duplicated focus discovery while preserving candidate selection, ordering, and existing navigation and accessibility contracts.
 - Consolidated lightbox JPEG, WebP, and AVIF URL resolution into local `resolveImageVariants()`, shared by image display and adjacent-image preloading; preserved URL rules, preload order, and existing lightbox interaction and accessibility contracts.
