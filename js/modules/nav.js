@@ -59,6 +59,27 @@ export function initMobileNav() {
     });
   }
 
+  // The drawer is cloned before initSmartNav(), initAriaCurrent() and initScrollspy()
+  // resolve the header navigation, so mirror the resolved header links onto the clone.
+  // Both lists keep the same anchor order, which makes the pairing stable.
+  const sourceLinks = navList ? Array.from(navList.querySelectorAll("a")) : [];
+  const drawerLinks = drawerInner ? Array.from(drawerInner.querySelectorAll("a")) : [];
+  const canSyncDrawer = sourceLinks.length > 0 && sourceLinks.length === drawerLinks.length;
+  const syncDrawerNavState = () => {
+    if (!canSyncDrawer) return;
+    sourceLinks.forEach((source, index) => {
+      const target = drawerLinks[index];
+      const href = source.getAttribute("href");
+      if (href !== null && target.getAttribute("href") !== href) target.setAttribute("href", href);
+      const current = source.getAttribute("aria-current");
+      if (!current) {
+        target.removeAttribute("aria-current");
+      } else if (target.getAttribute("aria-current") !== current) {
+        target.setAttribute("aria-current", current);
+      }
+    });
+  };
+
   const mq = window.matchMedia("(min-width: 939px)");
   let previouslyFocused = null;
   const trapFocus = (event) => {
@@ -90,6 +111,7 @@ export function initMobileNav() {
     const wasOpen = document.body.classList.contains("site-header-nav-open");
     if (open && !wasOpen) previouslyFocused = document.activeElement;
     if (open) {
+      syncDrawerNavState();
       if (overlay) overlay.hidden = false;
       if (drawer) drawer.hidden = false;
     }
