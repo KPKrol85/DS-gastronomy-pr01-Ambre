@@ -462,13 +462,15 @@
     </footer>
 
     <!-- Lightbox -->
-    <dialog id="lb" class="site-lightbox" aria-modal="true" aria-label="Podgląd dania">
+    <dialog id="lb" class="site-lightbox" aria-modal="true" aria-labelledby="lb-title" aria-describedby="lb-help">
+      <h2 id="lb-title" class="sr-only">Podgląd dania</h2>
       <button class="site-lightbox__close" aria-label="Zamknij">×</button>
       <picture class="site-lightbox__media">
         <source type="image/avif" id="lb-avif" />
         <source type="image/webp" id="lb-webp" />
         <img id="lb-img" class="site-lightbox__image" alt="" width="1200" height="1200" decoding="async" loading="lazy" />
       </picture>
+      <p id="lb-help" class="sr-only">Naciśnij Esc, aby zamknąć.</p>
     </dialog>
 
     <!-- Scroll to top -->

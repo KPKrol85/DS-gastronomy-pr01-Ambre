@@ -11,6 +11,8 @@ export function initLightbox() {
   const img = picture?.querySelector(".site-lightbox__image") || document.getElementById("lb-img");
   const closeBtn = box.querySelector(".site-lightbox__close") || box.querySelector("[data-close]");
   const overlay = box.querySelector(".site-lightbox__overlay");
+  const title = box.querySelector("#lb-title");
+  const help = box.querySelector("#lb-help");
 
   let counter = box.querySelector(".site-lightbox__counter");
   if (!counter) {
@@ -96,6 +98,22 @@ export function initLightbox() {
 
   const MODE_GALLERY = "gallery";
   const MODE_SINGLE = "single";
+
+  const CLOSE_HINT = "Naciśnij Esc, aby zamknąć.";
+
+  // The dialog is named and described for the session it actually opens, so the
+  // browsing guidance is offered only where previous/next are really available.
+  const MODE_COPY = {
+    [MODE_GALLERY]: {
+      title: "Podgląd zdjęć",
+      help: CLOSE_HINT,
+      navigableHelp: `Użyj strzałek w lewo i w prawo, aby zmieniać zdjęcia. ${CLOSE_HINT}`
+    },
+    [MODE_SINGLE]: {
+      title: "Podgląd dania",
+      help: CLOSE_HINT
+    }
+  };
 
   // Trigger contract: a trigger opens in the mode declared by its nearest
   // [data-lightbox-mode] scope, falling back to the default of its own type.
@@ -406,6 +424,10 @@ export function initLightbox() {
       button.hidden = !navigable;
       button.disabled = !navigable;
     });
+
+    const copy = MODE_COPY[mode] || MODE_COPY[MODE_GALLERY];
+    if (title) title.textContent = copy.title;
+    if (help) help.textContent = navigable && copy.navigableHelp ? copy.navigableHelp : copy.help;
   };
 
   applyMode();

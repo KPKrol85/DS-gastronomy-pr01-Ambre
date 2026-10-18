@@ -276,6 +276,11 @@ const runRepeatedSessionsTest = async (browser) => {
 const GALLERY_ITEM = ".gallery__grid .gallery__item";
 const DISH_THUMB = ".menu__grid .dish__thumb";
 
+const CLOSE_HINT = "Naciśnij Esc, aby zamknąć.";
+const BROWSE_HINT = `Użyj strzałek w lewo i w prawo, aby zmieniać zdjęcia. ${CLOSE_HINT}`;
+const GALLERY_TITLE = "Podgląd zdjęć";
+const SINGLE_TITLE = "Podgląd dania";
+
 const waitForDialogOpen = (page) => page.waitForFunction(() => document.getElementById("lb").open === true);
 
 const waitForDialogClosed = (page) => page.waitForFunction(() => document.getElementById("lb").open === false);
@@ -293,9 +298,25 @@ const readModeState = (page) =>
     const counter = dialog.querySelector(".site-lightbox__counter");
     const navButtons = Array.from(dialog.querySelectorAll(".site-lightbox__nav-button"));
 
+    // Mirrors how assistive technology resolves the description: referenced,
+    // currently exposed nodes only.
+    const description = (dialog.getAttribute("aria-describedby") || "")
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((id) => document.getElementById(id))
+      .filter((node) => node && !node.hidden)
+      .map((node) => (node.textContent || "").trim())
+      .filter(Boolean)
+      .join(" ");
+
     return {
       dialogOpen: dialog.open,
       mode: dialog.dataset.lightboxMode || "",
+      labelledBy: dialog.getAttribute("aria-labelledby") || "",
+      ariaLabel: dialog.getAttribute("aria-label") || "",
+      name: (document.getElementById("lb-title")?.textContent || "").trim(),
+      help: (document.getElementById("lb-help")?.textContent || "").trim(),
+      description,
       imageSrc: image?.getAttribute("src") || "",
       imageAlt: image?.getAttribute("alt") || "",
       navCount: navButtons.length,
@@ -320,6 +341,11 @@ const assertSingleMode = async (page, label) => {
   assert.equal(state.counterText, "", `${label}: the collection counter must carry no stale value`);
   assert.equal(state.focusOnCloseButton, true, `${label}: opening should move focus into the dialog`);
   assert.equal(state.mode, "single", `${label}: the session should report single-image mode`);
+  assert.equal(state.ariaLabel, "", `${label}: no competing aria-label may name the dialog`);
+  assert.equal(state.labelledBy, "lb-title", `${label}: the name must come from the shared title node`);
+  assert.equal(state.name, SINGLE_TITLE, `${label}: a dish preview must be named as a dish preview`);
+  assert.equal(state.help, CLOSE_HINT, `${label}: a dish preview must offer the close hint only`);
+  assert.equal(state.description, CLOSE_HINT, `${label}: the description must not advertise unavailable controls`);
 
   return state;
 };
@@ -333,6 +359,15 @@ const assertGalleryMode = async (page, label, expectedCounter) => {
   assert.equal(state.counterHidden, false, `${label}: the collection counter must stay visible`);
   assert.equal(state.counterText, expectedCounter, `${label}: the counter should report the selected image`);
   assert.equal(state.mode, "gallery", `${label}: the session should report grouped gallery mode`);
+  assert.equal(state.ariaLabel, "", `${label}: no competing aria-label may name the dialog`);
+  assert.equal(state.labelledBy, "lb-title", `${label}: the name must come from the shared title node`);
+  assert.equal(state.name, GALLERY_TITLE, `${label}: a grouped session must be named as a photo preview`);
+  assert.equal(state.help, BROWSE_HINT, `${label}: a navigable group must describe arrow navigation`);
+  assert.equal(
+    state.description,
+    `${BROWSE_HINT} ${expectedCounter}`,
+    `${label}: the description should combine the guidance with the visible counter`
+  );
 
   return state;
 };
@@ -451,7 +486,87 @@ const runModeSwitchTest = async (browser) => {
   }
 };
 
+const runUnnavigableGalleryTest = async (browser) => {
+  const label = "gallery session without a navigable group";
+  const { context, page } = await createPageAt(browser, galleryPage, GALLERY_ITEM);
+
+  try {
+    await page.evaluate((selector) => {
+      Array.from(document.querySelectorAll(selector)).forEach((item, position) => {
+        if (position > 0) item.hidden = true;
+      });
+    }, GALLERY_ITEM);
+
+    await page.waitForFunction(
+      (selector) =>
+        Array.from(document.querySelectorAll(selector)).filter(
+          (item) => !item.hidden && item.offsetParent !== null
+        ).length === 1,
+      GALLERY_ITEM
+    );
+
+    await page.locator(GALLERY_ITEM).first().click();
+    await waitForDialogOpen(page);
+
+    const state = await readModeState(page);
+    assert.equal(state.mode, "gallery", `${label}: the session should still resolve as a gallery session`);
+    assert.equal(state.navExposed, 0, `${label}: previous/next must not be exposed without a group`);
+    assert.equal(state.navFocusable, 0, `${label}: previous/next must not stay keyboard focusable`);
+    assert.equal(state.counterHidden, true, `${label}: a lone visible photo needs no counter`);
+    assert.equal(state.name, GALLERY_TITLE, `${label}: the photo preview keeps its gallery name`);
+    assert.equal(state.help, CLOSE_HINT, `${label}: guidance must not advertise unavailable navigation`);
+    assert.equal(state.description, CLOSE_HINT, `${label}: the description must match the available controls`);
+
+    await page.keyboard.press("Escape");
+    await waitForDialogClosed(page);
+  } finally {
+    await context.close();
+  }
+};
+
+const runNamingContractTest = async (browser) => {
+  const fixtures = [
+    { pagePath: homePage, readySelector: GALLERY_ITEM },
+    { pagePath: menuPage, readySelector: DISH_THUMB },
+    { pagePath: galleryPage, readySelector: GALLERY_ITEM }
+  ];
+
+  for (const fixture of fixtures) {
+    const label = `dialog naming contract on ${fixture.pagePath}`;
+    const { context, page } = await createPageAt(browser, fixture.pagePath, fixture.readySelector);
+
+    try {
+      const contract = await page.evaluate(() => {
+        const dialog = document.getElementById("lb");
+        const describedBy = (dialog.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean);
+
+        return {
+          hasTitle: !!document.getElementById("lb-title"),
+          hasHelp: !!document.getElementById("lb-help"),
+          labelledBy: dialog.getAttribute("aria-labelledby") || "",
+          ariaLabel: dialog.getAttribute("aria-label") || "",
+          describedBy,
+          unresolvedRefs: describedBy.filter((id) => !document.getElementById(id))
+        };
+      });
+
+      assert.equal(contract.hasTitle, true, `${label}: the shared title node must exist`);
+      assert.equal(contract.hasHelp, true, `${label}: the shared guidance node must exist`);
+      assert.equal(contract.labelledBy, "lb-title", `${label}: the name must come from the title node`);
+      assert.equal(contract.ariaLabel, "", `${label}: a competing aria-label must not remain`);
+      assert.ok(contract.describedBy.includes("lb-help"), `${label}: the guidance must be described`);
+      assert.deepEqual(contract.unresolvedRefs, [], `${label}: every description reference must resolve`);
+    } finally {
+      await context.close();
+    }
+  }
+};
+
 const modeScenarios = [
+  {
+    label: "every page wires the dialog name and description to shared nodes",
+    run: (browser) => runNamingContractTest(browser)
+  },
   {
     label: "menu dishes open as single-image previews on menu.html",
     run: (browser) => runSingleModeTest(browser, menuPage, "menu.html dish")
@@ -467,6 +582,10 @@ const modeScenarios = [
   {
     label: "gallery images keep grouped navigation on galeria.html",
     run: (browser) => runGalleryModeTest(browser, galleryPage, "galeria.html gallery")
+  },
+  {
+    label: "a gallery session without siblings advertises no navigation",
+    run: (browser) => runUnnavigableGalleryTest(browser)
   },
   {
     label: "gallery -> menu -> gallery leaves no stale mode state",
