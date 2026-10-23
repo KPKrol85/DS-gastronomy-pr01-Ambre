@@ -115,7 +115,7 @@ Przy domyślnych ustawieniach otwórz `http://127.0.0.1:4174`. Podgląd serwuje 
 Bez dodatkowych argumentów polecenia generujące obrazy przeszukują źródła JPEG/PNG w `assets/img/` i pomijają warianty, których czas modyfikacji jest równy lub nowszy niż czas źródła. Aby przetworzyć tylko jeden obraz, podaj ścieżkę względem katalogu głównego repozytorium:
 
 ```bash
-npm run img:opt -- --source assets/img/hero/hero-03-1600x900.jpg
+npm run img:opt -- --source assets/img/hero/hero-1600x900.jpg
 ```
 
 Dodaj `--force`, aby regenerować żądane warianty wybranego obrazu niezależnie od czasów modyfikacji; ta opcja wymaga `--source`. Bez `--force` wybrane źródło nadal podlega kontroli czasu modyfikacji. Obie opcje można przekazywać tak samo do `img:webp` i `img:avif`, aby ograniczyć format wyjściowy. Źródło musi być istniejącym zwykłym plikiem JPEG/PNG wewnątrz `assets/img/`, poza `_optimized/`, bez dowiązań w ścieżce.

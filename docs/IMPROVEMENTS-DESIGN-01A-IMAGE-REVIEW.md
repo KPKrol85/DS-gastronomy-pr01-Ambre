@@ -10,6 +10,8 @@
 
 **Stage:** 01A of three. 01B (hero and about photography) and 01C (dish and gallery photography) are future, separately authorized tasks.
 
+**Follow-up (2026-10-23):** 01B has been implemented. `hero-03-*` and `chef-01-*`, reviewed below, were replaced by owner-supplied `hero-*` and `chef-*` families and removed from the repository; references to them in this review are historical. See `IMPROVEMENTS-DESIGN.md` → IMP-DESIGN-01.
+
 ---
 
 ## 1. Purpose and approved creative direction

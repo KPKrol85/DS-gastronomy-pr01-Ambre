@@ -121,7 +121,8 @@ Priorities represent implementation value and dependencies, not defect severity.
 
 ### IMP-DESIGN-01 — Establish one photographic story for the imagined dining experience
 
-- **Status:** Proposed
+- **Status:** In progress — 01A review and 01B completed; 01C (dish and gallery photography) open. The parent proposal is not completed.
+- **Stage 01B — Hero and About photography:** COMPLETED — implemented and verified (2026-10-23). The hero uses `hero-1600x900.jpg` / `hero-2560x1440.jpg` (16:9) and the about section `chef-800x600.jpg` / `chef-1600x1200.jpg` (4:3), with WebP/AVIF from `npm run img:opt -- --source … --force`; `hero-03-*` and `chef-01-*` and their variants were removed. The 1600 × 1200 craft source was supplied as `about-01-800x600.jpg`, verified as the same photograph at its actual 1600 × 1200 size and renamed without resampling. `img:verify`, `qa:links`, `qa:html`, `qa:csp` and `build` passed; Chromium review at 390/768/1440 px in both themes confirmed AVIF delivery, uncropped 4:3 about rendering and no overflow. Provenance: owner-supplied in commit `fd646c8`, no embedded EXIF/XMP/ICC; licence and origin are not recorded in the repository. At 390 px the plated subject sits in the lower-right of the crop beneath the hero actions — a composition matter for IMP-DESIGN-02.
 - **Priority:** P1
 - **Affected area:** Hero, about, dish photography and both gallery surfaces.
 - **Evidence:** **Source:** Image references in `index.html`, `menu.html` and `galeria.html`; local `assets/img/hero/`, `about/`, `dishes/` and `gallery/`. **Visual:** Formal table-setting hero, documentary kitchen image, varied dining rooms, overhead shared dishes and event scenes.
