@@ -99,7 +99,7 @@ Serwer live-server udostępnia źródła pod `http://127.0.0.1:4183` i przełado
 | `npm run build` | Odtworzenie produkcyjnego katalogu `dist/`. |
 | `npm run lint` | Lint JavaScriptu, CSS i wybranych błędów w publicznych tekstach. |
 | `npm run qa:fast` | Lint, HTML, lokalne linki i kotwice, SEO, polityka JSON-LD oraz kontrola hashy CSP. |
-| `npm run test:e2e` | Sześć regresji: formularz, dialog demonstracyjny, przewijanie, tabele prawne, lightbox i status galerii. |
+| `npm run test:e2e` | Uruchomienie ośmiu skupionych regresji: formularz rezerwacji, dialog demonstracyjny, przewijanie do góry, tabele prawne, lightbox, status galerii, nawigacja mobilna i zachowanie motywu. |
 | `npm run qa` | Szybkie QA, zachowanie bez JavaScriptu, E2E, axe-core i Lighthouse CI. |
 | `npm run qa:service-worker` | Osobny test aktywacji Service Workera i własności cache; poza agregatem `qa`. |
 | `npm run qa:server` | Kontrola odpowiedzi lokalnego serwera dystrybucji; wymaga istniejącego `dist/`. |
@@ -107,7 +107,7 @@ Serwer live-server udostępnia źródła pod `http://127.0.0.1:4183` i przełado
 | `npm run csp:hash` | Aktualizacja hashy skryptów inline w `_headers`; zmienia plik. |
 | `npm run img:opt` | Generowanie WebP i AVIF w `assets/img/_optimized/`. |
 | `npm run img:webp` / `npm run img:avif` | Generowanie wybranego formatu obrazów. |
-| `npm run img:verify` | Sprawdzenie istnienia katalogu obrazów wynikowych i policzenie plików. |
+| `npm run img:verify` | Weryfikacja dekodowania i zgodności formatów z rozszerzeniami lokalnych rastrów wskazanych w HTML przez `src`/`srcset`, wymiarów wskazanych wariantów WebP/AVIF w `_optimized/` względem oryginałów JPEG/PNG oraz zgodności deskryptorów `w` z szerokością obrazu. |
 | `npm run img:clean` | Usunięcie całego `assets/img/_optimized/`. |
 
 Pojedyncze kontrole są dostępne jako `lint:*`, `qa:*` i `test:e2e:*`. Pełny kontrakt poleceń opisuje [przewodnik skryptów](docs/settings.md); wykonywalnym źródłem prawdy jest `package.json`.
@@ -269,7 +269,7 @@ live-server serves sources at `http://127.0.0.1:4183` and reloads the page after
 | `npm run build` | Recreate the production `dist/` directory. |
 | `npm run lint` | Lint JavaScript, CSS, and selected errors in public text. |
 | `npm run qa:fast` | Lint, HTML, local links and anchors, SEO, JSON-LD policy, and CSP hash checks. |
-| `npm run test:e2e` | Six regressions: form, demonstration dialog, scrolling, legal tables, lightbox, and gallery status. |
+| `npm run test:e2e` | Run eight focused regressions: reservation form, demonstration dialog, scroll-to-top, legal tables, lightbox, gallery status, mobile navigation, and theme behavior. |
 | `npm run qa` | Fast QA, no-JavaScript behavior, E2E, axe-core, and Lighthouse CI. |
 | `npm run qa:service-worker` | Separate Service Worker activation and cache ownership test; outside the `qa` aggregate. |
 | `npm run qa:server` | Check responses from the local distribution server; requires an existing `dist/`. |
@@ -277,7 +277,7 @@ live-server serves sources at `http://127.0.0.1:4183` and reloads the page after
 | `npm run csp:hash` | Update inline script hashes in `_headers`; modifies the file. |
 | `npm run img:opt` | Generate WebP and AVIF files in `assets/img/_optimized/`. |
 | `npm run img:webp` / `npm run img:avif` | Generate the selected image format. |
-| `npm run img:verify` | Check that the output image directory exists and count its files. |
+| `npm run img:verify` | Verify decoding and format/extension consistency of local raster images referenced by HTML `src`/`srcset`, dimensions of referenced WebP/AVIF variants in `_optimized/` against JPEG/PNG originals, and `w` descriptors against image widths. |
 | `npm run img:clean` | Delete the entire `assets/img/_optimized/` directory. |
 
 Individual checks are available as `lint:*`, `qa:*`, and `test:e2e:*`. The [script guide](docs/settings.md) describes the full command contract; `package.json` is the executable source of truth.

@@ -46,11 +46,11 @@
   - **Result:** The original command-alignment correction is retained; the canonical guide is now `docs/settings.md`.
   - **Verification:** Its current `qa`, `qa:fast` and `test:e2e` command descriptions match `package.json`. The archived daily audit records the original command comparison; no application execution is needed to establish this documentation contract.
 
-- [ ] **PH2-02 — Correct the README's regression and image-verification descriptions**
-  - [ ] Update both language sections of `README.md`: `test:e2e` currently runs eight focused scripts, including mobile navigation and theme coverage, rather than the documented six.
-  - [ ] Describe `img:verify` using `scripts/img-verify.mjs`: referenced raster decoding/format checks, optimized-to-original dimensions and width-descriptor validation, rather than directory existence and file counting alone.
-  - **Source:** `README.md` command tables, `package.json`, `scripts/img-verify.mjs` and `docs/settings.md`.
-  - **Completion condition:** Both README sections accurately describe the existing commands and their limits, without implying that available tests passed or that density descriptors are pixel-width checks. Verify by direct script/document comparison and a Markdown diff review.
+- [x] **PH2-02 — Correct the README's regression and image-verification descriptions**
+  - [x] Align both README language sections with the eight configured `test:e2e` regressions, including mobile navigation and theme behavior.
+  - [x] Describe the implemented `img:verify` checks for referenced local rasters, optimized/original dimensions and `w` descriptors.
+  - **Result:** Both command tables now match the current scripts, without implying test success or treating density descriptors as pixel widths.
+  - **Verification:** Direct comparison with `package.json` and `scripts/img-verify.mjs` confirmed equivalent, supported descriptions in Polish and English; the Markdown diff was reviewed and `git diff --check` passed. Verification was documentation-only; no build, E2E, Lighthouse or image-verification command was run.
 
 ## Phase 3 — Developer workflow maintenance
 
