@@ -16,11 +16,10 @@
 
 ## Current priorities
 
-1. `PH5-01` — Restore mobile primary navigation without JavaScript.
-2. `PH5-02` — Clear drawer state at the actual desktop breakpoint.
-3. `PH5-03` — Associate the mobile toggle with its drawer.
-4. `PH6-01` — Keep theme selection and notice dismissal usable when storage fails.
-5. `PH6-02` — Restore menu detail-panel enhancements.
+1. `PH5-02` — Clear drawer state at the actual desktop breakpoint.
+2. `PH5-03` — Associate the mobile toggle with its drawer.
+3. `PH6-01` — Keep theme selection and notice dismissal usable when storage fails.
+4. `PH6-02` — Restore menu detail-panel enhancements.
 
 ## Phase 1 — Public interaction correctness
 
@@ -74,12 +73,13 @@
 
 The three items address independent defects and can be implemented separately. Preserve resolved drawer link destinations, `aria-current`, submenu behavior, dismissal and ordinary desktop keyboard traversal.
 
-- [ ] **PH5-01 — Restore mobile primary navigation without JavaScript** — **Priority:** High
-  - [ ] In canonical header/fallback CSS, explicitly reveal the top-level navigation list below 940 px when `no-js` remains; provide wrapping or stacking that fits narrow screens while keeping submenu destinations reachable.
-  - [ ] Verify the fallback markers on all eight page shells, including `404.html` and `offline.html`, whose bodies currently lack `no-js`. Preserve their existing page classes and the JavaScript-enhanced layout.
-  - [ ] Extend `scripts/qa-nojs-e2e.mjs` beyond its default desktop viewport to cover mobile link visibility and keyboard activation on the homepage and shared shells, with no horizontal page overflow.
+- [x] **PH5-01 — Restore mobile primary navigation without JavaScript** — **Priority:** High
+  - [x] In canonical header/fallback CSS, explicitly reveal the top-level navigation list below 940 px when `no-js` remains; provide wrapping or stacking that fits narrow screens while keeping submenu destinations reachable.
+  - [x] Verify the fallback markers on all eight page shells, including `404.html` and `offline.html`. Preserve their existing page classes and the JavaScript-enhanced layout.
+  - [x] Extend `scripts/qa-nojs-e2e.mjs` beyond its default desktop viewport to cover mobile link visibility and keyboard activation on the homepage and shared shells, with no horizontal page overflow.
   - **Source:** `daily-AUDIT.md` — P1-01; `css/layout/header.css`, `css/components/utilities.css`, root HTML and `scripts/qa-nojs-e2e.mjs`.
-  - **Completion condition:** At a narrow mobile viewport with JavaScript disabled, primary links are visible, focusable and navigable; with JavaScript enabled, the mobile drawer and desktop navigation retain their intended behavior. Run the affected CSS/HTML checks and focused no-JavaScript regression.
+  - **Result:** Below 940 px, the no-JavaScript header occupies normal document flow with wrapping links, 44 px minimum link height and always-visible submenus. All eight shells retain the fallback marker, preserving page classes, destinations, ARIA and JavaScript navigation contracts.
+  - **Verification:** `npm run lint:css`, `npm run qa:html`, `npm run qa:nojs`, focused ESLint and `git diff --check` passed; the no-JavaScript regression covers all eight shells at 320/390/939/940/1280 px, keyboard/submenu navigation, horizontal overflow and existing native-form checks. The existing homepage JavaScript navigation regression passed 3/3, and six touch/light-dark checks passed on home/404/offline; PH5-02 and PH5-03 remain open.
 
 - [ ] **PH5-02 — Align the drawer lifecycle with the desktop layout boundary**
   - [ ] Reproduce opening at 939 px and resizing to 940 px; align `js/modules/nav.js` with the CSS desktop boundary and clear open state when entering desktop layout.

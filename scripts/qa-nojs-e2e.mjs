@@ -8,6 +8,20 @@ const rootDir = process.cwd();
 const host = "127.0.0.1";
 const port = Number(process.env.QA_NOJS_PORT || 4175);
 const reportsDir = path.resolve(rootDir, "reports", "nojs");
+const navigationPages = [
+  "index.html", "menu.html", "galeria.html", "cookies.html",
+  "polityka-prywatnosci.html", "regulamin.html", "404.html", "offline.html"
+];
+const navigationLinks = [
+  { name: "O nas", href: "index.html#onas" },
+  { name: "Menu", href: "index.html#menu" },
+  { name: "Pełne menu", href: "menu.html" },
+  { name: "Galeria", href: "index.html#galeria" },
+  { name: "Pełna galeria", href: "galeria.html" },
+  { name: "Opinie", href: "index.html#opinie" },
+  { name: "Rezerwacja", href: "index.html#rezerwacja" },
+  { name: "FAQ", href: "index.html#faq" }
+];
 
 const mimeTypes = new Map([
   [".html", "text/html; charset=utf-8"],
@@ -158,14 +172,109 @@ const run = async () => {
       await page.getByRole("heading", { level: 1, name: "Sezonowe menu degustacyjne" }).waitFor();
     });
 
-    await runStep("verify header navigation in no-js mode", async () => {
-      const nav = page.locator('header nav[aria-label="Główna nawigacja"]');
-      await nav.waitFor();
-      await nav.getByRole("link", { name: "O nas" }).waitFor();
-      await nav.getByRole("link", { name: "Menu" }).first().waitFor();
-      await nav.getByRole("link", { name: "Galeria" }).first().waitFor();
-      await nav.getByRole("link", { name: "Rezerwacja" }).waitFor();
-    });
+    const assertNoHorizontalOverflow = async () => {
+      const dimensions = await page.evaluate(() => ({
+        viewport: document.documentElement.clientWidth,
+        document: document.documentElement.scrollWidth,
+        body: document.body.scrollWidth
+      }));
+      assert.ok(dimensions.document <= dimensions.viewport && dimensions.body <= dimensions.viewport,
+        `Navigation must not cause horizontal page overflow: ${JSON.stringify(dimensions)}`);
+    };
+
+    const assertKeyboardLink = async (link, label) => {
+      assert.equal(await link.isVisible(), true, `${label}: link must be visible`);
+      const state = await link.evaluate((element) => {
+        const rect = element.getBoundingClientRect();
+        const hit = document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2);
+        return {
+          focused: document.activeElement === element,
+          tabIndex: element.tabIndex,
+          inViewport: rect.left >= 0 && rect.right <= innerWidth && rect.top >= 0 && rect.bottom <= innerHeight,
+          unobscured: hit === element || element.contains(hit),
+          focusOutline: getComputedStyle(element).outlineStyle !== "none"
+        };
+      });
+      assert.deepEqual(state, {
+        focused: true, tabIndex: 0, inViewport: true, unobscured: true, focusOutline: true
+      }, `${label}: Tab must reach a visible, unobscured link with a focus outline`);
+    };
+
+    const primaryLinks = navigationLinks.filter((link) => link.href.startsWith("index.html#"));
+    for (const width of [320, 390, 939, 940, 1280]) {
+      await page.setViewportSize({ width, height: 844 });
+      for (const [pageIndex, pagePath] of navigationPages.entries()) {
+        await runStep(`no-js navigation ${pagePath} at ${width}px`, async () => {
+          const sourceUrl = `${baseUrl}/${pagePath}`;
+          await page.goto(sourceUrl, { waitUntil: "load", timeout: 15000 });
+          await page.evaluate(() => document.fonts.ready);
+          assert.equal(await page.locator("body").evaluate((element) => element.classList.contains("no-js")), true,
+            "Every page shell must retain its no-js marker when JavaScript is disabled");
+          assert.equal(await page.getByTestId("site-header__nav-toggle").isVisible(), false,
+            "The script-dependent mobile toggle must stay hidden");
+
+          const nav = page.getByTestId("site-header-nav");
+          assert.deepEqual(await nav.locator("a").evaluateAll((links) => links.map((link) => ({
+            name: link.textContent.trim(), href: link.getAttribute("href")
+          }))), navigationLinks, "Native navigation destinations and order must be preserved");
+          const links = await nav.locator("a").all();
+          for (const link of await nav.locator(width < 940 ? "a" : ":scope > ul > li > a").all()) {
+            assert.equal(await link.isVisible(), true, "Links must be available without hover or a prior interaction");
+          }
+          await assertNoHorizontalOverflow();
+
+          await page.locator(".site-header__brand").focus();
+          for (const [index, link] of links.entries()) {
+            await link.waitFor({ state: "visible" });
+            await page.keyboard.press("Tab");
+            await assertKeyboardLink(link, navigationLinks[index].name);
+          }
+          if (width < 940) {
+            for (const link of links.slice(0, -1).reverse()) {
+              await page.keyboard.press("Shift+Tab");
+              await assertKeyboardLink(link, "Reverse navigation");
+            }
+          } else {
+            // Desktop submenus retain their existing focus-within disclosure.
+            await page.keyboard.press("Tab");
+            await assertKeyboardLink(page.locator(".site-header__actions a[href^='tel:']"), "Leave desktop navigation");
+            await page.keyboard.press("Shift+Tab");
+            await assertKeyboardLink(links.at(-1), "Return to desktop navigation");
+          }
+          await assertNoHorizontalOverflow();
+
+          // Each shell activates both submenu destinations and a primary link.
+          // Rotating the primary link also exercises all six section destinations at each width.
+          for (const destination of [navigationLinks[2], navigationLinks[4], primaryLinks[pageIndex % primaryLinks.length]]) {
+            await page.goto(sourceUrl, { waitUntil: "load", timeout: 15000 });
+            await page.locator(".site-header__brand").focus();
+            const linkIndex = navigationLinks.indexOf(destination);
+            for (let step = 0; step <= linkIndex; step += 1) {
+              // As in the existing desktop navigation regression, let focus-within
+              // reveal the submenu before asking native Tab to enter it.
+              await links[step].waitFor({ state: "visible" });
+              await page.keyboard.press("Tab");
+            }
+            await assertKeyboardLink(nav.getByRole("link", { name: destination.name, exact: true }), destination.name);
+            const targetUrl = new URL(destination.href, sourceUrl);
+            // Submenu links can reload the current URL (e.g. menu.html -> menu.html).
+            // Observe that navigation too before measuring the destination layout.
+            await Promise.all([
+              page.waitForNavigation({ waitUntil: "load", timeout: 10000 }),
+              page.keyboard.press("Enter")
+            ]);
+            await page.waitForURL(targetUrl.href, { timeout: 10000 });
+            await page.locator("main").waitFor();
+            if (targetUrl.hash) await page.locator(targetUrl.hash).waitFor();
+            await assertNoHorizontalOverflow();
+          }
+        });
+      }
+    }
+
+    // Keep the existing form and footer regression at its original desktop viewport.
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await page.goto(`${baseUrl}/index.html`, { waitUntil: "domcontentloaded", timeout: 15000 });
 
     await runStep("navigate through header link", async () => {
       await page.getByTestId("site-header-nav").getByRole("link", { name: "Rezerwacja" }).click();
