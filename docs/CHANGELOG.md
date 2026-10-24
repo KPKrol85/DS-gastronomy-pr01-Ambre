@@ -1,100 +1,88 @@
 # Changelog
 
-All significant changes to Ambre are documented in this file.
-
-This is the canonical record of significant completed changes. Evaluate each implementation task for a changelog update and record verified changes when its scope permits. If the task excludes this file, report any required update without editing it. Omit routine cleanup, pending work, and unsupported claims.
+Significant completed changes to Ambre are recorded here.
 
 ## Entry policy
 
-A change is significant when a future maintainer or the project owner would reasonably need to know that one of the following changed:
+Record changes that materially affect UI/UX, accessibility, public content, build and QA workflows, dependencies, deployment, PWA behavior, or architecture.
 
-- user-visible behavior, including meaningful UI, UX, or public content changes;
-- accessibility behavior or accessibility contracts;
-- build behavior, build guards, or npm scripts;
-- test infrastructure or verification tooling;
-- the dependency set;
-- deployment or hosting workflow;
-- PWA, service-worker, cache, or offline behavior;
-- architecture, sources of truth, or important project maintenance contracts.
-
-Judge by impact, not by file count: a visually small change is recorded when it changes user-visible or accessibility behavior, and editing a file is not by itself a reason for an entry.
-
-Not recorded: improvement-report status updates and archiving, commit-only or tracking-document bookkeeping, temporary verification probes, minor wording corrections in internal documentation, and isolated cosmetic or implementation details, such as a single spacing or border correction, that do not change behavior, accessibility, or a shared component contract.
-
-When an implementation task is defined, apply this policy and state `Changelog: yes` or `Changelog: no`. Add an entry only within an approved task marked `Changelog: yes`; this policy does not authorize changelog edits outside that scope.
+- Record verified changes only, within an approved task marked `Changelog: yes`.
+- Judge significance by impact, not file count.
+- Exclude routine cleanup, report status and archiving, temporary checks, internal wording updates, and isolated cosmetic details without meaningful impact.
+- If the changelog is outside the approved scope, report the required update without editing it.
 
 ## [Unreleased]
 
 ### Added
 
-- Added the initial static multi-page restaurant front end with responsive navigation, menu and gallery interactions, a reservation form, legal pages, and local media assets.
-- Added PWA mechanisms including a Web App Manifest, install prompt, Service Worker cache strategies, and an offline fallback page.
-- Added source-to-production CSS and JavaScript build workflows together with project-specific validation for HTML, links, SEO, JSON-LD policy, no-JavaScript behavior, accessibility, and Lighthouse CI.
-- Added focused browser regression coverage for the reservation submission paths, the initial project-information dialog's keyboard behavior, and the shared scroll-to-top control.
-- Added focused browser regression coverage for Service Worker activation, including current-cache usability, obsolete and legacy Ambre cache cleanup, and preservation of unknown same-origin caches.
-- Added a repository-wide `.gitattributes` policy that checks out text files with LF endings on every platform, so inline-script hash generation produces identical values on Windows and in CI.
-- Added an `npm run dev` local development-server workflow that serves the canonical source root with automatic browser reload after HTML, CSS, and JavaScript source changes, bound to `127.0.0.1:4183` as a dedicated development port outside the existing QA and Lighthouse server port block, and configured to ignore `node_modules` and `dist` so the watcher reloads only on source changes; added `live-server` as a development dependency.
+- Added the eight-page restaurant demo with responsive navigation, menu and gallery interactions, reservation form, legal pages, and local assets.
+- Added PWA support with a Web App Manifest, installation prompt, Service Worker caching, and offline fallback.
+- Added production CSS/JavaScript builds and automated HTML, link, SEO, JSON-LD, no-JavaScript, accessibility, and Lighthouse checks.
+- Added focused E2E tests for reservation delivery, the demo-information dialog, and scroll-to-top controls.
+- Added Service Worker regression tests for cache activation, obsolete Ambre cache cleanup, and preservation of unrelated same-origin caches.
+- Added `.gitattributes` to enforce LF line endings and consistent CSP hashes across platforms.
+- Added `npm run dev` with live reload on `127.0.0.1:4183`, excluding `node_modules` and `dist` from watching.
 
 ### Changed
 
-- Changed the homepage contact area into an open editorial postscript aligned with booking, with a fine amber rule and a smaller heading; preserved the existing copy and accessible telephone link across themes.
-- Changed the section headings of the cookie, privacy, and terms documents to carry the project's header-aware scroll offset, so table-of-contents links and hash URLs land each heading below the fixed header instead of behind it; smooth and reduced-motion scrolling, themes, responsive layout, and the existing homepage, skip-link, and footer anchor offsets are unchanged.
-- Changed the homepage reservation form to state and enforce the accepted request window: the date and time fields show the accepted days, range and interval, carry native boundaries with a 15-minute step, and are validated on submission against the inclusive today-to-90-days window, the Tuesday–Sunday rule and the 17:00–22:00 hours, with field-specific Polish messages, `aria-invalid` state and retained input instead of a single generic prompt. Without JavaScript the native boundaries remain a static limit that cannot express the Monday exclusion. Restaurant opening hours and telephone reservation information are unchanged.
-- Added `--source <path>` and selection-only `--force` to the image optimizer for safe regeneration of one source's requested WebP/AVIF variants, preserving the existing recursive, timestamp-based workflow.
-- Reused the existing `getFocusable(root)` helper for mobile-drawer opening focus and Tab handling, removing duplicated focus discovery while preserving candidate selection, ordering, and existing navigation and accessibility contracts.
-- Consolidated lightbox JPEG, WebP, and AVIF URL resolution into local `resolveImageVariants()`, shared by image display and adjacent-image preloading; preserved URL rules, preload order, and existing lightbox interaction and accessibility contracts.
-- Consolidated CSS and JavaScript source-to-production paths into one mapping in `scripts/build-dist.mjs`, shared by bundle generation, HTML and Service Worker rewriting, and asset-path safeguards; preserved production output, replacement semantics, validation behavior, and build order.
-- Changed the homepage hero's two primary actions from scripted buttons into native in-page links to the reservation form and the menu section, so both expose link semantics, can be opened in a new tab, and reach their destination with JavaScript disabled; scrolling now comes solely from the existing global `scroll-behavior` with its reduced-motion override and the `.l-section` header-aware offset, the shared `[data-target]` scroll handler remains in place but binds no triggers, and the hero label size is pinned in CSS so the previous button appearance, hover and focus styling, and responsive layout are unchanged.
-- Consolidated shared menu and gallery category-tab styling in `css/components/tabs.css`, preserving existing selectors, feature-specific spacing and resets, visual states, responsive sizing, themes, and reduced-motion behavior.
-- Consolidated normalized category matching into a shared JavaScript helper used by menu and gallery filters and gallery load-more logic, eliminating duplicated comparisons while preserving existing filtering, loading, and accessibility behavior.
-- Changed Lighthouse CI to build and audit the production `dist/` path with text compression, while preserving the existing eight URLs and category thresholds; the current contract collects three runs per URL, for 24 Lighthouse collections per complete run.
-- Changed the first menu thumbnail to load eagerly after Lighthouse identified it as the LCP element, and deferred the menu page's embedded Google Map behind an accessible, no-JavaScript-safe user action.
-- Deferred the 404 footer's Google Maps iframe using the existing map facade pattern, preventing Google Maps requests before explicit user activation while preserving the no-JavaScript fallback; focused 404 Lighthouse Performance stabilized at `0.99` across six runs, and the complete eight-URL, 24-run Lighthouse suite passes.
-- Added the missing offline-page description and preloaded its first-render fonts; all eight configured pages now meet the Lighthouse Performance threshold, while URL-specific assertions preserve blocking SEO `>= 0.95` on standard pages and retain the intentional utility-page `noindex` result as a warning.
-- Changed the project license and package metadata to use the proprietary KP_Code licensing terms.
-- Changed the cookie, privacy, and terms pages to use KP_Code legal templates aligned with the implemented browser storage, PWA, and reservation-form behavior.
-- Changed reservation delivery feedback so only accepted HTTP responses show success and reset the form; rejected responses and network failures retain entered data and expose a recoverable error state.
-- Changed reservation validation to keep native constraints active until the JavaScript enhancement initializes successfully, and extended no-JavaScript regression coverage for blocked invalid submissions and intercepted valid native POSTs.
-- Changed the initial project-information dialog to contain keyboard focus, isolate background interaction while open, and move focus to the main content after automatic dismissal while preserving Escape and acceptance persistence behavior.
-- Changed the shared scroll-to-top control to synchronize rendered visibility, keyboard reachability, and accessibility state across all six intended pages while preserving the existing threshold and reduced-motion behavior.
-- Contained wide tables on the cookies and privacy pages in labelled, keyboard-reachable horizontal scroll regions with visible focus, eliminating document-wide overflow at 320 px and 390 px while preserving native table semantics and full cell reachability; added focused legal-table E2E coverage, integrated it into the existing `test:e2e` aggregate, and synchronized `doc/settings.md` with the executable QA contract.
-- Changed the gallery lightbox to save the document root's inline `scroll-behavior` value before applying its temporary `auto` override and to restore that exact value after closing, so an empty inline value returns to empty and a pre-existing value such as `smooth` is preserved; the saved scroll position is still restored immediately while the temporary override is active, the normal close control, Escape/cancel, backdrop, and native dialog close paths now share one document-state cleanup contract, and scroll-position and focus return to the triggering gallery item are preserved; added focused lightbox E2E coverage and integrated it into the existing `test:e2e` aggregate.
-- Corrected the completed gallery status, which closed its icon's opening `<svg>` tag twice and so injected a stray `>` text node that rendered as `>Wszystko załadowane`; the status copy remains exactly `Wszystko załadowane`, the icon keeps its decorative `aria-hidden="true"` and `focusable="false"` semantics and contributes nothing to assistive output, and gallery filtering across all four category tabs together with the timing of the completed state were exercised and left unchanged; added focused gallery-status E2E coverage, integrated it into the existing `test:e2e` aggregate, and synchronized `doc/settings.md` with the executable QA contract.
-- Expanded the accessibility gate from a single modal-dominated scan to explicit two-state coverage: each audited page is scanned in the first-visit modal-open state and again in the accepted/full-page state reached through the shipped acceptance control, so the full underlying page accessibility tree is covered after real modal acceptance instead of only the content left reachable behind the open modal. Modal and inert-state preconditions — modal visibility and `aria-hidden`, the inert background contract, and the main content's presence in Chromium's accessibility tree — are asserted before each relevant axe scan, so a passing result cannot be reported against the wrong page state. The QA output now names the page and the scanned accessibility state with its own PASS/FAIL result, and utility pages that ship no demo legal modal report an explicit modal-open skip rather than a fabricated state. Added a runtime-only negative control that seeds an invalid image outside the modal and proves the accepted/full-page scan detects it and fails on it while the modal-open scan cannot see it; the seeded markup exists only during the run and is never committed to project source. The existing axe rules, thresholds, exclusions, and eight-page set, and the production first-visit modal behavior, are unchanged; synchronized `doc/settings.md` with the executable QA contract.
-- Changed the npm workflow to use one discoverable `lint:*`, `qa:*`, `test:e2e:*`, `csp:*`, and `img:*` taxonomy, with separate fast and comprehensive quality gates.
-- Changed the mobile navigation drawer to present the resolved header navigation state each time it opens, so below 940 px the `Menu` and `Galeria` entries lead to the full menu and gallery pages instead of back to the homepage sections, and the current page and the homepage section in view are indicated through `aria-current`; the cloned drawer structure, submenu triggers and their `aria-expanded` contract, opening focus, Tab containment, Escape and overlay dismissal, focus return, and responsive behavior are unchanged.
-- Removed the unused `postcss-cli` development dependency after confirming the production build uses the PostCSS Node API directly.
-- Changed the inline script hashes in `_headers` to match the current source content, preserving the existing security headers and Content-Security-Policy directives.
-- Changed the `_headers` inline script hashes to the values derived from the LF source bytes, replacing platform-dependent values that made `npm run qa:csp` pass on Windows but fail in CI.
-- Changed the current Service Worker caches to `ambre-app-shell-v1.8` and `ambre-runtime-img-v1.8`; activation cleanup now targets only obsolete Ambre-namespaced caches and the explicitly known pre-namespace keys while preserving unknown same-origin caches.
-- Corrected the current public origin across canonical and social metadata, JSON-LD, sitemap, robots, package metadata, and the visible terms link to `https://ds-gastronomy-pr01-ambre.netlify.app/`, with matching JSON-LD CSP hashes.
-- Replaced the fictional `Restaurant` JSON-LD with a truthful `WebSite`/`CreativeWork`/`WebPage` model and separate KP_Code Digital Studio `Organization`, and strengthened schema policy checks against fictional business entities and unsupported operational data.
-- Corrected the X and LinkedIn social controls on all current pages to use the verified KP_Code operator profiles instead of generic platform homepages.
-- Updated the directly affected supported development toolchain dependencies — `postcss` to `^8.5.26`, `sharp` to `^0.35.4`, and `@lhci/cli` to `^0.15.1` — reducing the full development audit from 22 high findings to 7 while keeping 0 critical findings and preserving a zero-vulnerability production dependency audit.
-- Retained the existing production build, end-to-end, no-JavaScript, accessibility, image-verification, CI, and Lighthouse contracts across the toolchain update; no thresholds, URL set, run count, assertions, or QA steps were changed.
-- Documented that the remaining high audit rows originate from the `@lhci/cli` dependency chain and were left in place with a written applicability decision rather than removed through the registry's suggested forced `@lhci/cli` downgrade or an unsupported transitive override.
-- Refined the shared site footer across all pages: improved informational-column alignment and responsive spacing, reordered the Contact and Location columns, moved Social Media into a separate centered row below the main grid, removed the NIP line from the location details, and reduced the footer map size.
-- Standardized the footer's Google Maps iframe across all pages so the external map loads only after explicit user activation, using the project's existing deferred map-loading pattern.
-- Refined the Opinie section to a single Google reviews link, removed Tripadvisor, introduced the shared `js/icons.js` SVG icon system, and synchronized the related documentation.
-- Migrated the footer opening-hours, phone, e-mail, Facebook, GitHub, X, and LinkedIn icons to the shared `js/icons.js` SVG system, replacing the old inline SVG implementation across all footer pages and removing the obsolete footer icon markup and CSS while preserving the existing footer layout and behavior.
-- Replaced the previous theme-toggle icons with an animated sun/moon SVG switch, preserving the existing theme persistence and system-preference behavior, adding reduced-motion support, and removing the obsolete theme-toggle icon code.
-- Refined the reservation form's layout and visual hierarchy, improved responsive field grouping and information-panel balance, added the shared `js/icons.js` chevron treatment to the guests select, and improved native date/time picker visibility in both themes.
-- Refined the homepage menu preview and updated the full menu page to the same premium dish-card and category-filter language, preserving responsive behavior, light and dark themes, and the existing menu interactions.
-- Changed the shared lightbox dialog to take its accessible name and guidance from the mode it actually opens in: a grouped gallery session is named `Podgląd zdjęć` and describes arrow-key navigation alongside Escape only while previous/next are available, and a dish preview is named `Podgląd dania` with Escape-only guidance. The three pages now name the dialog through `aria-labelledby="lb-title"` with the shared `#lb-help` guidance node in `aria-describedby`, replacing the competing `aria-label` on `menu.html`; mode resolution, grouping, filtering, navigation, the counter contract, focus handling, swipe, fullscreen and document-state restoration are unchanged, and the lightbox E2E suite was extended with the cross-page naming contract and a gallery session without navigable siblings.
-- Replaced the homepage hero and about photographs with the owner-supplied Amber dining journal images (IMP-DESIGN-01B): the hero now uses the `hero-1600x900` / `hero-2560x1440` family and the about section the `about-800x600` / `about-1600x1200` family with a new descriptive Polish `alt`, regenerated through `img:opt`; the superseded `hero-03-*` and `chef-01-*` sources and their WebP/AVIF variants were removed, while markup structure, decorative hero semantics, `fetchpriority`, lazy loading, dimensions and `sizes` are unchanged.
-- Redesigned the homepage hero as an editorial invitation beside the dining photograph (IMP-DESIGN-02): the copy and actions now sit on the page background of the active theme instead of over the image, and the photograph has its own unobstructed field — beside the copy on the about section's column grid and bleeding to the right edge from 1024 px, below the copy at full width on narrower screens. The wordmark became a theme-aware signature line and the overlay, text shadows and dark-photo button overrides were removed; the heading, Polish copy, native `#rezerwacja` / `#menu` links and labels, decorative image semantics and responsive image delivery are unchanged.
-- Redesigned the homepage gallery preview and the full gallery as editorial photographic sequences (IMP-DESIGN-03): the preview leads with the dining room beside a wide plate and a dessert-and-wine pair, and the full gallery opens with a lead-scene spread in which every category forms a closed block, so filtering reflows without empty slots; phones now show two columns with full-width lead and wide frames. Gallery images select from the existing 600/1200/1600 variants through width descriptors and per-tile `sizes`; visual, keyboard and lightbox order follow the adjusted DOM order, and filter values, ARIA, links, `alt` text, load status and lightbox grouping are unchanged.
+- Redesigned the homepage contact card as an open editorial postscript with an amber rule, smaller heading, and accessible telephone link.
+- Added header-aware scroll offsets to headings on the cookies, privacy, and terms pages while preserving existing anchor behavior.
+- Enforced reservation dates from today through 90 days ahead, Tuesday–Sunday, 17:00–22:00 in 15-minute intervals, with field-specific feedback; native no-JavaScript limits cannot exclude Mondays.
+- Added image-optimizer `--source <path>` and scoped `--force` options for selective WebP/AVIF regeneration.
+- Reused the shared focusable-element helper for mobile drawer focus and Tab containment without changing navigation behavior.
+- Unified JPEG/WebP/AVIF URL resolution for lightbox display and adjacent-image preloading.
+- Consolidated CSS and JavaScript build paths into one source-to-production mapping without changing generated output.
+- Replaced scripted homepage hero buttons with native reservation and menu anchors, preserving styling, focus, and reduced-motion scrolling.
+- Consolidated menu and gallery tab styles in `css/components/tabs.css`, preserving responsive and theme behavior.
+- Shared normalized category matching between menu/gallery filtering and gallery load-more logic.
+- Configured Lighthouse CI to audit compressed production `dist/` pages across eight URLs, three runs each, using existing thresholds.
+- Eager-loaded the menu LCP thumbnail and deferred the menu-page Google Map until user activation.
+- Deferred the 404-page Google Map until activation; focused Lighthouse Performance reached 0.99 across six runs, and the complete Lighthouse suite passed.
+- Added the offline-page description and critical font preloads; all eight Lighthouse pages met Performance thresholds, with `noindex` utility-page SEO treated as a warning.
+- Adopted proprietary KP_Code licensing in `LICENSE.md` and package metadata.
+- Updated cookie, privacy, and terms content to match implemented storage, PWA, and reservation behavior.
+- Limited reservation success feedback and form reset to accepted HTTP responses; failed requests preserve input and display errors.
+- Preserved native reservation constraints until JavaScript enhancement initializes, with no-JavaScript submission regression tests.
+- Contained keyboard focus within the initial demo-information dialog and isolated background interaction, preserving dismissal and acceptance behavior.
+- Synchronized scroll-to-top visibility, focusability, and accessibility state across six pages.
+- Made wide legal tables horizontally scrollable and keyboard accessible without page overflow; added focused E2E coverage.
+- Restored the lightbox's exact prior inline scroll behavior after closing, retaining scroll position and trigger focus; added E2E coverage.
+- Corrected the gallery completion-status icon markup without changing its text or accessibility semantics; added E2E coverage.
+- Expanded accessibility tests to scan both modal-open and accepted full-page states, with state preconditions and a negative control.
+- Standardized npm commands into `lint:*`, `qa:*`, `test:e2e:*`, `csp:*`, and `img:*` groups with fast and full QA gates.
+- Corrected mobile-drawer Menu and Galeria destinations below 940 px and synchronized `aria-current`, preserving drawer keyboard behavior.
+- Removed unused `postcss-cli` after confirming the build uses the PostCSS Node API.
+- Updated CSP inline-script hashes in `_headers` to match current source content.
+- Regenerated CSP hashes from LF source bytes for consistent Windows and CI validation.
+- Updated Service Worker caches to `ambre-app-shell-v1.8` and `ambre-runtime-img-v1.8`, preserving unrelated same-origin caches.
+- Standardized the public Netlify origin across metadata, JSON-LD, sitemap, robots, package metadata, and terms links.
+- Replaced fictional `Restaurant` JSON-LD with demo-accurate `WebSite`, `CreativeWork`, `WebPage`, and KP_Code `Organization` entities.
+- Linked X and LinkedIn social controls to verified KP_Code profiles instead of platform homepages.
+- Updated `postcss`, `sharp`, and `@lhci/cli`; reduced development audit high findings from 22 to 7, with no critical or production findings.
+- Preserved build, E2E, no-JavaScript, accessibility, CI, and Lighthouse contracts during dependency updates.
+- Documented remaining `@lhci/cli` transitive audit findings without forcing an unsupported downgrade or override.
+- Refined footer column alignment, contact/location order, social-media row, and map size; removed the NIP line.
+- Deferred footer Google Maps embeds across all pages until explicit activation.
+- Simplified the Opinie section to one Google reviews link and introduced the shared SVG icon registry.
+- Migrated footer contact and social icons to the shared `js/icons.js` registry, removing duplicated inline SVG markup.
+- Replaced theme-toggle icons with a reduced-motion-aware animated sun/moon SVG, preserving theme persistence.
+- Refined reservation form layout, responsive fields, information panel, select icon, and native date/time controls across themes.
+- Unified the homepage menu preview and full menu page under the same premium dish-card and category-filter styling.
+- Set accessible lightbox names and instructions by gallery/dish mode, preserving navigation, focus, and filtering contracts.
+- Replaced hero and About photographs with the Amber dining journal set and regenerated responsive WebP/AVIF variants.
+- Redesigned the homepage hero with an editorial text/image split, theme-aware wordmark, and responsive photographic framing.
+- Redesigned homepage and full-gallery layouts as editorial photo sequences with responsive width-based `srcset` and gap-free category filtering.
 
 ### Fixed
 
-- Fixed incomplete Polish glyph coverage in the local web fonts. The four installed `latin` WOFF2 subsets carried only 2 of the 18 Polish letters (ó/Ó); Ą, Ć, Ę, Ł, Ń, Ś, Ź, Ż and their lowercase forms were absent, so Chromium drew them from Segoe UI and Segoe UI Semibold on 1370 of 1538 Polish-bearing text nodes. Added matching `latin-ext` subsets for Poppins 400/600 and Source Sans 3 400/500, and gave all eight faces explicit, non-overlapping `unicode-range` declarations, so ordinary Polish text now renders entirely from the intended typefaces. The Poppins subsets are the official `fonts.gstatic.com` v24 files, to which the installed `latin` pair is byte-identical; the Source Sans 3 subsets are static wght 400/500 instances of the official `google/fonts` `SourceSans3[wght].ttf` master (Version 3.052), verified to have the same advance widths and vertical metrics as the installed faces, with the SIL OFL copyright and licence name records retained. Font families, established weights, typography tokens, fallback stacks, local hosting and `font-display: swap` are unchanged, no external font service is introduced, and the preload, Service Worker and CSP contracts are untouched. Verified in Chromium at 390, 768 and 1440 px in both themes against the canonical sources and the production `dist/` output: no system-font fallback on Polish text, unchanged document heights, no re-wrapped text and no horizontal overflow.
-- Fixed the gallery text alternatives after the in-place replacement of the thirteen gallery photographs (IMP-DESIGN-01C). Most of the 15 gallery `alt` values in `index.html` and `galeria.html` still described the superseded images, such as a curry bowl and a violet-lit banquet hall; all 15 now describe the new photographs in Polish, and because the lightbox reuses the thumbnail `alt`, its enlarged view is corrected as well. Image references, responsive variants, the homepage demo suffix, gallery filters and lightbox behavior are unchanged. Verified with `qa:a11y`, `test:e2e:lightbox`, `test:e2e:gallery-status` and a Chromium walk through every gallery lightbox view at 390, 768 and 1440 px.
+- Restored Polish glyph coverage in local Poppins and Source Sans 3 fonts using `latin-ext` subsets and explicit `unicode-range`; verified intended font rendering without overflow at 390–1440 px.
+- Updated 15 gallery image descriptions to match the replacement photographs, including accessible lightbox alternatives; verified with accessibility and gallery E2E tests.
 
 ### Documentation
 
-- Recorded the Lighthouse root causes, verified Performance resolution, measured final scores, and final utility-page assertion policy in the archived [plan](doc/archive/plans/PLAN-2026-08-22.md) and [daily audit](doc/archive/audits/daily-AUDIT-2026-08-22.md).
-- Added a Polish-first bilingual README describing the current source/build boundary, PWA mechanisms, quality workflows, and verified limitations.
-- Added a current daily front-end audit record to establish evidence-based maintenance priorities.
-- Synchronized the documented `qa` command and validation scope with the executable package script, including schema-policy, no-JavaScript, and text-lint stages.
-- Synchronized the cookie policy's Cache Storage identifiers with the current Ambre-specific Service Worker cache names.
-- Updated the README and developer settings reference for the streamlined build, lint, QA, E2E, CSP, server-check, and image-tooling commands.
+- Recorded Lighthouse findings, Performance results, and utility-page SEO policy in the archived [plan](docs/archive/plans/PLAN-2026-08-22.md) and [daily audit](docs/archive/audits/daily-AUDIT-2026-08-22.md).
+- Added a Polish-first bilingual README covering architecture, builds, PWA, QA, and limitations.
+- Added a daily front-end audit to establish maintenance priorities.
+- Aligned documented `qa` coverage with schema, no-JavaScript, and text-lint checks.
+- Updated cookie-policy cache names to match the Service Worker.
+- Updated README and developer settings for current build, lint, QA, E2E, CSP, server, and image commands.
