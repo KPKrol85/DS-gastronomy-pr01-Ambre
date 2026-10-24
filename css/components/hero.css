@@ -1,154 +1,237 @@
-/* Hero */
+/* Hero
+
+   An editorial invitation beside the dining scene. The copy sits on the page
+   background and keeps the site's reading edge, while the photograph owns a
+   field of its own, so no text is ever set over it: on narrow screens the
+   scene follows the copy at full width, and on wide screens it fills the
+   larger column and bleeds off the right edge of the viewport. */
 
 .site-hero {
-  position: relative;
-  isolation: isolate;
-  display: grid;
-  place-items: center;
-  min-height: 88vh;
-  border-bottom: 1px solid var(--c-border);
-  width: 100%;
-
-  /* Composition */
-  --hero-measure: 52rem;
-  --hero-logo-h: var(--logo-sm);
+  /* The gutter `.container` leaves on each side, as a grid track, so the copy
+     shares one edge with the header brand and the following sections. */
+  --hero-edge: calc(max(0px, (100% - var(--max)) / 2) + var(--space-04));
+  --hero-measure: 34rem;
+  --hero-logo-h: clamp(2.5rem, 2.1rem + 1vw, 3rem);
   --hero-title-size: clamp(2.375rem, 1.85rem + 1.65vw, 3rem);
+  --hero-rule: color-mix(in oklab, var(--c-border), var(--c-accent) 30%);
+  --hero-glow: color-mix(in oklab, var(--c-accent) 8%, transparent);
 
-  /* Overlay: one vertical wash + one scrim centred behind the copy */
-  --hero-wash-top: rgba(0, 0, 0, 0.34);
-  --hero-wash-mid: rgba(0, 0, 0, 0.24);
-  --hero-wash-bot: rgba(0, 0, 0, 0.22);
-  --hero-scrim-core: rgba(0, 0, 0, 0.66);
-  --hero-scrim-fade: rgba(0, 0, 0, 0.36);
-}
+  /* Framing keeps the plated dish whole in every crop. */
+  --hero-media-ratio: 1;
+  --hero-focus: 58% 60%;
 
-.site-hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background:
-    radial-gradient(50% 52% at 50% 50%, var(--hero-scrim-core) 0%, var(--hero-scrim-fade) 55%, transparent 100%),
-    linear-gradient(to bottom, var(--hero-wash-top) 0%, var(--hero-wash-mid) 52%, var(--hero-wash-bot) 100%);
-}
-
-.site-hero__media {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  display: block;
+  display: grid;
+  grid-template-columns: var(--hero-edge) minmax(0, 1fr) var(--hero-edge);
   width: 100%;
-  height: 100%;
-  max-width: none;
-  pointer-events: none;
-}
-
-.site-hero__media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  filter: saturate(1.05);
+  border-bottom: 1px solid var(--c-border);
 }
 
 .site-hero__inner {
-  position: relative;
-  z-index: 2;
+  grid-column: 2;
+  justify-self: center;
   width: 100%;
   max-width: var(--hero-measure);
+  padding-block: var(--space-07);
   text-align: center;
-  color: #fff;
 }
 
+/* The wordmark is set as the invitation's signature line between two warm
+   hairlines (the about section's rule), so it reads as part of the copy
+   rather than a second copy of the header logo. */
 .site-hero__brand {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: var(--space-03);
+  justify-content: center;
+  gap: var(--space-04);
   margin-bottom: var(--space-05);
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.25));
+}
+
+.site-hero__brand::before,
+.site-hero__brand::after {
+  content: "";
+  flex: 0 1 var(--space-07);
+  height: 1px;
+  background: var(--hero-rule);
 }
 
 .site-hero__brand-logo {
   display: block;
+  flex: none;
   height: var(--hero-logo-h);
   width: auto;
 }
 
-.site-hero__title,
-.site-hero__lead {
-  color: #fff;
-  text-align: center;
-  text-shadow: var(--text-shadow-hero);
+/* The wordmark and the copy field's glow follow the page edition they sit on;
+   amber reads stronger on the dark ground, so the glow is lighter there.
+   Without JavaScript there is no `data-theme`, so the system preference
+   decides. */
+.site-hero__brand-logo--dark,
+html[data-theme="dark"] .site-hero__brand-logo--light {
+  display: none;
+}
+
+html[data-theme="dark"] .site-hero__brand-logo--dark {
+  display: block;
+}
+
+html[data-theme="dark"] .site-hero {
+  --hero-glow: color-mix(in oklab, var(--c-accent) 6%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .site-hero__brand-logo--light {
+    display: none;
+  }
+
+  html:not([data-theme="light"]) .site-hero__brand-logo--dark {
+    display: block;
+  }
+
+  html:not([data-theme="light"]) .site-hero {
+    --hero-glow: color-mix(in oklab, var(--c-accent) 6%, transparent);
+  }
 }
 
 .site-hero__title {
   font-size: var(--hero-title-size);
-  margin: 0 auto var(--space-04);
+  margin: 0 0 var(--space-04);
 }
 
 .site-hero__lead {
+  max-width: 40ch;
   margin: 0 auto;
-}
-
-.site-hero__eyebrow {
-  color: rgba(255, 255, 255, 0.9);
+  text-wrap: pretty;
 }
 
 .site-hero__actions {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: var(--space-03);
-  margin-top: var(--space-06);
+  max-width: 24rem;
+  margin: var(--space-06) auto 0;
 }
 
-/* `.site-button` inherits its font family but declares no size, so as buttons
-   the hero CTAs took the user agent's small-control size. They are anchors now,
-   which inherit the document size, so the previous label size is pinned here to
-   keep the hero's appearance unchanged; `rem` keeps it scaling with the root. */
+/* Both actions share the row on phones and stack only when the pair no longer
+   fits; the label keeps the readable control size of the button system. */
 .site-hero__actions .site-button {
+  flex: 1 1 10rem;
+  min-height: 44px;
+  padding-inline: var(--space-05);
+  font-size: var(--fs-sm);
+}
+
+/* The light edition defines the reservation label's ink; this fallback keeps
+   it dark on amber before the theme script has run, too. */
+.site-hero__actions .site-button--primary {
+  color: var(--c-accent-ink, #1b1b1f);
+}
+
+.site-hero__media {
+  position: relative;
+  grid-column: 1 / -1;
+  display: block;
+  aspect-ratio: var(--hero-media-ratio);
+  background: var(--c-surface);
+}
+
+.site-hero__media img {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  max-width: 220px;
-  font-size: calc(1rem / 1.2);
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: var(--hero-focus);
 }
 
-/* The hero backdrop is a dark photograph in both themes, so the ghost CTA
-   keeps its dark-context ink instead of the light theme's dark-on-photo ink. */
-.site-hero__actions .site-button--ghost {
-  background: rgba(0, 0, 0, 0.45);
-  border-color: rgba(255, 255, 255, 0.18);
-  color: #fff;
-  backdrop-filter: blur(14px) saturate(1.3);
-  -webkit-backdrop-filter: blur(14px) saturate(1.3);
-}
-
-.site-hero--img-dark {
-  --hero-wash-top: rgba(0, 0, 0, 0.26);
-  --hero-wash-mid: rgba(0, 0, 0, 0.16);
-  --hero-wash-bot: rgba(0, 0, 0, 0.16);
-  --hero-scrim-core: rgba(0, 0, 0, 0.58);
-  --hero-scrim-fade: rgba(0, 0, 0, 0.3);
-}
-
-.site-hero--img-light {
-  --hero-wash-top: rgba(0, 0, 0, 0.42);
-  --hero-wash-mid: rgba(0, 0, 0, 0.32);
-  --hero-wash-bot: rgba(0, 0, 0, 0.28);
-  --hero-scrim-core: rgba(0, 0, 0, 0.72);
-  --hero-scrim-fade: rgba(0, 0, 0, 0.4);
-}
-
-@media (min-width: 480px) {
+@media (min-width: 600px) {
   .site-hero {
-    min-height: var(--hero-min-h);
+    --hero-media-ratio: 16 / 10;
   }
+}
+
+/* Side by side once the copy column can hold the heading in two lines. The
+   columns repeat the about section's 1 : 1.4 split, so the copy and the photo
+   edge line up with the section that follows. */
+@media (min-width: 1024px) {
+  .site-hero {
+    grid-template-columns:
+      var(--hero-edge)
+      minmax(0, 1fr)
+      var(--space-08)
+      minmax(0, 1.4fr)
+      var(--hero-edge);
+    min-height: min(var(--hero-min-h), 52rem);
+
+    /* The photograph's field also takes the column gap and fades in across
+       it. Shifting the crop by half the gap keeps the opaque image exactly
+       where the gap used to end; the wider field can hold the wine glass
+       beside the plate. `min()` stops the shift short of uncovering the box
+       on very wide screens, where the image scales to the field's width. */
+    --hero-blend: var(--space-08);
+    --hero-focus: min(0px, calc(50% + var(--hero-blend) / 2)) 60%;
+
+    /* Candlelight from the scene, carried faintly into the copy field: centred
+       on the photo's edge at table height, it fades out before the copy's
+       reading edge. */
+    background: radial-gradient(42% 70% at 46% 62%, var(--hero-glow), transparent);
+  }
+
+  .site-hero__inner {
+    grid-row: 1;
+    align-self: center;
+    justify-self: stretch;
+    max-width: none;
+    padding-block: var(--space-09);
+    text-align: left;
+  }
+
+  /* Left-aligned, the signature line runs on towards the photograph. */
+  .site-hero__brand::before {
+    content: none;
+  }
+
+  .site-hero__brand::after {
+    flex-grow: 1;
+  }
+
+  .site-hero__lead {
+    margin-inline: 0;
+    text-align: left;
+  }
+
   .site-hero__actions {
-    flex-direction: row;
-    justify-content: center;
+    justify-content: flex-start;
+    max-width: none;
+    margin-inline: 0;
   }
+
   .site-hero__actions .site-button {
-    flex: 1;
-    max-width: 160px;
+    flex: 0 0 auto;
+  }
+
+  /* An eased fade across the gap only, so the edge reads as a soft photographic
+     border rather than a gradient laid over the scene. */
+  .site-hero__media {
+    grid-column: 3 / -1;
+    grid-row: 1;
+    aspect-ratio: auto;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      rgb(0 0 0 / 0.16) calc(var(--hero-blend) * 0.25),
+      rgb(0 0 0 / 0.5) calc(var(--hero-blend) * 0.5),
+      rgb(0 0 0 / 0.84) calc(var(--hero-blend) * 0.75),
+      #000 var(--hero-blend)
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      rgb(0 0 0 / 0.16) calc(var(--hero-blend) * 0.25),
+      rgb(0 0 0 / 0.5) calc(var(--hero-blend) * 0.5),
+      rgb(0 0 0 / 0.84) calc(var(--hero-blend) * 0.75),
+      #000 var(--hero-blend)
+    );
   }
 }

@@ -129,17 +129,9 @@ Priorities represent implementation value and dependencies, not defect severity.
 
 ### IMP-DESIGN-02 — Compose the hero as an editorial invitation beside a visible dining scene
 
-- **Status:** Proposed
-- **Priority:** P1
-- **Affected area:** Homepage `.site-hero` and its responsive composition.
-- **Evidence:** **Source:** `index.html`, `.site-hero__media`, `.site-hero__inner` and native actions; `css/components/hero.css` centers the text over a cover image with a central scrim. **Runtime / Visual:** The sampled hero retains that arrangement across three widths; at 390 px the narrow crop places enlarged glassware behind the heading and copy.
-- **Current state:** Wordmark, heading, lead and actions form one centered stack over the photograph. The same image area supplies atmosphere and the text's background.
-- **Design judgment:** Giving the photograph its own unobstructed field would let it communicate the approved dining story while typography establishes a more distinctive opening rhythm.
-- **Proposed improvement:** Develop a bounded editorial composition: a calm text/action field adjacent to a dominant photographic field on wide screens. On mobile, let the concise copy and actions lead into a deliberately cropped scene. Use the current typefaces, wordmark and amber accent; establish the composition through image/type proportion rather than a larger headline or additional copy.
-- **Expected value:** A clearer relationship between the seasonal-menu invitation and its imagery, with a purposeful mobile opening.
-- **Implementation scope:** `index.html` hero markup where necessary and `css/components/hero.css`. Preserve the heading's meaning, both anchor destinations and accessible labels, header behavior, decorative-media semantics and meaningful reading order. Keep styles local to the hero; no carousel, video or motion library.
-- **Dependencies:** Final hero selection/crops from IMP-DESIGN-01 and Polish font coverage before final wrapping approval. Layout exploration can proceed separately from asset production, but final acceptance cannot use unrelated placeholders.
-- **Acceptance criteria:** One photographic subject remains legible independently of the text at 1440, 768 and 390 px; the heading and primary action remain the opening's clear text hierarchy. At 390 × 844 the primary action is visible without an image pushing it out of the initial viewport. At 320 px, 200% zoom and a short landscape viewport, content remains reachable without clipping or horizontal overflow. Verify light/dark/system presentation, contrast, keyboard focus, native navigation with JavaScript disabled and reduced-motion scrolling; run existing HTML/links checks when markup changes.
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** The centered overprint and overlay were replaced by copy on the page background beside an unobstructed photograph: from 1024 px the columns follow the about section's 1 : 1.4 grid with the image bleeding off the right edge, and below that the centered copy and actions lead into a full-width scene. The wordmark is now a theme-aware signature line; the H1, Polish copy, both native anchors and labels, decorative image semantics and the AVIF/WebP/JPEG `srcset`/`sizes`/`fetchpriority` delivery are unchanged.
+- **Verification:** `qa:html`, `qa:links`, `qa:csp`, `lint:css`, `qa:a11y` and `build` passed and `git diff --check` was clean; Chromium probes from 1440 to 320 px, at 200% zoom and in short landscape viewports, in light, dark, system and no-JS states, showed no overflow or clipping, the reservation action within the initial 390 × 844 viewport, visible focus and working anchors with and without JavaScript. Between 1024 and 1279 px the narrower photo field crops the wine glass at its edge; screen readers and non-Chromium browsers were not tested.
 - **Impact:** High
 - **Effort:** Medium
 
