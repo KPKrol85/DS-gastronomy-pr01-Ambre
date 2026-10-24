@@ -145,17 +145,9 @@ Priorities represent implementation value and dependencies, not defect severity.
 
 ### IMP-DESIGN-04 — Turn the contact panel into a quiet postscript to booking
 
-- **Status:** Proposed
-- **Priority:** P2
-- **Affected area:** `#kontakt` and its visual relationship to the preceding booking section and following FAQ.
-- **Evidence:** **Source:** `index.html` places the substantial booking panel before another reservation heading and telephone invitation; `.cta__box` in `css/components/cta.css` has a bordered surface, large shadow and hover translation. **Runtime / Visual:** The contact section occupies about 462 px at the sampled desktop viewport and appears as another prominent raised panel after booking.
-- **Current state:** The form is followed by an independent, centered promotional panel before the practical FAQ and footer.
-- **Design judgment:** The second panel restarts the pitch and competes with the form's compositional role. A typographic closing note would better complete the restrained dining-journal direction.
-- **Proposed improvement:** Present the existing phone invitation as an open editorial postscript aligned with the booking composition, using a fine rule and clear text hierarchy. Reduce its independent headline/surface emphasis so booking remains the principal closing anchor. Preserve the phone option as an obvious actionable link.
-- **Expected value:** A more intentional transition from booking to practical information, without adding another CTA or removing a contact route.
-- **Implementation scope:** Local `#kontakt` markup/classes only where needed and its rules in `css/components/cta.css`; nearby section rhythm only as necessary. Keep `#kontakt`, the telephone destination, existing Polish content and document order. Preserve the recently refined form, FAQ grid and footer components. No reservation workflow or testimonial changes.
-- **Dependencies:** Direction approval and Polish font coverage before final headline review. Asset-independent; it can proceed independently of IMP-DESIGN-01–03 after separate authorization.
-- **Acceptance criteria:** At 390, 768 and 1440 px, contact reads as a continuation of booking with no separate elevated promotional card, while the phone link remains distinguishable and keyboard/touch accessible. FAQ and footer retain their structure and functionality. Verify light/dark/system editions, focus, link contrast, 200% zoom, short viewports and the `#kontakt` anchor offset. Use existing CSS lint, plus HTML/links checks if markup changes; form tests are needed only if the protected form is actually touched.
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** The elevated contact card is now an open, left-aligned postscript matching the booking frame, with a fine amber rule, a smaller Poppins heading and an underlined telephone link with a 44 px minimum target and explicit focus outline. Existing Polish content, heading relationship, anchor offset, telephone destination and accessible name are preserved; booking, FAQ, footer and shared `.section-cta` rules are unchanged.
+- **Verification:** `lint:css`, `qa:html`, `qa:links`, `qa:a11y` and `build` passed, and `git diff --check` was clean. Chromium checks at 1440/768/390/320 px and in short landscape, including light/dark/system themes, no-JS, 200% zoom emulation, keyboard, touch, reduced motion and a production-build sample, confirmed no overflow, visible focus and unobscured native anchor navigation; telephone text contrast measured 8.07:1 in light and 10.70:1 in dark. Screen readers and non-Chromium browsers were not tested; reservation regression tests were not run because booking contracts were untouched.
 - **Impact:** Medium
 - **Effort:** Small
 
