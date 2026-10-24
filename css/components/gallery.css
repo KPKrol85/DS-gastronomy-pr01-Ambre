@@ -1,8 +1,10 @@
 /* Gallery — photography-led tiles and category filters
    One treatment shared by the homepage preview (`.gallery--home`) and the full
    gallery page (`.page-gallery`), so four photographs on the homepage and
-   eleven on the gallery page are framed, cropped and lit the same way. How many
-   columns each grid runs — and the rhythm around it — stays with its surface. */
+   eleven on the gallery page are framed, cropped and lit the same way. Both
+   compose with the same three tiles — a lead scene, wide views and square
+   details — while the proportions each grid runs, and the rhythm around it,
+   stay with its surface. */
 
 :is(.gallery--home, .page-gallery) {
   /* A hairline frame on a calm surface, never a lifted card: the photograph is
@@ -13,9 +15,11 @@
   --gallery-frame-hover: color-mix(in oklab, var(--c-border), var(--c-accent-contrast) 30%);
 }
 
+/* Phones read the sequence two photographs abreast; each surface opens its
+   spread from the tablet step below. */
 .gallery__grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--gallery-gap);
 }
 
@@ -23,8 +27,9 @@
   display: block;
   overflow: hidden;
 
-  /* The sources are square, so the frame crops nothing — the ratio holds every
-     row to one height and keeps the grid steady while a filter re-flows it. */
+  /* The sources are square, so a single tile crops nothing — the ratio holds
+     every row to one height and keeps the grid steady while a filter re-flows
+     it. */
   aspect-ratio: 1 / 1;
   border: var(--border-thin) solid var(--gallery-frame);
   border-radius: var(--gallery-radius);
@@ -34,6 +39,19 @@
   transition:
     border-color var(--dur-normal) var(--ease-standard),
     box-shadow var(--dur-normal) var(--ease-standard);
+}
+
+/* The lead scene opens the sequence and a wide view spans a pair of tiles. On
+   phones both take the full row, so emphasis comes from order and proportion
+   rather than from a span the screen cannot hold. */
+.gallery__item--lead {
+  grid-column: 1 / -1;
+  aspect-ratio: 4 / 3;
+}
+
+.gallery__item--wide {
+  grid-column: span 2;
+  aspect-ratio: 2 / 1;
 }
 
 .gallery__item[hidden] {
@@ -49,15 +67,21 @@
   transition: transform var(--dur-slow) var(--ease-standard);
 }
 
+/* Faces and signage sit high in this frame, so its landscape crop is taken
+   from the top rather than the centre. */
+.gallery__item--focus-high img {
+  object-position: 50% 12%;
+}
+
 .gallery__item:focus-visible {
   outline: 3px solid var(--c-accent-contrast);
   outline-offset: 3px;
 }
 
-/* Homepage preview: a compact two-by-two that opens into a single row of four
-   on desktop — a taste of the gallery, never the gallery itself. */
+/* Homepage preview: the dining room leads, then the evening at the table — a
+   plate, a dessert, a glass of wine. A taste of the gallery in three scales,
+   never the gallery itself. */
 .gallery--home .gallery__grid {
-  grid-template-columns: repeat(2, 1fr);
   margin-top: var(--space-06);
 }
 
@@ -85,11 +109,39 @@
   bottom: var(--gallery-tab-gap);
 }
 
-/* The same laptop step the full gallery opens its third column on, so both
-   surfaces change composition on one line. */
+/* From tablets the lead scene spans two rows beside its supporting views — the
+   step both surfaces open their spread on. Spanning tiles take their size from
+   the grid area instead of their square photographs, so only the single tiles
+   draw the rows and every edge of the spread lines up. */
+@media (min-width: 600px) {
+  .gallery__item--lead {
+    grid-row: span 2;
+  }
+
+  .gallery__item--lead,
+  .gallery__item--wide {
+    aspect-ratio: auto;
+    contain: size;
+  }
+
+  /* The room keeps the left of the spread, opposite the hero's photograph,
+     with the plate above the pair of details. */
+  .gallery--home .gallery__grid {
+    grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, 1fr);
+  }
+
+  .gallery--home .gallery__item--lead {
+    grid-column: auto;
+  }
+}
+
+/* On laptops the room widens to three fifths and the plate's row stands a
+   third taller than the details, so the preview reads room, plate, detail. */
 @media (min-width: 900px) {
   .gallery--home .gallery__grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: minmax(0, 3fr) repeat(2, minmax(0, 1fr));
+    grid-template-rows: 4fr 3fr;
   }
 }
 

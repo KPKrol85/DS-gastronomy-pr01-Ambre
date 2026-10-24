@@ -206,15 +206,30 @@
             <button type="button" class="tabs__tab" aria-pressed="false" data-filter="imprezy">Imprezy</button>
           </div>
           <div class="gallery__grid" aria-live="polite" aria-label="Wyniki filtrowania — zdjęcia" data-lightbox-mode="gallery">
-            <a class="gallery__item" href="/assets/img/gallery/interior-01-1600.jpg" data-filter="wnetrza" aria-haspopup="dialog" aria-controls="lb">
+            <a class="gallery__item gallery__item--lead" href="/assets/img/gallery/interior-01-1600.jpg" data-filter="wnetrza" aria-haspopup="dialog" aria-controls="lb">
               <picture>
-                <source type="image/avif" srcset="/assets/img/_optimized/gallery/interior-01-1200.avif 2x, /assets/img/_optimized/gallery/interior-01-600.avif 1x" />
-                <source type="image/webp" srcset="/assets/img/_optimized/gallery/interior-01-1200.webp 2x, /assets/img/_optimized/gallery/interior-01-600.webp 1x" />
+                <source type="image/avif" srcset="/assets/img/_optimized/gallery/interior-01-600.avif 600w, /assets/img/_optimized/gallery/interior-01-1200.avif 1200w, /assets/img/_optimized/gallery/interior-01-1600.avif 1600w" sizes="(min-width: 1140px) 542px, (min-width: 600px) calc(50vw - 1.25rem), calc(100vw - 2rem)" />
+                <source type="image/webp" srcset="/assets/img/_optimized/gallery/interior-01-600.webp 600w, /assets/img/_optimized/gallery/interior-01-1200.webp 1200w, /assets/img/_optimized/gallery/interior-01-1600.webp 1600w" sizes="(min-width: 1140px) 542px, (min-width: 600px) calc(50vw - 1.25rem), calc(100vw - 2rem)" />
                 <img
                   src="/assets/img/gallery/interior-01-600.jpg"
-                  srcset="/assets/img/gallery/interior-01-1200.jpg 2x, /assets/img/gallery/interior-01-600.jpg 1x"
-                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 90vw"
+                  srcset="/assets/img/gallery/interior-01-600.jpg 600w, /assets/img/gallery/interior-01-1200.jpg 1200w, /assets/img/gallery/interior-01-1600.jpg 1600w"
+                  sizes="(min-width: 1140px) 542px, (min-width: 600px) calc(50vw - 1.25rem), calc(100vw - 2rem)"
                   alt="Wieczorna sala restauracyjna z okrągłym marmurowym stolikiem nakrytym do kolacji, aksamitnymi fotelami, wiszącymi lampami i podświetlonym regałem z winami."
+                  loading="lazy"
+                  decoding="async"
+                  width="600"
+                  height="600" />
+              </picture>
+            </a>
+            <a class="gallery__item gallery__item--wide" href="/assets/img/gallery/interior-03-1600.jpg" data-filter="wnetrza" aria-haspopup="dialog" aria-controls="lb">
+              <picture>
+                <source type="image/avif" srcset="/assets/img/_optimized/gallery/interior-03-600.avif 600w, /assets/img/_optimized/gallery/interior-03-1200.avif 1200w, /assets/img/_optimized/gallery/interior-03-1600.avif 1600w" sizes="(min-width: 1140px) 542px, (min-width: 600px) calc(50vw - 1.25rem), calc(100vw - 2rem)" />
+                <source type="image/webp" srcset="/assets/img/_optimized/gallery/interior-03-600.webp 600w, /assets/img/_optimized/gallery/interior-03-1200.webp 1200w, /assets/img/_optimized/gallery/interior-03-1600.webp 1600w" sizes="(min-width: 1140px) 542px, (min-width: 600px) calc(50vw - 1.25rem), calc(100vw - 2rem)" />
+                <img
+                  src="/assets/img/gallery/interior-03-600.jpg"
+                  srcset="/assets/img/gallery/interior-03-600.jpg 600w, /assets/img/gallery/interior-03-1200.jpg 1200w, /assets/img/gallery/interior-03-1600.jpg 1600w"
+                  sizes="(min-width: 1140px) 542px, (min-width: 600px) calc(50vw - 1.25rem), calc(100vw - 2rem)"
+                  alt="Długi drewniany stół nakryty do kolacji, aksamitne krzesła, bar z podświetlonymi półkami win i obraz na ścianie."
                   loading="lazy"
                   decoding="async"
                   width="600"
@@ -223,28 +238,13 @@
             </a>
             <a class="gallery__item" href="/assets/img/gallery/interior-02-1600.jpg" data-filter="wnetrza" aria-haspopup="dialog" aria-controls="lb">
               <picture>
-                <source type="image/avif" srcset="/assets/img/_optimized/gallery/interior-02-1200.avif 2x, /assets/img/_optimized/gallery/interior-02-600.avif 1x" />
-                <source type="image/webp" srcset="/assets/img/_optimized/gallery/interior-02-1200.webp 2x, /assets/img/_optimized/gallery/interior-02-600.webp 1x" />
+                <source type="image/avif" srcset="/assets/img/_optimized/gallery/interior-02-600.avif 600w, /assets/img/_optimized/gallery/interior-02-1200.avif 1200w, /assets/img/_optimized/gallery/interior-02-1600.avif 1600w" sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)" />
+                <source type="image/webp" srcset="/assets/img/_optimized/gallery/interior-02-600.webp 600w, /assets/img/_optimized/gallery/interior-02-1200.webp 1200w, /assets/img/_optimized/gallery/interior-02-1600.webp 1600w" sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)" />
                 <img
                   src="/assets/img/gallery/interior-02-600.jpg"
-                  srcset="/assets/img/gallery/interior-02-1200.jpg 2x, /assets/img/gallery/interior-02-600.jpg 1x"
-                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 90vw"
+                  srcset="/assets/img/gallery/interior-02-600.jpg 600w, /assets/img/gallery/interior-02-1200.jpg 1200w, /assets/img/gallery/interior-02-1600.jpg 1600w"
+                  sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)"
                   alt="Sala restauracyjna z dużymi oknami i podświetlonymi drzewami w tle; na pierwszym planie nakryty marmurowy stolik z kwiatami i świecą."
-                  loading="lazy"
-                  decoding="async"
-                  width="600"
-                  height="600" />
-              </picture>
-            </a>
-            <a class="gallery__item" href="/assets/img/gallery/interior-03-1600.jpg" data-filter="wnetrza" aria-haspopup="dialog" aria-controls="lb">
-              <picture>
-                <source type="image/avif" srcset="/assets/img/_optimized/gallery/interior-03-1200.avif 2x, /assets/img/_optimized/gallery/interior-03-600.avif 1x" />
-                <source type="image/webp" srcset="/assets/img/_optimized/gallery/interior-03-1200.webp 2x, /assets/img/_optimized/gallery/interior-03-600.webp 1x" />
-                <img
-                  src="/assets/img/gallery/interior-03-600.jpg"
-                  srcset="/assets/img/gallery/interior-03-1200.jpg 2x, /assets/img/gallery/interior-03-600.jpg 1x"
-                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 90vw"
-                  alt="Długi drewniany stół nakryty do kolacji, aksamitne krzesła, bar z podświetlonymi półkami win i obraz na ścianie."
                   loading="lazy"
                   decoding="async"
                   width="600"
@@ -253,12 +253,12 @@
             </a>
             <a class="gallery__item" href="/assets/img/gallery/interior-04-1600.jpg" data-filter="wnetrza" aria-haspopup="dialog" aria-controls="lb">
               <picture>
-                <source type="image/avif" srcset="/assets/img/_optimized/gallery/interior-04-1200.avif 2x, /assets/img/_optimized/gallery/interior-04-600.avif 1x" />
-                <source type="image/webp" srcset="/assets/img/_optimized/gallery/interior-04-1200.webp 2x, /assets/img/_optimized/gallery/interior-04-600.webp 1x" />
+                <source type="image/avif" srcset="/assets/img/_optimized/gallery/interior-04-600.avif 600w, /assets/img/_optimized/gallery/interior-04-1200.avif 1200w, /assets/img/_optimized/gallery/interior-04-1600.avif 1600w" sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)" />
+                <source type="image/webp" srcset="/assets/img/_optimized/gallery/interior-04-600.webp 600w, /assets/img/_optimized/gallery/interior-04-1200.webp 1200w, /assets/img/_optimized/gallery/interior-04-1600.webp 1600w" sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)" />
                 <img
                   src="/assets/img/gallery/interior-04-600.jpg"
-                  srcset="/assets/img/gallery/interior-04-1200.jpg 2x, /assets/img/gallery/interior-04-600.jpg 1x"
-                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 90vw"
+                  srcset="/assets/img/gallery/interior-04-600.jpg 600w, /assets/img/gallery/interior-04-1200.jpg 1200w, /assets/img/gallery/interior-04-1600.jpg 1600w"
+                  sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)"
                   alt="Zbliżenie nakrytego marmurowego stolika: bukiet kwiatów w ciemnym wazonie, świeca w bursztynowym świeczniku, kieliszki i serwetka w złotej obrączce."
                   loading="lazy"
                   decoding="async"
@@ -268,12 +268,12 @@
             </a>
             <a class="gallery__item" href="/assets/img/gallery/dish-01-1600.jpg" data-filter="dania" aria-haspopup="dialog" aria-controls="lb">
               <picture>
-                <source type="image/avif" srcset="/assets/img/_optimized/gallery/dish-01-1200.avif 2x, /assets/img/_optimized/gallery/dish-01-600.avif 1x" />
-                <source type="image/webp" srcset="/assets/img/_optimized/gallery/dish-01-1200.webp 2x, /assets/img/_optimized/gallery/dish-01-600.webp 1x" />
+                <source type="image/avif" srcset="/assets/img/_optimized/gallery/dish-01-600.avif 600w, /assets/img/_optimized/gallery/dish-01-1200.avif 1200w, /assets/img/_optimized/gallery/dish-01-1600.avif 1600w" sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)" />
+                <source type="image/webp" srcset="/assets/img/_optimized/gallery/dish-01-600.webp 600w, /assets/img/_optimized/gallery/dish-01-1200.webp 1200w, /assets/img/_optimized/gallery/dish-01-1600.webp 1600w" sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)" />
                 <img
                   src="/assets/img/gallery/dish-01-600.jpg"
-                  srcset="/assets/img/gallery/dish-01-1200.jpg 2x, /assets/img/gallery/dish-01-600.jpg 1x"
-                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 90vw"
+                  srcset="/assets/img/gallery/dish-01-600.jpg 600w, /assets/img/gallery/dish-01-1200.jpg 1200w, /assets/img/gallery/dish-01-1600.jpg 1600w"
+                  sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)"
                   alt="Filet z białej ryby z chrupiącą skórką na purée, z pieczonymi warzywami, grzybami, zielonymi szparagami i jadalnymi kwiatami."
                   loading="lazy"
                   decoding="async"
@@ -283,12 +283,12 @@
             </a>
             <a class="gallery__item" href="/assets/img/gallery/dish-02-1600.jpg" data-filter="dania" aria-haspopup="dialog" aria-controls="lb">
               <picture>
-                <source type="image/avif" srcset="/assets/img/_optimized/gallery/dish-02-1200.avif 2x, /assets/img/_optimized/gallery/dish-02-600.avif 1x" />
-                <source type="image/webp" srcset="/assets/img/_optimized/gallery/dish-02-1200.webp 2x, /assets/img/_optimized/gallery/dish-02-600.webp 1x" />
+                <source type="image/avif" srcset="/assets/img/_optimized/gallery/dish-02-600.avif 600w, /assets/img/_optimized/gallery/dish-02-1200.avif 1200w, /assets/img/_optimized/gallery/dish-02-1600.avif 1600w" sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)" />
+                <source type="image/webp" srcset="/assets/img/_optimized/gallery/dish-02-600.webp 600w, /assets/img/_optimized/gallery/dish-02-1200.webp 1200w, /assets/img/_optimized/gallery/dish-02-1600.webp 1600w" sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)" />
                 <img
                   src="/assets/img/gallery/dish-02-600.jpg"
-                  srcset="/assets/img/gallery/dish-02-1200.jpg 2x, /assets/img/gallery/dish-02-600.jpg 1x"
-                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 90vw"
+                  srcset="/assets/img/gallery/dish-02-600.jpg 600w, /assets/img/gallery/dish-02-1200.jpg 1200w, /assets/img/gallery/dish-02-1600.jpg 1600w"
+                  sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)"
                   alt="Tatar z owoców morza z ogórkiem, rzodkiewką, ikrą i chrupiącymi chipsami, udekorowany jadalnymi kwiatami, na kremowym sosie."
                   loading="lazy"
                   decoding="async"
@@ -298,12 +298,12 @@
             </a>
             <a class="gallery__item" href="/assets/img/gallery/dish-03-1600.jpg" data-filter="dania" aria-haspopup="dialog" aria-controls="lb">
               <picture>
-                <source type="image/avif" srcset="/assets/img/_optimized/gallery/dish-03-1200.avif 2x, /assets/img/_optimized/gallery/dish-03-600.avif 1x" />
-                <source type="image/webp" srcset="/assets/img/_optimized/gallery/dish-03-1200.webp 2x, /assets/img/_optimized/gallery/dish-03-600.webp 1x" />
+                <source type="image/avif" srcset="/assets/img/_optimized/gallery/dish-03-600.avif 600w, /assets/img/_optimized/gallery/dish-03-1200.avif 1200w, /assets/img/_optimized/gallery/dish-03-1600.avif 1600w" sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)" />
+                <source type="image/webp" srcset="/assets/img/_optimized/gallery/dish-03-600.webp 600w, /assets/img/_optimized/gallery/dish-03-1200.webp 1200w, /assets/img/_optimized/gallery/dish-03-1600.webp 1600w" sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)" />
                 <img
                   src="/assets/img/gallery/dish-03-600.jpg"
-                  srcset="/assets/img/gallery/dish-03-1200.jpg 2x, /assets/img/gallery/dish-03-600.jpg 1x"
-                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 90vw"
+                  srcset="/assets/img/gallery/dish-03-600.jpg 600w, /assets/img/gallery/dish-03-1200.jpg 1200w, /assets/img/gallery/dish-03-1600.jpg 1600w"
+                  sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)"
                   alt="Kilka przystawek na ciemnym kamiennym stole: przegrzebki na purée i surowa ryba z jadalnymi kwiatami w ceramicznych miseczkach, obok kieliszek białego wina i świeca."
                   loading="lazy"
                   decoding="async"
@@ -313,12 +313,12 @@
             </a>
             <a class="gallery__item" href="/assets/img/gallery/dish-04-1600.jpg" data-filter="dania" aria-haspopup="dialog" aria-controls="lb">
               <picture>
-                <source type="image/avif" srcset="/assets/img/_optimized/gallery/dish-04-1200.avif 2x, /assets/img/_optimized/gallery/dish-04-600.avif 1x" />
-                <source type="image/webp" srcset="/assets/img/_optimized/gallery/dish-04-1200.webp 2x, /assets/img/_optimized/gallery/dish-04-600.webp 1x" />
+                <source type="image/avif" srcset="/assets/img/_optimized/gallery/dish-04-600.avif 600w, /assets/img/_optimized/gallery/dish-04-1200.avif 1200w, /assets/img/_optimized/gallery/dish-04-1600.avif 1600w" sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)" />
+                <source type="image/webp" srcset="/assets/img/_optimized/gallery/dish-04-600.webp 600w, /assets/img/_optimized/gallery/dish-04-1200.webp 1200w, /assets/img/_optimized/gallery/dish-04-1600.webp 1600w" sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)" />
                 <img
                   src="/assets/img/gallery/dish-04-600.jpg"
-                  srcset="/assets/img/gallery/dish-04-1200.jpg 2x, /assets/img/gallery/dish-04-600.jpg 1x"
-                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 90vw"
+                  srcset="/assets/img/gallery/dish-04-600.jpg 600w, /assets/img/gallery/dish-04-1200.jpg 1200w, /assets/img/gallery/dish-04-1600.jpg 1600w"
+                  sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)"
                   alt="Nakryty stół z kilkoma daniami: filet z ryby, crème brûlée, ostrygi i danie mięsne, obok kieliszki czerwonego i białego wina oraz świeca."
                   loading="lazy"
                   decoding="async"
@@ -328,12 +328,12 @@
             </a>
             <a class="gallery__item" href="/assets/img/gallery/party-01-1600.jpg" data-filter="imprezy" aria-haspopup="dialog" aria-controls="lb">
               <picture>
-                <source type="image/avif" srcset="/assets/img/_optimized/gallery/party-01-1200.avif 2x, /assets/img/_optimized/gallery/party-01-600.avif 1x" />
-                <source type="image/webp" srcset="/assets/img/_optimized/gallery/party-01-1200.webp 2x, /assets/img/_optimized/gallery/party-01-600.webp 1x" />
+                <source type="image/avif" srcset="/assets/img/_optimized/gallery/party-01-600.avif 600w, /assets/img/_optimized/gallery/party-01-1200.avif 1200w, /assets/img/_optimized/gallery/party-01-1600.avif 1600w" sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)" />
+                <source type="image/webp" srcset="/assets/img/_optimized/gallery/party-01-600.webp 600w, /assets/img/_optimized/gallery/party-01-1200.webp 1200w, /assets/img/_optimized/gallery/party-01-1600.webp 1600w" sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)" />
                 <img
                   src="/assets/img/gallery/party-01-600.jpg"
-                  srcset="/assets/img/gallery/party-01-1200.jpg 2x, /assets/img/gallery/party-01-600.jpg 1x"
-                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 90vw"
+                  srcset="/assets/img/gallery/party-01-600.jpg 600w, /assets/img/gallery/party-01-1200.jpg 1200w, /assets/img/gallery/party-01-1600.jpg 1600w"
+                  sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)"
                   alt="Czworo przyjaciół wznosi toast białym winem przy okrągłym stole oświetlonym świecami."
                   loading="lazy"
                   decoding="async"
@@ -343,12 +343,12 @@
             </a>
             <a class="gallery__item" href="/assets/img/gallery/party-02-1600.jpg" data-filter="imprezy" aria-haspopup="dialog" aria-controls="lb">
               <picture>
-                <source type="image/avif" srcset="/assets/img/_optimized/gallery/party-02-1200.avif 2x, /assets/img/_optimized/gallery/party-02-600.avif 1x" />
-                <source type="image/webp" srcset="/assets/img/_optimized/gallery/party-02-1200.webp 2x, /assets/img/_optimized/gallery/party-02-600.webp 1x" />
+                <source type="image/avif" srcset="/assets/img/_optimized/gallery/party-02-600.avif 600w, /assets/img/_optimized/gallery/party-02-1200.avif 1200w, /assets/img/_optimized/gallery/party-02-1600.avif 1600w" sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)" />
+                <source type="image/webp" srcset="/assets/img/_optimized/gallery/party-02-600.webp 600w, /assets/img/_optimized/gallery/party-02-1200.webp 1200w, /assets/img/_optimized/gallery/party-02-1600.webp 1600w" sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)" />
                 <img
                   src="/assets/img/gallery/party-02-600.jpg"
-                  srcset="/assets/img/gallery/party-02-1200.jpg 2x, /assets/img/gallery/party-02-600.jpg 1x"
-                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 90vw"
+                  srcset="/assets/img/gallery/party-02-600.jpg 600w, /assets/img/gallery/party-02-1200.jpg 1200w, /assets/img/gallery/party-02-1600.jpg 1600w"
+                  sizes="(min-width: 1140px) 262px, (min-width: 600px) calc(25vw - 1rem), calc(50vw - 1.5rem)"
                   alt="Dłonie wznoszące kieliszki nad świątecznie nakrytym stołem z kwiatami, świecami i daniami."
                   loading="lazy"
                   decoding="async"
@@ -356,14 +356,14 @@
                   height="600" />
               </picture>
             </a>
-            <a class="gallery__item" href="/assets/img/gallery/party-03-1600.jpg" data-filter="imprezy" aria-haspopup="dialog" aria-controls="lb">
+            <a class="gallery__item gallery__item--wide gallery__item--focus-high" href="/assets/img/gallery/party-03-1600.jpg" data-filter="imprezy" aria-haspopup="dialog" aria-controls="lb">
               <picture>
-                <source type="image/avif" srcset="/assets/img/_optimized/gallery/party-03-1200.avif 2x, /assets/img/_optimized/gallery/party-03-600.avif 1x" />
-                <source type="image/webp" srcset="/assets/img/_optimized/gallery/party-03-1200.webp 2x, /assets/img/_optimized/gallery/party-03-600.webp 1x" />
+                <source type="image/avif" srcset="/assets/img/_optimized/gallery/party-03-600.avif 600w, /assets/img/_optimized/gallery/party-03-1200.avif 1200w, /assets/img/_optimized/gallery/party-03-1600.avif 1600w" sizes="(min-width: 1140px) 542px, (min-width: 600px) calc(50vw - 1.25rem), calc(100vw - 2rem)" />
+                <source type="image/webp" srcset="/assets/img/_optimized/gallery/party-03-600.webp 600w, /assets/img/_optimized/gallery/party-03-1200.webp 1200w, /assets/img/_optimized/gallery/party-03-1600.webp 1600w" sizes="(min-width: 1140px) 542px, (min-width: 600px) calc(50vw - 1.25rem), calc(100vw - 2rem)" />
                 <img
                   src="/assets/img/gallery/party-03-600.jpg"
-                  srcset="/assets/img/gallery/party-03-1200.jpg 2x, /assets/img/gallery/party-03-600.jpg 1x"
-                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 90vw"
+                  srcset="/assets/img/gallery/party-03-600.jpg 600w, /assets/img/gallery/party-03-1200.jpg 1200w, /assets/img/gallery/party-03-1600.jpg 1600w"
+                  sizes="(min-width: 1140px) 542px, (min-width: 600px) calc(50vw - 1.25rem), calc(100vw - 2rem)"
                   alt="Dwie pary wznoszą toast czerwonym winem przy stole z karafką i kwiatami; w tle marmurowa ściana z napisem Ambre."
                   loading="lazy"
                   decoding="async"

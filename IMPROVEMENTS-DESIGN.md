@@ -137,17 +137,9 @@ Priorities represent implementation value and dependencies, not defect severity.
 
 ### IMP-DESIGN-03 — Give the gallery an editorial opening and a readable photographic sequence
 
-- **Status:** Proposed
-- **Priority:** P2
-- **Affected area:** Homepage gallery preview and `galeria.html` composition.
-- **Evidence:** **Source:** Four homepage images and eleven full-gallery images; `.gallery--home .gallery__grid`, `.gallery__item` and `css/pages/galeria.css` define equal square grids. **Visual:** The preview gives dish, wine, dessert and room equal emphasis; the full gallery presents markedly different scenes in a continuous equal-tile sequence.
-- **Current state:** Both surfaces use consistent, restrained frames and predictable responsive column counts. The full gallery filters by category and opens the visible group in the existing lightbox.
-- **Design judgment:** Those component qualities should remain. The opportunity is to distinguish an opening photographic statement from supporting views, so the section reads as an authored selection rather than an asset sheet.
-- **Proposed improvement:** Create a controlled opening spread with one scene carrying the invitation and supporting images showing food and detail. Use a finite grid composition that follows source reading order. Keep filtered results compact and predictable; a selected category need not reproduce the unfiltered opening spread. On mobile, translate emphasis into sequence and image proportion rather than preserving desktop spans.
-- **Expected value:** Stronger visual storytelling and a section identity distinct from the functional menu-card sequence.
-- **Implementation scope:** `index.html`, `galeria.html`, `css/components/gallery.css` and `css/pages/galeria.css`. Review the homepage preview and full gallery as separate slices of the same objective. Preserve the current frame language, category values, ARIA/state attributes, image links, visibility/load-status contracts and lightbox grouping. Avoid masonry, visual-only reordering and new filtering behavior.
-- **Dependencies:** Approved imagery and crops from IMP-DESIGN-01. Coordinate the opening's proportions with IMP-DESIGN-02; no JavaScript rewrite is presumed necessary.
-- **Acceptance criteria:** The unfiltered opening has a deliberate scene/detail hierarchy using final assets; subsequent items remain discoverable in meaningful DOM and keyboard order. At 390, 768 and 1440 px, every category produces a compact layout without empty reserved feature slots or cropped-out primary subjects. Item counts, active filters, completed status and visible-group lightbox navigation remain unchanged. Review both themes, touch/focus states and reduced motion; use existing `test:e2e:gallery-status` and `test:e2e:lightbox` for the affected contracts.
+- **Status:** COMPLETED — implemented and verified.
+- **Result:** The homepage preview now leads with the dining room beside a wide plate and a dessert/wine pair, and the full gallery opens with a lead-scene spread on a four-column grid (two on phones) in which each category closes its own block, so every filter reflows without reserved slots or gaps and without state-dependent CSS. DOM order changed only within the homepage set and the interiors, keeping visual, keyboard and lightbox order identical; filter values, `hidden`/load-status, ARIA, links, `alt` text and lightbox grouping are unchanged, and `srcset` now uses the existing 600/1200/1600 widths with per-tile `sizes` instead of density descriptors.
+- **Verification:** `lint:css`, `qa:html`, `qa:links`, `img:verify`, `qa:csp`, `qa:a11y`, `qa:nojs`, `test:e2e:gallery-status`, `test:e2e:lightbox` and `build` passed and `git diff --check` was clean; Chromium probes from 1440 to 320 px in both themes, also on `dist/`, found no holes, overlaps, overflow or order mismatches in any filter, and confirmed Tab order, visible-group lightbox navigation, sources at 1–3×, 200% zoom, touch targets, reduced motion and no-JS rendering. Screen readers, non-Chromium browsers and Lighthouse were not tested.
 - **Impact:** Medium
 - **Effort:** Medium
 
