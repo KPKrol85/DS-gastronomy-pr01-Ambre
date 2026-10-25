@@ -30,9 +30,9 @@ Plik `package.json` jest wykonywalnym źródłem prawdy. Poniższy opis rozróż
 
 ### `test:e2e`
 
-- **Command:** `npm run test:e2e:reservation && npm run test:e2e:demo-legal && npm run test:e2e:scroll-to-top && npm run test:e2e:legal-tables && npm run test:e2e:lightbox && npm run test:e2e:gallery-status && npm run test:e2e:mobile-nav && npm run test:e2e:theme`
-- **Purpose:** Uruchamia deterministycznie osiem skupionych regresji przeglądarkowych.
-- **Use:** Po zmianach interakcji formularza, dialogu, wspólnego sterowania przewijaniem, responsywnego osadzania tabel prawnych, lightboxa galerii i podglądu dania, statusu ukończenia galerii, nawigacji mobilnej lub synchronizacji i pamięci motywu.
+- **Command:** `npm run test:e2e:reservation && npm run test:e2e:demo-legal && npm run test:e2e:scroll-to-top && npm run test:e2e:legal-tables && npm run test:e2e:lightbox && npm run test:e2e:gallery-status && npm run test:e2e:mobile-nav && npm run test:e2e:theme && npm run test:e2e:menu-details`
+- **Purpose:** Uruchamia deterministycznie dziewięć skupionych regresji przeglądarkowych.
+- **Use:** Po zmianach interakcji formularza, dialogu, wspólnego sterowania przewijaniem, responsywnego osadzania tabel prawnych, lightboxa galerii i podglądu dania, statusu ukończenia galerii, nawigacji mobilnej, synchronizacji i pamięci motywu lub paneli szczegółów dań.
 
 ### `qa`
 
@@ -90,6 +90,7 @@ Przy domyślnych ustawieniach otwórz `http://127.0.0.1:4174`. Podgląd serwuje 
 
 ## Skupione testy E2E
 
+- `test:e2e:menu-details` — siedem izolowanych scenariuszy Chromium na prawdziwej stronie `menu.html`: inicjalizacja dla `main.page-menu`, przechwytywanie natywnych, niebąbelkujących zdarzeń `toggle` i wyłączność paneli również bez kliknięcia, obsługa myszy i klawiatury (Enter, Spacja, Tab), Escape oraz kliknięcie poza panelem w obrębie i poza `main`. Sprawdza zakres działania, filtrowanie i pojedynczy podgląd zdjęcia dania z powrotem fokusu, natywne `<details>` przy wyłączonym JavaScripcie oraz brak nieobsłużonych wyjątków. Blokuje Service Workery; w scenariuszach z JavaScriptem zapisuje akceptację dialogu demonstracyjnego przed załadowaniem strony.
 - `test:e2e:reservation` — regresje wysyłania formularza rezerwacji i natywnego fallbacku.
 - `test:e2e:demo-legal` — regresje początkowego dialogu informacyjnego i jego pamięci akceptacji.
 - `test:e2e:scroll-to-top` — regresje wspólnego przycisku przewijania do góry.

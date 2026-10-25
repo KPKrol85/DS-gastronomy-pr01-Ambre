@@ -99,7 +99,7 @@ Serwer live-server udostępnia źródła pod `http://127.0.0.1:4183` i przełado
 | `npm run build` | Odtworzenie produkcyjnego katalogu `dist/`. |
 | `npm run lint` | Lint JavaScriptu, CSS i wybranych błędów w publicznych tekstach. |
 | `npm run qa:fast` | Lint, HTML, lokalne linki i kotwice, SEO, polityka JSON-LD oraz kontrola hashy CSP. |
-| `npm run test:e2e` | Uruchomienie ośmiu skupionych regresji: formularz rezerwacji, dialog demonstracyjny, przewijanie do góry, tabele prawne, lightbox, status galerii, nawigacja mobilna i zachowanie motywu. |
+| `npm run test:e2e` | Uruchomienie dziewięciu skupionych regresji: formularz rezerwacji, dialog demonstracyjny, przewijanie do góry, tabele prawne, lightbox, status galerii, nawigacja mobilna, zachowanie motywu i panele szczegółów dań (natywne `toggle`, wyłączność, zamykanie, klawiatura, zgodność z filtrami/lightboxem i działanie bez JavaScriptu). |
 | `npm run qa` | Szybkie QA, zachowanie bez JavaScriptu, E2E, axe-core i Lighthouse CI. |
 | `npm run qa:service-worker` | Osobny test aktywacji Service Workera i własności cache; poza agregatem `qa`. |
 | `npm run qa:server` | Kontrola odpowiedzi lokalnego serwera dystrybucji; wymaga istniejącego `dist/`. |
@@ -269,7 +269,7 @@ live-server serves sources at `http://127.0.0.1:4183` and reloads the page after
 | `npm run build` | Recreate the production `dist/` directory. |
 | `npm run lint` | Lint JavaScript, CSS, and selected errors in public text. |
 | `npm run qa:fast` | Lint, HTML, local links and anchors, SEO, JSON-LD policy, and CSP hash checks. |
-| `npm run test:e2e` | Run eight focused regressions: reservation form, demonstration dialog, scroll-to-top, legal tables, lightbox, gallery status, mobile navigation, and theme behavior. |
+| `npm run test:e2e` | Run nine focused regressions: reservation form, demonstration dialog, scroll-to-top, legal tables, lightbox, gallery status, mobile navigation, theme behavior, and dish detail panels (native `toggle`, exclusivity, dismissal, keyboard, filter/lightbox compatibility, and no-JavaScript operation). |
 | `npm run qa` | Fast QA, no-JavaScript behavior, E2E, axe-core, and Lighthouse CI. |
 | `npm run qa:service-worker` | Separate Service Worker activation and cache ownership test; outside the `qa` aggregate. |
 | `npm run qa:server` | Check responses from the local distribution server; requires an existing `dist/`. |

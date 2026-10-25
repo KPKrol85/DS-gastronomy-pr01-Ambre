@@ -16,7 +16,7 @@
 
 ## Current priorities
 
-1. `PH6-02` — Restore menu detail-panel enhancements.
+No required implementation items remain. `O-01` remains optional.
 
 ## Phase 1 — Public interaction correctness
 
@@ -101,12 +101,10 @@ The three items address independent defects and can be implemented separately. P
   - **Result:** Both modules guard storage reads and writes while preserving `theme`, `demoLegalAccepted` and existing UI/accessibility contracts. Manual theme selection remains authoritative in module memory, and notice acceptance completes dismissal and focus/inert cleanup even without persistence.
   - **Verification:** `npm run test:e2e:theme` passed 6/6 isolated scenarios and `npm run test:e2e:demo-legal` passed 4/4, covering independently denied reads/writes, system changes, keyboard/ARIA behavior, dismissal/reload, focus/inert cleanup and existing persistence without uncaught errors; `npm run lint:js` and `git diff --check` passed. E2E used installed Chromium via `PLAYWRIGHT_BROWSERS_PATH` outside the sandbox for localhost access; full QA and manual assistive-technology checks were not run.
 
-- [ ] **PH6-02 — Restore the menu detail-panel enhancement contract**
-  - [ ] Match initialization to the actual `main.page-menu` root in `menu.html`, rather than the nonexistent `body.page-menu`; keep detail-panel handling scoped to that page.
-  - [ ] Ensure opening a native `.dish-more` panel delivers the event needed to close another open panel; retain Escape and outside-click dismissal and native `<details>` use without JavaScript.
-  - [ ] Add a focused regression using the existing browser-testing runtime for opening a second panel, Escape and outside-click dismissal; expose it through the existing E2E convention and keep `docs/settings.md`, `docs/ARCHITECTURE_MAP.md` and README coverage descriptions accurate.
+- [x] **PH6-02 — Restore the menu detail-panel enhancement contract**
   - **Source:** `daily-AUDIT.md` — P2-03; `menu.html`, `js/modules/page-menu.js` and the architecture map's menu-detail entry.
-  - **Completion condition:** The real menu page initializes the enhancement, only one panel remains open, dismissal works, and filtering/lightbox hooks and native fallback remain usable. Run the new focused regression and affected JS/HTML checks; verify event delivery rather than relying on the guard fix alone.
+  - **Result:** Initialization now recognizes `main.page-menu` and captures native `toggle` events to enforce one open panel within that root, preserving Escape/outside-click dismissal, native summary activation, filtering, lightbox behavior and no-JavaScript details. The focused regression is registered as the ninth E2E command; settings, architecture and both README language sections describe the updated contract.
+  - **Verification:** `npm run test:e2e:menu-details` passed 7/7 scenarios, including trusted non-bubbling `toggle` delivery during capture and exclusivity without a click, dismissal, keyboard activation, scoped effects, filters/lightbox, no-JavaScript operation and no uncaught errors; `npm run test:e2e:lightbox` passed 13/13, and `npm run qa:html`, `npm run lint:js` and `git diff --check` passed. E2E used installed Chromium via `PLAYWRIGHT_BROWSERS_PATH` outside the sandbox for localhost access; the full E2E aggregate, full QA, Lighthouse and manual assistive-technology checks were not run.
 
 ## Optional future improvements
 
@@ -117,7 +115,7 @@ The three items address independent defects and can be implemented separately. P
 
 ## Verification scope and execution order
 
-- The initial plan review used static inspection of sources, configuration, scripts, documentation and audit findings. Subsequent navigation and storage verification is recorded in Phases 5–6; the remaining menu risk is described in Phase 6.
+- The initial plan review used static inspection of sources, configuration, scripts, documentation and audit findings. Subsequent navigation, storage and menu-detail verification is recorded in Phases 5–6.
 - Historical completion evidence is retained explicitly, rather than presented as a fresh test run. No new build, full browser suite, Lighthouse measurement, deployment, form-provider or assistive-technology verification is claimed.
-- Continue with the current interaction priorities in Phase 6. If `PH6-02` adds another E2E entry, reconcile its final README counts with that change. Reuse the existing npm commands and browser runtime; no dependency or framework change is required by these tasks.
+- Required interaction work in Phase 6 is complete; the E2E aggregate and both README language sections now list nine focused regressions. Reuse the existing npm commands and browser runtime for future approved work.
 - Perform each item's focused verification before checking it off. Update related current audit status only when findings are resolved and that documentation is within the approved implementation scope; keep archived records historical. No current task requires an external decision, and no blocked or deliberately deferred implementation item has been established.
