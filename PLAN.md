@@ -16,7 +16,7 @@
 
 ## Current priorities
 
-No required implementation items remain. `O-01` remains optional.
+No required implementation items remain. Optional `O-01` is complete.
 
 ## Phase 1 — Public interaction correctness
 
@@ -108,10 +108,9 @@ The three items address independent defects and can be implemented separately. P
 
 ## Optional future improvements
 
-- [ ] **O-01 — Restore Polish diacritics in the offline status panel** — **Priority:** Optional
-  - **Value:** Correct the visible heading, explanation and return-link spelling in `offline.html`, currently including `Jestes offline`, `polaczenia` and `Wroc na strone glowna`.
-  - **Scope boundary:** Non-blocking copy correction; preserve the panel structure, `/` destination, `noindex`, absent JSON-LD and Service Worker fallback contract.
-  - **Completion condition:** The three strings use correct Polish spelling. Verify the source diff, run the existing HTML/text checks and inspect the panel at mobile and desktop widths; no new test framework is needed.
+- [x] **O-01 — Restore Polish diacritics in the offline status panel** — **Priority:** Optional
+  - **Result:** Restored Polish diacritics in the three visible offline-panel strings, preserving all markup, attributes, styling, navigation, metadata and Service Worker fallback sources.
+  - **Verification:** `npm run qa:html`, `npm run lint:text`, `git diff --check` and exact source/byte comparison passed; `/`, `noindex`, absent JSON-LD and the fallback integration were confirmed by source inspection. Visual inspection at 390/1280 px was NOT RUN because the existing Chromium environment could not complete localhost access; Service Worker runtime behavior was not independently tested.
 
 ## Verification scope and execution order
 
