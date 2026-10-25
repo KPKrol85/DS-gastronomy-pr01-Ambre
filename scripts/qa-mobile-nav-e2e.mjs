@@ -67,16 +67,25 @@ const assertFocus = async (control, label) => {
 const assertDrawerState = async (page, open, label) => {
   await page.waitForFunction((expected) =>
     document.body.classList.contains("site-header-nav-open") === expected, open);
-  const state = await page.evaluate(() => ({
-    bodyOpen: document.body.classList.contains("site-header-nav-open"),
-    bodyScrollLocked: ["hidden", "clip"].includes(getComputedStyle(document.body).overflowY),
-    bodyTouchBlocked: getComputedStyle(document.body).touchAction === "none",
-    drawerHidden: document.querySelector(".site-header__drawer").hidden,
-    overlayHidden: document.querySelector(".site-header__overlay").hidden,
-    drawerAriaHidden: document.querySelector(".site-header__drawer").getAttribute("aria-hidden"),
-    toggleExpanded: document.querySelector(".site-header__nav-toggle").getAttribute("aria-expanded")
-  }));
+  const state = await page.evaluate(() => {
+    const toggle = document.querySelector(".site-header__nav-toggle");
+    const drawer = document.querySelector(".site-header__drawer");
+    const controls = toggle.getAttribute("aria-controls");
+    return {
+      toggleControls: controls,
+      controlsDrawer: document.getElementById(controls) === drawer,
+      bodyOpen: document.body.classList.contains("site-header-nav-open"),
+      bodyScrollLocked: ["hidden", "clip"].includes(getComputedStyle(document.body).overflowY),
+      bodyTouchBlocked: getComputedStyle(document.body).touchAction === "none",
+      drawerHidden: drawer.hidden,
+      overlayHidden: document.querySelector(".site-header__overlay").hidden,
+      drawerAriaHidden: drawer.getAttribute("aria-hidden"),
+      toggleExpanded: toggle.getAttribute("aria-expanded")
+    };
+  });
   assert.deepEqual(state, {
+    toggleControls: "mobile-drawer",
+    controlsDrawer: true,
     bodyOpen: open,
     bodyScrollLocked: open,
     bodyTouchBlocked: open,
@@ -84,7 +93,7 @@ const assertDrawerState = async (page, open, label) => {
     overlayHidden: !open,
     drawerAriaHidden: String(!open),
     toggleExpanded: String(open)
-  }, `${label}: body, scroll lock, hidden and ARIA states must agree`);
+  }, `${label}: controlled drawer, body, scroll lock, hidden and ARIA states must agree`);
   assert.equal(await page.locator(drawerSelector).isVisible(), open, `${label}: drawer visibility`);
   assert.equal(await page.locator(".site-header__overlay").isVisible(), open, `${label}: overlay visibility`);
   assert.equal(await page.locator(".site-header__overlay").evaluate((element) =>
@@ -259,7 +268,8 @@ const runResponsiveTest = async (page) => {
 const scenarios = [
   { label: "keyboard activation, traversal, submenus and Escape", run: runKeyboardTest },
   { label: "overlay dismissal, reopening and repeated keyboard lifecycle", run: runDismissalTest },
-  { label: "939/940px drawer lifecycle, mobile reopening and desktop keyboard navigation", run: runResponsiveTest }
+  { label: "939/940px drawer lifecycle, mobile reopening and desktop keyboard navigation", run: runResponsiveTest },
+  { label: "missing aria-controls fallback and drawer keyboard lifecycle", omitControls: true, run: runKeyboardTest }
 ];
 
 const runScenario = async (browser, scenario) => {
@@ -269,6 +279,14 @@ const runScenario = async (browser, scenario) => {
     const runtimeErrors = [];
     page.on("pageerror", (error) => runtimeErrors.push(error.message));
     page.setDefaultTimeout(10000);
+    if (scenario.omitControls) {
+      await page.route(`${baseUrl}/index.html`, async (route) => {
+        const response = await route.fetch();
+        const html = await response.text();
+        assert.match(html, /aria-controls="mobile-drawer"/, "Fallback fixture must remove the shipped relationship");
+        await route.fulfill({ response, body: html.replace('aria-controls="mobile-drawer"', "") });
+      });
+    }
     await page.goto(`${baseUrl}/index.html`, { waitUntil: "domcontentloaded" });
     await page.locator("#demo-legal-modal:not([hidden])").waitFor({ state: "visible" });
     await page.locator("[data-demo-legal-accept]").click();

@@ -134,8 +134,8 @@ export function initMobileNav() {
     }
   };
 
-  if (!toggle.hasAttribute("aria-controls")) {
-    toggle.setAttribute("aria-controls", nav.id || "site-header-nav");
+  if (!toggle.hasAttribute("aria-controls") && drawer?.id) {
+    toggle.setAttribute("aria-controls", drawer.id);
   }
 
   toggle.addEventListener("click", () => setOpen(!document.body.classList.contains("site-header-nav-open")), { passive: true });

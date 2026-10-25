@@ -1,6 +1,6 @@
 # Ambre — Development Plan
 
-**Last reviewed:** 2026-10-24
+**Last reviewed:** 2026-10-25
 
 **Project type:** Static, eight-page Polish restaurant portfolio/demo; HTML, modular CSS and Vanilla JavaScript
 
@@ -16,9 +16,8 @@
 
 ## Current priorities
 
-1. `PH5-03` — Associate the mobile toggle with its drawer.
-2. `PH6-01` — Keep theme selection and notice dismissal usable when storage fails.
-3. `PH6-02` — Restore menu detail-panel enhancements.
+1. `PH6-01` — Keep theme selection and notice dismissal usable when storage fails.
+2. `PH6-02` — Restore menu detail-panel enhancements.
 
 ## Phase 1 — Public interaction correctness
 
@@ -89,11 +88,10 @@ The three items address independent defects and can be implemented separately. P
   - **Result:** JavaScript now follows the 940 px CSS desktop boundary and clears drawer/overlay state, scroll locking and Tab containment while preserving visible header focus and mobile dismissal/reopening. The no-JavaScript regression cancels pending smooth scrolling locally before its unchanged consent-checkbox check.
   - **Verification:** `npm run qa:nojs` and `npm run test:e2e:mobile-nav` passed in one full verification run each, covering all 40 navigation page/width combinations, native-form checks and 3/3 mobile scenarios. Targeted diagnostics reproduced the checkbox timeout and isolated scroll-driven geometry changes; focused ESLint and `git diff --check` passed.
 
-- [ ] **PH5-03 — Point each mobile navigation toggle at the controlled drawer**
-  - [ ] Correct the shared toggle relationship across all eight root HTML pages to identify the actual `#mobile-drawer`, preserving existing IDs and test hooks.
-  - [ ] Align the initializer's fallback relationship in `js/modules/nav.js` and extend the mobile navigation regression to assert that the controlled element is the region whose expanded/hidden state changes.
+- [x] **PH5-03 — Point each mobile navigation toggle at the controlled drawer**
   - **Source:** `daily-AUDIT.md` — P2-04; root header markup and `initMobileNav()` in `js/modules/nav.js`.
-  - **Completion condition:** Every toggle's `aria-controls` resolves to its mobile drawer and remains consistent with `aria-expanded`, `aria-hidden` and `hidden`. Verify all page shells statically, then run HTML validation and the focused mobile navigation regression.
+  - **Result:** All eight root toggles and the initializer's missing-attribute fallback now reference the actual `#mobile-drawer`, preserving existing IDs, test hooks and the PH5-02 navigation lifecycle.
+  - **Verification:** Static relationship checks passed on all eight pages; `npm run qa:html`, `npm run test:e2e:mobile-nav` (4/4 scenarios), `npm run lint:js` and `git diff --check` passed. The regression verifies the controlled drawer's identity and synchronized expanded/hidden/ARIA states through opening, dismissal, 939/940 px transitions and missing-attribute initialization; manual assistive-technology testing was not performed.
 
 ## Phase 6 — Resilient interaction enhancements
 
@@ -122,7 +120,7 @@ The three items address independent defects and can be implemented separately. P
 
 ## Verification scope and execution order
 
-- This plan is based on static inspection of current sources, configuration, scripts, documentation and audit findings. Source-visible mobile layout/storage risks have not been reproduced in a browser during this review; the menu-root and controlled-region mismatches are directly present in source.
-- Historical completion evidence is retained explicitly, rather than presented as a fresh test run. No new build, browser suite, Lighthouse measurement, deployment, form-provider or assistive-technology verification is claimed.
-- Execute the current navigation priorities first, followed by the independent interaction corrections. `PH2-02` is independent; if `PH6-02` adds another E2E entry, reconcile its final README counts with that change. Reuse the existing npm commands and browser runtime; no dependency or framework change is required by these tasks.
+- The initial plan review used static inspection of sources, configuration, scripts, documentation and audit findings. Subsequent navigation verification is recorded under Phase 5; remaining storage and menu risks are described in Phase 6.
+- Historical completion evidence is retained explicitly, rather than presented as a fresh test run. No new build, full browser suite, Lighthouse measurement, deployment, form-provider or assistive-technology verification is claimed.
+- Continue with the current interaction priorities in Phase 6. If `PH6-02` adds another E2E entry, reconcile its final README counts with that change. Reuse the existing npm commands and browser runtime; no dependency or framework change is required by these tasks.
 - Perform each item's focused verification before checking it off. Update related current audit status only when findings are resolved and that documentation is within the approved implementation scope; keep archived records historical. No current task requires an external decision, and no blocked or deliberately deferred implementation item has been established.
