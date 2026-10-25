@@ -69,6 +69,8 @@ const assertDrawerState = async (page, open, label) => {
     document.body.classList.contains("site-header-nav-open") === expected, open);
   const state = await page.evaluate(() => ({
     bodyOpen: document.body.classList.contains("site-header-nav-open"),
+    bodyScrollLocked: ["hidden", "clip"].includes(getComputedStyle(document.body).overflowY),
+    bodyTouchBlocked: getComputedStyle(document.body).touchAction === "none",
     drawerHidden: document.querySelector(".site-header__drawer").hidden,
     overlayHidden: document.querySelector(".site-header__overlay").hidden,
     drawerAriaHidden: document.querySelector(".site-header__drawer").getAttribute("aria-hidden"),
@@ -76,11 +78,13 @@ const assertDrawerState = async (page, open, label) => {
   }));
   assert.deepEqual(state, {
     bodyOpen: open,
+    bodyScrollLocked: open,
+    bodyTouchBlocked: open,
     drawerHidden: !open,
     overlayHidden: !open,
     drawerAriaHidden: String(!open),
     toggleExpanded: String(open)
-  }, `${label}: body, hidden and ARIA states must agree`);
+  }, `${label}: body, scroll lock, hidden and ARIA states must agree`);
   assert.equal(await page.locator(drawerSelector).isVisible(), open, `${label}: drawer visibility`);
   assert.equal(await page.locator(".site-header__overlay").isVisible(), open, `${label}: overlay visibility`);
   assert.equal(await page.locator(".site-header__overlay").evaluate((element) =>
@@ -192,28 +196,17 @@ const runDismissalTest = async (page) => {
 };
 
 const runResponsiveTest = async (page) => {
-  await openDrawer(page, "Responsive opening at 390px");
-  await page.setViewportSize({ width: 938, height: 844 });
-  await assertDrawerState(page, true, "938px retains open mobile drawer");
   await page.setViewportSize({ width: 939, height: 844 });
-  await assertDrawerState(page, false, "939px JavaScript transition closes drawer");
-  await assertFocus(page.locator(toggleSelector), "939px responsive close restores focus");
-  const boundary = await page.evaluate(() => ({
-    jsDesktop: matchMedia("(min-width: 939px)").matches,
-    cssDesktop: matchMedia("(min-width: 940px)").matches,
-    toggleDisplay: getComputedStyle(document.querySelector(".site-header__nav-toggle")).display,
-    navListDisplay: getComputedStyle(document.querySelector("#site-header-nav > ul")).display
-  }));
-  assert.deepEqual(boundary, {
-    jsDesktop: true, cssDesktop: false, toggleDisplay: "flex", navListDisplay: "none"
-  }, "939px must preserve the existing JavaScript/CSS boundary difference");
-  console.log("QA MOBILE NAV E2E: NOTE — at 939px JavaScript closes the drawer while CSS still shows the mobile toggle and hides desktop links");
+  assert.equal(await page.locator(toggleSelector).isVisible(), true, "939px shows mobile toggle");
+  assert.equal(await page.locator("#site-header-nav > ul").isVisible(), false, "939px hides desktop navigation");
+  await openDrawer(page, "Opening at the 939px mobile boundary");
+  await assertTraversal(page, "939px mobile keyboard containment");
 
   await page.setViewportSize({ width: 940, height: 844 });
-  await assertDrawerState(page, false, "940px desktop drawer state");
+  await assertDrawerState(page, false, "939px to 940px closes the drawer completely");
   assert.equal(await page.locator(toggleSelector).isVisible(), false, "940px hides mobile toggle");
   assert.equal(await page.locator("#site-header-nav > ul").isVisible(), true, "940px shows desktop navigation");
-  await page.locator(".site-header__brand").focus();
+  await assertFocus(page.locator(".site-header__brand"), "Desktop entry moves focus to the visible header logo link");
   for (const [index, link] of (await page.locator("#site-header-nav a[href]").all()).entries()) {
     // Parent-link focus reveals desktop submenu links through a CSS transition.
     // Wait for that real visibility state before asking Tab to enter the submenu.
@@ -225,12 +218,48 @@ const runResponsiveTest = async (page) => {
   await assertFocus(page.locator(".site-header__actions a[href^='tel:']"), "940px Tab leaves desktop navigation normally");
   await page.keyboard.press("Shift+Tab");
   await assertFocus(page.locator("#site-header-nav a[href]").last(), "940px reverse traversal returns to desktop navigation");
+  const scrollY = await page.evaluate(() => window.scrollY);
+  await page.mouse.move(10, 600);
+  await page.mouse.wheel(0, 300);
+  await page.waitForFunction((previous) => window.scrollY > previous, scrollY);
+
+  await page.setViewportSize({ width: 939, height: 844 });
+  await assertDrawerState(page, false, "Returning to 939px keeps the drawer closed");
+  assert.equal(await page.locator(toggleSelector).isVisible(), true, "Returning to 939px restores the mobile toggle");
+  assert.equal(await page.locator("#site-header-nav > ul").isVisible(), false, "Returning to 939px hides desktop navigation");
+  await openDrawer(page, "Reopening at 939px after desktop closure");
+  await assertTraversal(page, "Reopened 939px drawer retains keyboard containment");
+  await page.keyboard.press("Escape");
+  await assertDrawerState(page, false, "Escape closes reopened mobile drawer");
+  await assertFocus(page.locator(toggleSelector), "Reopened mobile drawer restores focus to its opener");
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openDrawer(page, "Responsive opening at 390px");
+  await page.setViewportSize({ width: 938, height: 844 });
+  await assertDrawerState(page, true, "938px retains open mobile drawer");
+  await page.setViewportSize({ width: 939, height: 844 });
+  await assertDrawerState(page, true, "939px retains open mobile drawer");
+  await assertFocus(page.locator(firstControlSelector), "Mobile resizing preserves drawer focus");
+  await page.setViewportSize({ width: 940, height: 844 });
+  await assertDrawerState(page, false, "Repeated desktop entry clears drawer state");
+  await assertFocus(page.locator(".site-header__brand"), "Repeated desktop entry restores visible focus");
+  await page.keyboard.press("Tab");
+  await assertFocus(page.locator("#site-header-nav a[href]").first(), "Repeated desktop entry releases the Tab trap");
+
+  await page.setViewportSize({ width: 939, height: 844 });
+  await openDrawer(page, "Responsive closure with focus on a visible header control");
+  await page.locator(".site-header__theme-toggle").focus();
+  await page.setViewportSize({ width: 940, height: 844 });
+  await assertDrawerState(page, false, "Desktop entry with visible focus clears drawer state");
+  await assertFocus(page.locator(".site-header__theme-toggle"), "Desktop entry preserves an already visible header focus");
+  await page.keyboard.press("Shift+Tab");
+  await assertFocus(page.locator(".site-header__actions a[href^='tel:']"), "Visible header focus traverses normally after desktop closure");
 };
 
 const scenarios = [
   { label: "keyboard activation, traversal, submenus and Escape", run: runKeyboardTest },
   { label: "overlay dismissal, reopening and repeated keyboard lifecycle", run: runDismissalTest },
-  { label: "938/939px responsive close and 940px desktop keyboard navigation", run: runResponsiveTest }
+  { label: "939/940px drawer lifecycle, mobile reopening and desktop keyboard navigation", run: runResponsiveTest }
 ];
 
 const runScenario = async (browser, scenario) => {

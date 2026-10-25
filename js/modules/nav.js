@@ -80,7 +80,7 @@ export function initMobileNav() {
     });
   };
 
-  const mq = window.matchMedia("(min-width: 939px)");
+  const mq = window.matchMedia("(min-width: 940px)");
   let previouslyFocused = null;
   const trapFocus = (event) => {
     if (event.key !== "Tab" || !document.body.classList.contains("site-header-nav-open")) return;
@@ -107,7 +107,7 @@ export function initMobileNav() {
       first.focus();
     }
   };
-  const setOpen = (open) => {
+  const setOpen = (open, { restoreFocus = true } = {}) => {
     const wasOpen = document.body.classList.contains("site-header-nav-open");
     if (open && !wasOpen) previouslyFocused = document.activeElement;
     if (open) {
@@ -126,7 +126,7 @@ export function initMobileNav() {
       document.removeEventListener("keydown", trapFocus);
       if (overlay) overlay.hidden = true;
       if (drawer) drawer.hidden = true;
-      if (wasOpen) {
+      if (wasOpen && restoreFocus) {
         const target = previouslyFocused && typeof previouslyFocused.focus === "function" ? previouslyFocused : toggle;
         if (target && typeof target.focus === "function") target.focus();
       }
@@ -170,7 +170,14 @@ export function initMobileNav() {
   let wasDesktop = mq.matches;
   const handleResize = () => {
     const isDesktop = mq.matches;
-    if (isDesktop && !wasDesktop) setOpen(false);
+    if (isDesktop && !wasDesktop) {
+      const active = document.activeElement;
+      // CSS can move focus to body before this breakpoint handler runs.
+      const needsFocus = active === toggle || drawer?.contains(active) ||
+        (document.body.classList.contains("site-header-nav-open") && active === document.body);
+      setOpen(false, { restoreFocus: false });
+      if (needsFocus) $(".site-header__brand")?.focus({ preventScroll: true });
+    }
     wasDesktop = isDesktop;
   };
 

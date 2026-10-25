@@ -16,10 +16,9 @@
 
 ## Current priorities
 
-1. `PH5-02` — Clear drawer state at the actual desktop breakpoint.
-2. `PH5-03` — Associate the mobile toggle with its drawer.
-3. `PH6-01` — Keep theme selection and notice dismissal usable when storage fails.
-4. `PH6-02` — Restore menu detail-panel enhancements.
+1. `PH5-03` — Associate the mobile toggle with its drawer.
+2. `PH6-01` — Keep theme selection and notice dismissal usable when storage fails.
+3. `PH6-02` — Restore menu detail-panel enhancements.
 
 ## Phase 1 — Public interaction correctness
 
@@ -81,13 +80,14 @@ The three items address independent defects and can be implemented separately. P
   - **Result:** Below 940 px, the no-JavaScript header occupies normal document flow with wrapping links, 44 px minimum link height and always-visible submenus. All eight shells retain the fallback marker, preserving page classes, destinations, ARIA and JavaScript navigation contracts.
   - **Verification:** `npm run lint:css`, `npm run qa:html`, `npm run qa:nojs`, focused ESLint and `git diff --check` passed; the no-JavaScript regression covers all eight shells at 320/390/939/940/1280 px, keyboard/submenu navigation, horizontal overflow and existing native-form checks. The existing homepage JavaScript navigation regression passed 3/3, and six touch/light-dark checks passed on home/404/offline; PH5-02 and PH5-03 remain open.
 
-- [ ] **PH5-02 — Align the drawer lifecycle with the desktop layout boundary**
-  - [ ] Reproduce opening at 939 px and resizing to 940 px; align `js/modules/nav.js` with the CSS desktop boundary and clear open state when entering desktop layout.
-  - [ ] Ensure desktop entry releases scroll locking and the Tab handler, synchronizes toggle/drawer/overlay state, and leaves focus on an available control.
-  - [ ] Replace the existing regression assertion that preserves the 939/940 px discrepancy. Cover an opening at 939 px, crossing to 940 px, returning to mobile and reopening, alongside existing keyboard/dismissal cases.
-  - [ ] Update the corresponding boundary description in `docs/settings.md` after verification.
-  - **Source:** `daily-AUDIT.md` — P2-02; `js/modules/nav.js`, `css/layout/header.css`, `css/components/utilities.css` and `scripts/qa-mobile-nav-e2e.mjs`.
-  - **Completion condition:** JavaScript and CSS agree on the desktop transition, and a drawer hidden by desktop layout leaves no scroll lock or keyboard containment. Run `npm run test:e2e:mobile-nav` and the affected JS/CSS checks; do not preserve an assertion of the known mismatch.
+- [x] **PH5-02 — Align the drawer lifecycle with the desktop layout boundary**
+  - [x] Reproduce opening at 939 px and resizing to 940 px; align `js/modules/nav.js` with the CSS desktop boundary and clear open state when entering desktop layout.
+  - [x] Ensure desktop entry releases scroll locking and the Tab handler, synchronizes toggle/drawer/overlay state, and leaves focus on an available control.
+  - [x] Replace the existing regression assertion that preserves the 939/940 px discrepancy. Cover an opening at 939 px, crossing to 940 px, returning to mobile and reopening, alongside existing keyboard/dismissal cases.
+  - [x] Update the corresponding boundary description in `docs/settings.md` after verification.
+  - **Source:** `daily-AUDIT.md` — P2-02; `js/modules/nav.js`, `css/layout/header.css`, `css/components/utilities.css`, `scripts/qa-mobile-nav-e2e.mjs` and `scripts/qa-nojs-e2e.mjs`.
+  - **Result:** JavaScript now follows the 940 px CSS desktop boundary and clears drawer/overlay state, scroll locking and Tab containment while preserving visible header focus and mobile dismissal/reopening. The no-JavaScript regression cancels pending smooth scrolling locally before its unchanged consent-checkbox check.
+  - **Verification:** `npm run qa:nojs` and `npm run test:e2e:mobile-nav` passed in one full verification run each, covering all 40 navigation page/width combinations, native-form checks and 3/3 mobile scenarios. Targeted diagnostics reproduced the checkbox timeout and isolated scroll-driven geometry changes; focused ESLint and `git diff --check` passed.
 
 - [ ] **PH5-03 — Point each mobile navigation toggle at the controlled drawer**
   - [ ] Correct the shared toggle relationship across all eight root HTML pages to identify the actual `#mobile-drawer`, preserving existing IDs and test hooks.

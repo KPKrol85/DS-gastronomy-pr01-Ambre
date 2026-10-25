@@ -124,6 +124,8 @@ const run = async () => {
     await form.locator("#time").fill(time);
     await form.locator("#guests").selectOption("2");
     await form.locator("#notes").fill("Stolik przy oknie");
+    // Cancel smooth scrolling from native field focus before checking pointer actionability.
+    await form.locator("#consent").evaluate((element) => element.scrollIntoView({ behavior: "instant", block: "center" }));
     await form.locator("#consent").check();
   };
 
