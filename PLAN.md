@@ -16,8 +16,7 @@
 
 ## Current priorities
 
-1. `PH6-01` — Keep theme selection and notice dismissal usable when storage fails.
-2. `PH6-02` — Restore menu detail-panel enhancements.
+1. `PH6-02` — Restore menu detail-panel enhancements.
 
 ## Phase 1 — Public interaction correctness
 
@@ -29,7 +28,7 @@
 
 - [x] **PH1-02 — Constrain keyboard focus within the initial information dialog**
   - **Result:** `js/modules/demo-legal.js` contains focus, makes background content inert, and restores focus after dismissal while preserving the notice's informational purpose.
-  - **Verification:** Current module and `scripts/qa-demo-legal-e2e.mjs` inspected; keyboard-modal and acceptance-persistence passes are recorded in the archived daily audit. Storage-failure resilience remains separately open as `PH6-01`.
+  - **Verification:** Current module and `scripts/qa-demo-legal-e2e.mjs` inspected; keyboard-modal and acceptance-persistence passes are recorded in the archived daily audit. Storage-failure resilience is covered by the `PH6-01` verification below.
 
 - [x] **PH1-03 — Restore the shared scroll-to-top control**
   - **Result:** `js/modules/scroll.js` synchronizes visibility, `hidden`, `aria-hidden` and keyboard reachability, with reduced-motion-aware activation.
@@ -97,12 +96,10 @@ The three items address independent defects and can be implemented separately. P
 
 **Goal:** Restore intended enhancements while preserving usable native and current-page behavior.
 
-- [ ] **PH6-01 — Keep theme and notice interactions usable when persistence fails**
-  - [ ] Guard storage access in `js/modules/theme.js` and `js/modules/demo-legal.js`, including reads during initialization and system-theme changes; keep the existing keys `theme` and `demoLegalAccepted`.
-  - [ ] Apply theme changes and close an accepted notice even when storage writes fail. Retain the current-page theme choice in memory so later system preference changes do not override it; retain the first-visit notice behavior when acceptance cannot persist.
-  - [ ] Extend `scripts/qa-theme-e2e.mjs` and `scripts/qa-demo-legal-e2e.mjs` with independently denied reads and writes, checking theme/ARIA synchronization, notice dismissal, released inertness and focus restoration. Preserve normal persistence and system-preference scenarios.
+- [x] **PH6-01 — Keep theme and notice interactions usable when persistence fails**
   - **Source:** `daily-AUDIT.md` — P2-01; both runtime modules and their focused E2E scripts.
-  - **Completion condition:** Denied storage produces no uncaught interaction error, theme selection works for the current page, and acceptance dismisses the notice with usable background content. Run the two focused regressions and `npm run lint:js`; cross-page persistence remains conditional on available storage.
+  - **Result:** Both modules guard storage reads and writes while preserving `theme`, `demoLegalAccepted` and existing UI/accessibility contracts. Manual theme selection remains authoritative in module memory, and notice acceptance completes dismissal and focus/inert cleanup even without persistence.
+  - **Verification:** `npm run test:e2e:theme` passed 6/6 isolated scenarios and `npm run test:e2e:demo-legal` passed 4/4, covering independently denied reads/writes, system changes, keyboard/ARIA behavior, dismissal/reload, focus/inert cleanup and existing persistence without uncaught errors; `npm run lint:js` and `git diff --check` passed. E2E used installed Chromium via `PLAYWRIGHT_BROWSERS_PATH` outside the sandbox for localhost access; full QA and manual assistive-technology checks were not run.
 
 - [ ] **PH6-02 — Restore the menu detail-panel enhancement contract**
   - [ ] Match initialization to the actual `main.page-menu` root in `menu.html`, rather than the nonexistent `body.page-menu`; keep detail-panel handling scoped to that page.
@@ -120,7 +117,7 @@ The three items address independent defects and can be implemented separately. P
 
 ## Verification scope and execution order
 
-- The initial plan review used static inspection of sources, configuration, scripts, documentation and audit findings. Subsequent navigation verification is recorded under Phase 5; remaining storage and menu risks are described in Phase 6.
+- The initial plan review used static inspection of sources, configuration, scripts, documentation and audit findings. Subsequent navigation and storage verification is recorded in Phases 5–6; the remaining menu risk is described in Phase 6.
 - Historical completion evidence is retained explicitly, rather than presented as a fresh test run. No new build, full browser suite, Lighthouse measurement, deployment, form-provider or assistive-technology verification is claimed.
 - Continue with the current interaction priorities in Phase 6. If `PH6-02` adds another E2E entry, reconcile its final README counts with that change. Reuse the existing npm commands and browser runtime; no dependency or framework change is required by these tasks.
 - Perform each item's focused verification before checking it off. Update related current audit status only when findings are resolved and that documentation is within the approved implementation scope; keep archived records historical. No current task requires an external decision, and no blocked or deliberately deferred implementation item has been established.

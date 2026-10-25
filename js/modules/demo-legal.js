@@ -148,11 +148,21 @@ export function initDemoLegalModal() {
   };
 
   const handleAccept = () => {
-    localStorage.setItem(ACCEPTED_KEY, "true");
     close();
+    try {
+      localStorage.setItem(ACCEPTED_KEY, "true");
+    } catch {
+      // Acceptance still dismisses the notice for the current page.
+    }
   };
 
-  if (localStorage.getItem(ACCEPTED_KEY) === "true") {
+  let accepted = false;
+  try {
+    accepted = localStorage.getItem(ACCEPTED_KEY) === "true";
+  } catch {
+    // Show the notice when persisted acceptance cannot be read.
+  }
+  if (accepted) {
     close();
     return;
   }

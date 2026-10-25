@@ -8,7 +8,13 @@ export function initThemeSwitcher() {
   const root = document.documentElement;
   const media = window.matchMedia("(prefers-color-scheme: dark)");
   const prefersDark = media.matches;
-  const stored = localStorage.getItem(storageKey);
+  let stored = null;
+  let manualTheme = null;
+  try {
+    stored = localStorage.getItem(storageKey);
+  } catch {
+    // Fall back to the system preference when storage is unavailable.
+  }
 
   const apply = (mode) => {
     if (mode === "light" || mode === "dark") {
@@ -30,12 +36,24 @@ export function initThemeSwitcher() {
   toggle.addEventListener("click", () => {
     const current = root.getAttribute("data-theme") || (prefersDark ? "dark" : "light");
     const next = current === "dark" ? "light" : "dark";
-    localStorage.setItem(storageKey, next);
+    manualTheme = next;
     apply(next);
+    try {
+      localStorage.setItem(storageKey, next);
+    } catch {
+      // The current-page choice remains active without persistence.
+    }
   });
 
   media.addEventListener("change", (event) => {
-    if (!localStorage.getItem(storageKey)) {
+    if (manualTheme) return;
+    let preference = stored;
+    try {
+      preference = localStorage.getItem(storageKey);
+    } catch {
+      // Retain the preference read during initialization, if available.
+    }
+    if (!preference) {
       apply(event.matches ? "dark" : "light");
     }
   });

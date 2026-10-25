@@ -55,23 +55,25 @@ const createStaticServer = () => {
   });
 };
 
-const readThemeState = (page) => page.evaluate((selector) => ({
+const readThemeState = (page, checkStorage = true) => page.evaluate(({ selector, checkStorage }) => ({
   theme: document.documentElement.getAttribute("data-theme"),
   pressed: document.querySelector(selector)?.getAttribute("aria-pressed"),
-  stored: localStorage.getItem("theme")
-}), toggleSelector);
+  ...(checkStorage ? { stored: localStorage.getItem("theme") } : {})
+}), { selector: toggleSelector, checkStorage });
 
 const assertThemeState = async (page, theme, stored, label) => {
-  const expected = { theme, pressed: String(theme === "dark"), stored };
+  // An undefined storage expectation checks the UI without reading denied storage.
+  const checkStorage = stored !== undefined;
+  const expected = { theme, pressed: String(theme === "dark"), ...(checkStorage ? { stored } : {}) };
   try {
-    await page.waitForFunction(({ selector, expected }) =>
+    await page.waitForFunction(({ selector, expected, checkStorage }) =>
       document.documentElement.getAttribute("data-theme") === expected.theme &&
       document.querySelector(selector)?.getAttribute("aria-pressed") === expected.pressed &&
-      localStorage.getItem("theme") === expected.stored, { selector: toggleSelector, expected });
+      (!checkStorage || localStorage.getItem("theme") === expected.stored), { selector: toggleSelector, expected, checkStorage });
   } catch (error) {
-    throw new Error(`${label}: expected ${JSON.stringify(expected)}, actual ${JSON.stringify(await readThemeState(page))}`, { cause: error });
+    throw new Error(`${label}: expected ${JSON.stringify(expected)}, actual ${JSON.stringify(await readThemeState(page, checkStorage))}`, { cause: error });
   }
-  assert.deepEqual(await readThemeState(page), expected, `${label}: data-theme, aria-pressed and storage must agree`);
+  assert.deepEqual(await readThemeState(page, checkStorage), expected, `${label}: theme state must match${checkStorage ? " including storage" : " without reading storage"}`);
   console.log(`QA THEME E2E: PASS — ${label}`);
 };
 
@@ -96,7 +98,7 @@ const changeSystemPreference = async (page, colorScheme) => {
   await page.evaluate(() => { delete window.__qaThemeMediaChanged; });
 };
 
-const selectWithKeyboard = async (page, theme, label) => {
+const selectWithKeyboard = async (page, theme, label, { expectedStored = theme, checkStorage = true } = {}) => {
   const toggle = page.locator(toggleSelector);
   assert.equal(await toggle.isVisible(), true, `${label}: toggle must be visible`);
   assert.equal(await toggle.isEnabled(), true, `${label}: toggle must be enabled`);
@@ -104,7 +106,7 @@ const selectWithKeyboard = async (page, theme, label) => {
   assert.equal(await toggle.evaluate((element) => document.activeElement === element), true,
     `${label}: keyboard focus must reach the real toggle after dialog acceptance`);
   await page.keyboard.press("Enter");
-  await assertThemeState(page, theme, theme, label);
+  await assertThemeState(page, theme, checkStorage ? expectedStored : undefined, label);
 };
 
 const assertPersistence = async (page, theme, label) => {
@@ -162,6 +164,58 @@ const runScenario = async (browser, initialScheme) => {
   }
 };
 
+const runStorageFailureScenario = async (browser, operation, initialScheme) => {
+  const label = `denied ${operation}, ${initialScheme} system preference`;
+  const opposite = initialScheme === "light" ? "dark" : "light";
+  const stored = operation === "getItem" ? undefined : null;
+  const storageExpectation = operation === "getItem" ? { checkStorage: false } : { expectedStored: null };
+  const context = await browser.newContext({ colorScheme: initialScheme, serviceWorkers: "block" });
+  try {
+    await context.addInitScript((operation) => {
+      const original = Storage.prototype[operation];
+      Storage.prototype[operation] = function (...args) {
+        if (this === window.localStorage) {
+          throw new DOMException(`Denied localStorage.${operation}`, operation === "getItem" ? "SecurityError" : "QuotaExceededError");
+        }
+        return original.apply(this, args);
+      };
+    }, operation);
+    const page = await context.newPage();
+    const runtimeErrors = [];
+    page.on("pageerror", (error) => runtimeErrors.push(`${page.url()}: ${error.message}`));
+    page.setDefaultTimeout(10000);
+
+    await page.goto(`${baseUrl}/index.html`, { waitUntil: "domcontentloaded" });
+    await page.locator("html[data-theme-ready]").waitFor({ state: "attached" });
+    await page.locator("#demo-legal-modal:not([hidden])").waitFor({ state: "visible" });
+    await page.locator("[data-demo-legal-accept]").click();
+    await waitForInitialization(page);
+    await assertThemeState(page, initialScheme, stored, `${label}: initialization`);
+
+    await changeSystemPreference(page, opposite);
+    await assertThemeState(page, opposite, stored, `${label}: system changes before manual selection`);
+    await changeSystemPreference(page, initialScheme);
+    await assertThemeState(page, initialScheme, stored, `${label}: system returns before manual selection`);
+
+    await selectWithKeyboard(page, opposite, `${label}: Enter selects ${opposite}`, storageExpectation);
+    await changeSystemPreference(page, opposite);
+    await assertThemeState(page, opposite, stored, `${label}: system agrees with manual selection`);
+    await changeSystemPreference(page, initialScheme);
+    await assertThemeState(page, opposite, stored, `${label}: conflicting system keeps manual selection`);
+
+    await selectWithKeyboard(page, initialScheme, `${label}: Enter selects ${initialScheme}`, storageExpectation);
+    await changeSystemPreference(page, opposite);
+    await assertThemeState(page, initialScheme, stored, `${label}: conflicting system keeps updated manual selection`);
+
+    assert.deepEqual(runtimeErrors, [], `${label}: no uncaught runtime errors`);
+    console.log(`QA THEME E2E: PASS — ${label}: no uncaught runtime errors`);
+  } catch (error) {
+    throw new Error(`${label}: ${error.message}`, { cause: error });
+  } finally {
+    await context.close();
+  }
+};
+
 const run = async () => {
   console.log("QA THEME E2E: starting static server...");
   const server = await createStaticServer();
@@ -172,7 +226,13 @@ const run = async () => {
       console.log(`QA THEME E2E: fresh ${scheme} system preference and persistence lifecycle`);
       await runScenario(browser, scheme);
     }
-    console.log("QA THEME E2E: PASS (2/2 isolated scenarios)");
+    for (const operation of ["getItem", "setItem"]) {
+      for (const scheme of ["light", "dark"]) {
+        console.log(`QA THEME E2E: denied ${operation}, ${scheme} system preference`);
+        await runStorageFailureScenario(browser, operation, scheme);
+      }
+    }
+    console.log("QA THEME E2E: PASS (6/6 isolated scenarios)");
   } finally {
     try {
       if (browser) await browser.close();
