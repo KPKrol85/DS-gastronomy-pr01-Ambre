@@ -71,13 +71,10 @@ None detected.
 
 ### [P2-01] Dark-system fallback gives action labels insufficient contrast without JavaScript
 
-- **Classification:** Defect
-- **Affected area:** Theme fallback, accessibility, native reservation submission and 404 recovery.
-- **Evidence:** `css/base/tokens.css:224-233`; `css/components/buttons.css:3-12,52-60,271-292`; `index.html:631`; `404.html:137`.
-- **Current behavior:** With JavaScript disabled and a dark system preference, `data-theme` remains absent. System tokens change the text color, while the corrective button rules require an explicit dark attribute. Chromium measured the reservation label as `#eef1f6` on `#fab204` (1.62:1) and the 404 return label as `#eef1f6` on white (1.13:1). Both actions retain their native behavior.
-- **Impact:** Labels become difficult to read in a supported fallback state, including the form submission action and the error-page recovery link. JavaScript-enabled theme regressions do not exercise this state.
-- **Recommended direction:** Make the effective system fallback apply coherent component foreground/background pairs, while preserving explicit light/dark overrides and native actions.
-- **Verification criteria:** Without JavaScript, check these actions under both system preferences and confirm readable, passing normal-text contrast; repeat explicit-theme checks with JavaScript enabled.
+- **Status:** COMPLETED — implemented and verified.
+- **Issue:** Without JavaScript and with a dark system preference, `data-theme` stayed absent: system tokens lightened the label ink while the button corrections required `html[data-theme="dark"]`, leaving the reservation submit at 1.62:1 (`#eef1f6` on `#fab204`) and the 404 recovery link at 1.13:1 (`#eef1f6` on white).
+- **Resolution:** `css/components/buttons.css` applies the explicit-dark base surface, border and hover of `.site-button` under `prefers-color-scheme: dark` for `html:not([data-theme])`, wrapped in `:where()` so variant surfaces keep their precedence, and `.site-button--form` sets dark ink on amber (`var(--c-accent-ink, #1b1b1f)`). Explicit light/dark rules, theme initialization, `data-theme-ready`, native submission and 404 navigation are unchanged.
+- **Verification:** `npm run qa:nojs` — PASS, including a new computed-color WCAG check without `data-theme` (rest/hover/active): recovery link 17.17/15.69/15.69:1 light and 15.92/14.69/14.69:1 dark, submit 9.35/10.01/10.01:1 under both preferences, with pointer-driven native submission and navigation. `npm run test:e2e:theme` (6/6), `npm run lint:css` and `git diff --check` — PASS; a computed-style comparison of all `.site-button` elements on eight pages showed changes only in the no-JavaScript dark state. Chromium only; focus-outline contrast and other button variants are outside the regression.
 
 ### [P2-02] Mobile drawer traps keyboard focus while leaving background accessibility content exposed
 

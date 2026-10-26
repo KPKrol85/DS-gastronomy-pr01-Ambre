@@ -107,6 +107,58 @@ const firstMatchingDate = (isoDate, matches) => {
   throw new Error(`No matching reservation date found from ${isoDate}`);
 };
 
+/* Contrast is calculated from the browser's computed colors with the WCAG 2.x formula,
+   never from screenshots. Chromium serializes color-mix() results as oklab() or
+   color(srgb ...), so both are converted to gamma-encoded sRGB alongside rgb(a). */
+const MIN_TEXT_CONTRAST = 4.5;
+
+const oklabToSrgb = ([lightness, a, b]) => {
+  const l = (lightness + 0.3963377774 * a + 0.2158037573 * b) ** 3;
+  const m = (lightness - 0.1055613458 * a - 0.0638541728 * b) ** 3;
+  const s = (lightness - 0.0894841775 * a - 1.291485548 * b) ** 3;
+  return [
+    4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+    -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+    -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s
+  ].map((channel) => (channel <= 0.0031308 ? 12.92 * channel : 1.055 * channel ** (1 / 2.4) - 0.055));
+};
+
+const parseCssColor = (value) => {
+  const match = /^(rgba?|oklab|color)\((.+)\)$/.exec(value.trim());
+  assert.ok(match, `Unsupported computed color: ${value}`);
+  const [, notation, body] = match;
+  const parts = body.replace("/", " ").split(/[\s,]+/).filter(Boolean);
+  if (notation === "color") assert.equal(parts.shift(), "srgb", `Unsupported color space: ${value}`);
+  const numbers = parts.map(Number);
+  assert.ok(numbers.length >= 3 && numbers.every(Number.isFinite), `Unparsable computed color: ${value}`);
+
+  const [first, second, third, alpha = 1] = numbers;
+  const channels = notation === "oklab" ? oklabToSrgb([first, second, third])
+    : notation === "color" ? [first, second, third]
+      : [first, second, third].map((channel) => channel / 255);
+  return { rgb: channels.map((channel) => Math.min(1, Math.max(0, channel))), alpha };
+};
+
+// Source-over compositing in gamma-encoded sRGB, as the browser paints it.
+const compositeOver = (top, backdrop) => {
+  const alpha = top.alpha + backdrop.alpha * (1 - top.alpha);
+  return {
+    rgb: top.rgb.map((channel, index) =>
+      (channel * top.alpha + backdrop.rgb[index] * backdrop.alpha * (1 - top.alpha)) / alpha),
+    alpha
+  };
+};
+
+const relativeLuminance = ({ rgb }) => {
+  const [red, green, blue] = rgb.map((channel) => (channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+};
+
+const contrastRatio = (foreground, background) => {
+  const [lighter, darker] = [relativeLuminance(foreground), relativeLuminance(background)].sort((x, y) => y - x);
+  return (lighter + 0.05) / (darker + 0.05);
+};
+
 const run = async () => {
   console.log("QA NO-JS E2E: starting static server...");
   const server = await createStaticServer();
@@ -473,6 +525,106 @@ const run = async () => {
       assert.equal(submission.get("notes"), "Stolik przy oknie");
       assert.equal(submission.get("consent"), "on");
     });
+
+    const measureLabelContrast = async (control, label) => {
+      const { color, opacity, layers } = await control.evaluate(async (element) => {
+        // Background and transform transitions settle before colors are read.
+        await Promise.all(element.getAnimations().map((animation) => animation.finished.catch(() => {})));
+        const backdrop = [];
+        for (let node = element; node; node = node.parentElement) {
+          const { backgroundColor, backgroundImage } = getComputedStyle(node);
+          backdrop.push({ backgroundColor, backgroundImage });
+        }
+        return { color: getComputedStyle(element).color, opacity: getComputedStyle(element).opacity, layers: backdrop };
+      });
+      assert.equal(opacity, "1", `${label}: the action must render at full opacity`);
+
+      const stack = [];
+      for (const layer of layers) {
+        assert.equal(layer.backgroundImage, "none", `${label}: the label backdrop must be a plain color`);
+        stack.push(parseCssColor(layer.backgroundColor));
+        if (stack.at(-1).alpha === 1) break;
+      }
+      assert.equal(stack.at(-1).alpha, 1, `${label}: an opaque backdrop must be found`);
+      const background = stack.reduceRight((backdrop, layer) => compositeOver(layer, backdrop));
+      const ratio = contrastRatio(compositeOver(parseCssColor(color), background), background);
+      assert.ok(ratio >= MIN_TEXT_CONTRAST,
+        `${label}: label contrast ${ratio.toFixed(2)}:1 is below ${MIN_TEXT_CONTRAST}:1 (${color} on ${layers[0].backgroundColor})`);
+      return ratio;
+    };
+
+    // Measures the resting, hover and active label contrast. The pointer is left pressed
+    // on the control, so the caller releases it to exercise the native activation.
+    const measurePointerStates = async (control, label) => {
+      assert.equal(await control.isVisible(), true, `${label}: the action must be visible`);
+      await control.evaluate((element) => element.scrollIntoView({ behavior: "instant", block: "center" }));
+      await page.mouse.move(0, 0);
+      const ratios = { rest: await measureLabelContrast(control, `${label} at rest`) };
+      // hover() also proves the control is stable and receives pointer events.
+      await control.hover();
+      ratios.hover = await measureLabelContrast(control, `${label} on hover`);
+      await page.mouse.down();
+      ratios.active = await measureLabelContrast(control, `${label} while active`);
+      console.log(`QA NO-JS E2E: ${label} contrast — ${Object.entries(ratios)
+        .map(([state, ratio]) => `${state} ${ratio.toFixed(2)}:1`).join(", ")}`);
+    };
+
+    /* Without JavaScript no data-theme is set, so either system preference reaches the
+       actions only through the token fallback. The context preference is restored afterwards. */
+    const initialColorScheme = await page.evaluate(() => (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
+    try {
+      for (const colorScheme of ["light", "dark"]) {
+        await page.emulateMedia({ colorScheme });
+        const assertSystemFallback = async () => assert.deepEqual(
+          await page.evaluate(() => ({
+            theme: document.documentElement.getAttribute("data-theme"),
+            dark: matchMedia("(prefers-color-scheme: dark)").matches
+          })),
+          { theme: null, dark: colorScheme === "dark" },
+          `The ${colorScheme} system preference must apply without a data-theme attribute`
+        );
+
+        await runStep(`read and follow the 404 recovery link with a ${colorScheme} system preference`, async () => {
+          await page.goto(`${baseUrl}/404.html`, { waitUntil: "load", timeout: 15000 });
+          await assertSystemFallback();
+          const link = page.getByRole("main").getByRole("link", { name: "Powrót na stronę główną" });
+          assert.equal(await link.getAttribute("href"), "index.html#top", "The recovery link must keep its native destination");
+
+          await measurePointerStates(link, `404 recovery link (${colorScheme})`);
+          await Promise.all([
+            page.waitForURL(`${baseUrl}/index.html#top`, { timeout: 10000 }),
+            page.mouse.up()
+          ]);
+          await page.locator("#top").waitFor();
+        });
+
+        await runStep(`read and submit the booking action with a ${colorScheme} system preference`, async () => {
+          await page.goto(`${baseUrl}/index.html#rezerwacja`, { waitUntil: "domcontentloaded", timeout: 15000 });
+          await assertSystemFallback();
+          const form = page.locator("#booking-form");
+          const submit = form.locator('button[type="submit"]');
+          await fillNativeForm(form, {
+            date: firstMatchingDate(dateBounds.min, (candidate) => isoWeekday(candidate) !== MONDAY),
+            time: "18:00"
+          });
+          assert.equal(await submit.isEnabled(), true, "The submit action must stay enabled");
+
+          await measurePointerStates(submit, `booking submit (${colorScheme})`);
+          const postsBefore = interceptedPosts.length;
+          const [request] = await Promise.all([
+            page.waitForRequest((candidate) => candidate.method() === "POST"),
+            page.mouse.up()
+          ]);
+          // Unlike click(), mouse.up() does not await the navigation; the route records the POST before fulfilling it.
+          await request.response();
+          assert.equal(interceptedPosts.length, postsBefore + 1, "Releasing the pressed action must submit the form natively once");
+          assert.equal(new URL(request.url()).pathname, "/index.html");
+          assert.equal(new URLSearchParams(request.postData() || "").get("form-name"), "reservation");
+        });
+      }
+    } finally {
+      await page.emulateMedia({ colorScheme: initialColorScheme });
+    }
 
     console.log("QA NO-JS E2E: PASS");
   } finally {

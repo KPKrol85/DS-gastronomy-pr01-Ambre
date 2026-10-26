@@ -61,6 +61,22 @@ html[data-theme="dark"] .site-button:hover {
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28);
 }
 
+/* Without the theme script a dark system preference sets no data-theme, so the
+   base surface follows the dark tokens here; :where() keeps base specificity,
+   letting the variants below keep their own surfaces in this state as well. */
+@media (prefers-color-scheme: dark) {
+  :where(html:not([data-theme])) .site-button {
+    background: color-mix(in oklab, var(--c-bg), #fff 6%);
+    border-color: color-mix(in oklab, var(--c-border), #fff 10%);
+  }
+
+  :where(html:not([data-theme])) .site-button:hover {
+    background: color-mix(in oklab, var(--c-bg), #fff 10%);
+    border-color: color-mix(in oklab, var(--c-border), #fff 18%);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28);
+  }
+}
+
 /* Scroll to top */
 
 .scroll-btn {
@@ -268,9 +284,12 @@ html[data-theme="dark"] .site-button--tab[aria-pressed="true"] {
 
 /* Form */
 
+/* The amber surface needs dark ink in every theme state, including the
+   script-less system fallback, where --c-ink turns light. */
 .site-button--form {
   border-color: color-mix(in oklab, var(--c-accent), #000 15%);
   background: var(--c-accent);
+  color: var(--c-accent-ink, #1b1b1f);
   box-shadow: var(--shadow-sm);
 }
 

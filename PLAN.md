@@ -15,20 +15,19 @@
 
 ## Current priorities
 
-1. `PH1-01` — Restore readable action contrast in the no-JavaScript dark-system fallback.
-2. `PH1-02` — Remove inactive JavaScript-only controls from the native baseline.
-3. `PH1-03` — Align mobile drawer modality with its keyboard trap.
-4. `PH2-01` — Run the filesystem build and full local quality gate.
+1. `PH1-02` — Remove inactive JavaScript-only controls from the native baseline.
+2. `PH1-03` — Align mobile drawer modality with its keyboard trap.
+3. `PH2-01` — Run the filesystem build and full local quality gate.
 
 ## Phase 1 — Accessibility and progressive enhancement
 
 **Goal:** Resolve the three open P2 findings so the native baseline and the mobile drawer present only usable, readable and correctly exposed controls.
 
-- [ ] **PH1-01 — Restore action contrast in the no-JavaScript dark-system fallback**
-  - [ ] make the `prefers-color-scheme: dark` fallback (no `data-theme` attribute) apply coherent foreground/background pairs to `.site-button` and `.site-button--form`, which currently rely on `html[data-theme="dark"]` rules only
-  - [ ] preserve explicit light and dark theme overrides and the existing theme-ready transition behavior
-  - [ ] confirm the reservation submit button on `index.html` and the recovery link on `404.html` reach passing normal-text contrast under both system preferences without JavaScript
-  - [ ] add a focused no-JavaScript dark-preference assertion to the existing browser regressions, then confirm `npm run test:e2e:theme` and `npm run lint:css` pass
+- [x] **PH1-01 — Restore action contrast in the no-JavaScript dark-system fallback**
+  - [x] make the `prefers-color-scheme: dark` fallback (no `data-theme` attribute) apply coherent foreground/background pairs to `.site-button` and `.site-button--form`, which currently rely on `html[data-theme="dark"]` rules only
+  - [x] preserve explicit light and dark theme overrides and the existing theme-ready transition behavior
+  - [x] confirm the reservation submit button on `index.html` and the recovery link on `404.html` reach passing normal-text contrast under both system preferences without JavaScript
+  - [x] add a focused no-JavaScript dark-preference assertion to the existing browser regressions, then confirm `npm run test:e2e:theme` and `npm run lint:css` pass
   - **Source:** `AUDIT.md` — P2-01
   - **Completion condition:** without JavaScript, both actions are readable under light and dark system preferences, and explicit-theme behavior is unchanged with JavaScript enabled.
 
