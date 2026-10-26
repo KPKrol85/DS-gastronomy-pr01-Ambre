@@ -82,7 +82,6 @@ Record changes that materially affect UI/UX, accessibility, public content, buil
 
 ### Documentation
 
-- Recorded Lighthouse findings, Performance results, and utility-page SEO policy in the archived [plan](docs/archive/plans/PLAN-2026-08-22.md) and [daily audit](docs/archive/audits/daily-AUDIT-2026-08-22.md).
 - Added a Polish-first bilingual README covering architecture, builds, PWA, QA, and limitations.
 - Added a daily front-end audit to establish maintenance priorities.
 - Aligned documented `qa` coverage with schema, no-JavaScript, and text-lint checks.
