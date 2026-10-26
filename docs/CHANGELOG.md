@@ -18,6 +18,7 @@ Record changes that materially affect UI/UX, accessibility, public content, buil
 - Added the eight-page restaurant demo with responsive navigation, menu and gallery interactions, reservation form, legal pages, and local assets.
 - Added PWA support with a Web App Manifest, installation prompt, Service Worker caching, and offline fallback.
 - Added production CSS/JavaScript builds and automated HTML, link, SEO, JSON-LD, no-JavaScript, accessibility, and Lighthouse checks.
+- Added GitHub Actions CI to run `npm ci`, `npm run qa:fast`, and `npm run build` on pushes and pull requests to `main`.
 - Added focused E2E tests for reservation delivery, the demo-information dialog, and scroll-to-top controls.
 - Added Service Worker regression tests for cache activation, obsolete Ambre cache cleanup, and preservation of unrelated same-origin caches.
 - Added `.gitattributes` to enforce LF line endings and consistent CSP hashes across platforms.
@@ -35,6 +36,7 @@ Record changes that materially affect UI/UX, accessibility, public content, buil
 - Replaced scripted homepage hero buttons with native reservation and menu anchors, preserving styling, focus, and reduced-motion scrolling.
 - Consolidated menu and gallery tab styles in `css/components/tabs.css`, preserving responsive and theme behavior.
 - Shared normalized category matching between menu/gallery filtering and gallery load-more logic.
+- Restricted minified CSS/JavaScript output to `dist/` and switched source pages to canonical assets, with production HTML and Service Worker paths rewritten during builds.
 - Configured Lighthouse CI to audit compressed production `dist/` pages across eight URLs, three runs each, using existing thresholds.
 - Eager-loaded the menu LCP thumbnail and deferred the menu-page Google Map until user activation.
 - Deferred the 404-page Google Map until activation; focused Lighthouse Performance reached 0.99 across six runs, and the complete Lighthouse suite passed.
