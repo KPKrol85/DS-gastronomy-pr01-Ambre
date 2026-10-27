@@ -82,6 +82,29 @@ export function initMobileNav() {
 
   const mq = window.matchMedia("(min-width: 940px)");
   let previouslyFocused = null;
+  const backgroundInertState = new Map();
+  // Same save/restore isolation as the demo-information dialog: everything except the
+  // drawer and its dismissal overlay leaves focus and the accessibility tree, and closing
+  // restores each element's earlier inertness instead of clearing it.
+  const setBackgroundInert = (shouldBeInert) => {
+    if (shouldBeInert) {
+      if (!drawer) return;
+      backgroundInertState.clear();
+      Array.from(document.body.children).forEach((element) => {
+        if (element === drawer || element === overlay) return;
+        backgroundInertState.set(element, element.hasAttribute("inert"));
+        element.setAttribute("inert", "");
+      });
+      return;
+    }
+
+    backgroundInertState.forEach((wasInert, element) => {
+      if (!element.isConnected) return;
+      if (wasInert) element.setAttribute("inert", "");
+      else element.removeAttribute("inert");
+    });
+    backgroundInertState.clear();
+  };
   const trapFocus = (event) => {
     if (event.key !== "Tab" || !document.body.classList.contains("site-header-nav-open")) return;
     const focusable = getFocusable(drawer);
@@ -109,6 +132,8 @@ export function initMobileNav() {
   };
   const setOpen = (open, { restoreFocus = true } = {}) => {
     const wasOpen = document.body.classList.contains("site-header-nav-open");
+    // An open demo-information dialog also makes the drawer inert; never take over its isolation or focus.
+    if (open && !wasOpen && drawer?.closest("[inert]")) return;
     if (open && !wasOpen) previouslyFocused = document.activeElement;
     if (open) {
       syncDrawerNavState();
@@ -117,13 +142,20 @@ export function initMobileNav() {
     }
     document.body.classList.toggle("site-header-nav-open", open);
     toggle.setAttribute("aria-expanded", String(open));
-    if (drawer) drawer.setAttribute("aria-hidden", String(!open));
+    if (drawer) {
+      drawer.setAttribute("aria-hidden", String(!open));
+      if (open) drawer.setAttribute("aria-modal", "true");
+      else drawer.removeAttribute("aria-modal");
+    }
     if (open) {
       const focusable = getFocusable(drawer);
       if (focusable.length) focusable[0].focus();
+      if (!wasOpen) setBackgroundInert(true);
       document.addEventListener("keydown", trapFocus);
     } else {
       document.removeEventListener("keydown", trapFocus);
+      // The opener lives in the background, so release it before focus is restored.
+      setBackgroundInert(false);
       if (overlay) overlay.hidden = true;
       if (drawer) drawer.hidden = true;
       if (wasOpen && restoreFocus) {

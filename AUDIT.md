@@ -78,13 +78,10 @@ None detected.
 
 ### [P2-02] Mobile drawer traps keyboard focus while leaving background accessibility content exposed
 
-- **Classification:** Source-visible risk
-- **Affected area:** Mobile navigation, dialog semantics and assistive-technology interaction.
-- **Evidence:** `js/modules/nav.js:85-130`; `index.html:844-847`; `css/components/utilities.css:88-91`.
-- **Current behavior:** Opening the drawer displays an overlay, locks page scrolling and traps Tab within the drawer, but the dialog has no declared modal state and the background remains non-inert. A Chromium accessibility-tree probe at 390 × 844 px still exposed the page banner, main content and reservation controls alongside the open navigation dialog.
-- **Impact:** Accessibility navigation may reach background controls that the visual overlay and keyboard trap make unavailable through the ordinary interface. Actual screen-reader traversal was not tested, so that user impact remains a source-visible risk rather than a claimed assistive-technology failure.
-- **Recommended direction:** Align the drawer's modality, background availability and keyboard model; preserve dismissal, focus restoration and cleanup at the desktop breakpoint.
-- **Verification criteria:** While open, the intended modal background is unavailable to focus and accessibility navigation; closing or crossing 940 px restores prior background state and usable focus. Verify with a screen reader as well as the existing drawer regressions.
+- **Status:** COMPLETED — implemented and verified.
+- **Issue:** The open `#mobile-drawer` (`role="dialog"`) locked scrolling and trapped Tab, but declared no modal state and left the background non-inert; a Chromium accessibility-tree probe at 390 × 844 px still exposed the banner, main content and reservation controls.
+- **Resolution:** `js/modules/nav.js` sets `aria-modal="true"` while the drawer is open and makes every other `<body>` child except the drawer and its dismissal overlay `inert`, saving each element's earlier state and restoring it before focus returns on every close path, including the 940 px breakpoint. The drawer declines to open while another dialog has already made it inert, so the demo-information dialog keeps its isolation and focus; initial focus, the Tab trap, focus restoration and the no-JavaScript fallback are unchanged.
+- **Verification:** `npm run test:e2e:mobile-nav` — PASS (5/5), extended with modal-ARIA, background-inertness-against-baseline (including the already-inert closed demo dialog), rejected-focus and Chromium accessibility-tree assertions (only the unnamed overlay remains outside the dialog), plus pointer opening, link activation, repeated 939/940 px transitions and demo-dialog coexistence; it fails against the previous `nav.js`, and a probe showed `aria-modal` alone does not prune Chromium's tree. `npm run qa:nojs`, `npm run test:e2e:demo-legal` (4/4), the full `npm run test:e2e` aggregate (65 scenarios), `npm run qa:a11y` (14 scans), ESLint on the changed files and `git diff --check` — PASS. Chromium only; no manual screen-reader pass was performed.
 
 ### [P2-03] JavaScript-only controls remain enabled in the native baseline
 

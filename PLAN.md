@@ -15,8 +15,7 @@
 
 ## Current priorities
 
-1. `PH1-03` — Align mobile drawer modality with its keyboard trap.
-2. `PH2-01` — Run the filesystem build and full local quality gate.
+1. `PH2-01` — Run the filesystem build and full local quality gate.
 
 ## Phase 1 — Accessibility and progressive enhancement
 
@@ -39,13 +38,13 @@
   - **Source:** `AUDIT.md` — P2-03
   - **Completion condition:** the no-JavaScript baseline presents no enabled control that promises an unavailable action, and the enhanced filtering, lightbox and theme behavior is unchanged.
 
-- [ ] **PH1-03 — Align mobile drawer modality with its keyboard trap**
-  - [ ] declare the open `#mobile-drawer` dialog state consistently with the scroll lock and Tab containment in `js/modules/nav.js`
-  - [ ] make the background unavailable to focus and accessibility navigation while the drawer is open, reusing the save/restore approach already used by `js/modules/demo-legal.js` where it fits
-  - [ ] restore the prior background state on close, on Escape and when crossing the 940 px breakpoint, without disturbing an open demo-information dialog
-  - [ ] preserve focus restoration, overlay dismissal and the no-JavaScript navigation fallback
-  - [ ] extend `scripts/qa-mobile-nav-e2e.mjs` to assert background unavailability while open and its restoration after close and at 940 px
-  - [ ] perform one manual screen-reader pass of the open drawer, or record that it was not performed
+- [x] **PH1-03 — Align mobile drawer modality with its keyboard trap**
+  - [x] declare the open `#mobile-drawer` dialog state consistently with the scroll lock and Tab containment in `js/modules/nav.js`
+  - [x] make the background unavailable to focus and accessibility navigation while the drawer is open, reusing the save/restore approach already used by `js/modules/demo-legal.js` where it fits
+  - [x] restore the prior background state on close, on Escape and when crossing the 940 px breakpoint, without disturbing an open demo-information dialog
+  - [x] preserve focus restoration, overlay dismissal and the no-JavaScript navigation fallback
+  - [x] extend `scripts/qa-mobile-nav-e2e.mjs` to assert background unavailability while open and its restoration after close and at 940 px
+  - [x] perform one manual screen-reader pass of the open drawer, or record that it was not performed — **not performed**: no interactive screen reader was available in the implementation environment; only Chromium accessibility-tree assertions were run
   - **Source:** `AUDIT.md` — P2-02
   - **Completion condition:** while the drawer is open, background content is excluded from focus and the accessibility tree; closing or crossing 940 px restores it, and `npm run test:e2e:mobile-nav` and `npm run qa:nojs` pass.
 
