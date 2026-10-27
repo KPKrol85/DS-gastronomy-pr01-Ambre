@@ -44,6 +44,8 @@ export function initThemeSwitcher() {
       // The current-page choice remains active without persistence.
     }
   });
+  // The markup ships the toggle disabled, so it is offered only once switching works.
+  toggle.disabled = false;
 
   media.addEventListener("change", (event) => {
     if (manualTheme) return;

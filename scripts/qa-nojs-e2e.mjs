@@ -22,6 +22,14 @@ const navigationLinks = [
   { name: "Rezerwacja", href: "index.html#rezerwacja" },
   { name: "FAQ", href: "index.html#faq" }
 ];
+/* Controls whose only action is provided by a JavaScript module. Filters and the theme
+   toggle keep their layout box while unavailable; dish previews keep their visible image. */
+const enhancementControls = [
+  { name: "Theme toggle", selector: ".site-header__theme-toggle", pages: navigationPages, rendered: false },
+  { name: "Category filter", selector: ".tabs__tab", pages: ["index.html", "menu.html", "galeria.html"], rendered: false },
+  { name: "Dish preview", selector: ".dish__thumb", pages: ["index.html", "menu.html"], rendered: true }
+];
+const enhancementSelector = enhancementControls.map((control) => control.selector).join(", ");
 
 const mimeTypes = new Map([
   [".html", "text/html; charset=utf-8"],
@@ -225,6 +233,134 @@ const run = async () => {
       await page.goto(`${baseUrl}/index.html`, { waitUntil: "domcontentloaded", timeout: 15000 });
       await page.getByRole("heading", { level: 1, name: "Sezonowe menu degustacyjne" }).waitFor();
     });
+
+    // The accessibility tree is read from Chromium itself, as in the gallery status regression.
+    const axSession = await context.newCDPSession(page);
+    await axSession.send("DOM.enable");
+    await axSession.send("Accessibility.enable");
+    const readAccessibilityNodes = async (selector) => {
+      const { root } = await axSession.send("DOM.getDocument", { depth: -1 });
+      const { nodeIds } = await axSession.send("DOM.querySelectorAll", { nodeId: root.nodeId, selector });
+      return Promise.all(nodeIds.map(async (nodeId) => {
+        const { nodes: [node] } = await axSession.send("Accessibility.getPartialAXTree", { nodeId, fetchRelatives: false });
+        const property = (name) => node.properties?.find((entry) => entry.name === name)?.value.value;
+        return { ignored: node.ignored === true, role: node.role?.value, disabled: property("disabled") === true };
+      }));
+    };
+
+    // Collects every sequential focus stop from the top of a freshly loaded page.
+    const walkTabOrder = async () => {
+      const stops = [];
+      for (let step = 0; step < 400; step += 1) {
+        await page.keyboard.press("Tab");
+        const stop = await page.evaluate((selector) => {
+          const element = document.activeElement;
+          if (!element || element === document.body) return null;
+          return {
+            index: Array.prototype.indexOf.call(document.getElementsByTagName("*"), element),
+            enhancement: element.matches(selector),
+            navigation: element.matches("#site-header-nav a"),
+            submenuParent: element.matches(".site-header__item--has-submenu > a"),
+            galleryLink: element.matches(".gallery__item"),
+            disclosure: element.matches("details > summary"),
+            href: element.getAttribute("href")
+          };
+        }, enhancementSelector);
+        if (!stop || stop.index === stops[0]?.index) return stops;
+        stops.push(stop);
+        // As in the navigation regression, let focus-within reveal a submenu before entering it.
+        if (stop.submenuParent) {
+          await page.locator(".site-header__item--has-submenu:focus-within .site-header__submenu a").first().waitFor({ state: "visible" });
+        }
+      }
+      throw new Error("Sequential focus navigation did not leave the page");
+    };
+
+    for (const width of [390, 1280]) {
+      await page.setViewportSize({ width, height: 844 });
+      for (const pagePath of navigationPages) {
+        await runStep(`no-js inactive enhancement controls ${pagePath} at ${width}px`, async () => {
+          await page.goto(`${baseUrl}/${pagePath}`, { waitUntil: "load", timeout: 15000 });
+          const label = `${pagePath} at ${width}px`;
+
+          const stops = await walkTabOrder();
+          assert.deepEqual(stops.filter((stop) => stop.enhancement), [],
+            `${label}: no JavaScript-only control may be a keyboard stop`);
+          assert.deepEqual(stops.filter((stop) => stop.navigation).map((stop) => stop.href),
+            navigationLinks.map((link) => link.href), `${label}: Tab must reach every navigation link in order`);
+
+          for (const control of enhancementControls) {
+            const controls = page.locator(control.selector);
+            if (!control.pages.includes(pagePath)) {
+              assert.equal(await controls.count(), 0, `${label}: ${control.name} is not expected on this page`);
+              continue;
+            }
+            assert.ok(await controls.count() > 0, `${label}: ${control.name} must be present to be verified`);
+            for (const element of await controls.all()) {
+              assert.equal(await element.isEnabled(), false, `${label}: ${control.name} must stay disabled without JavaScript`);
+              assert.equal(await element.isVisible(), control.rendered,
+                `${label}: ${control.name} must ${control.rendered ? "keep its visible image" : "not be rendered as an available action"}`);
+            }
+            assert.deepEqual(
+              await controls.evaluateAll((elements) => elements.filter((element) => {
+                element.focus();
+                return document.activeElement === element;
+              }).length),
+              0,
+              `${label}: ${control.name} must not accept programmatic focus`
+            );
+            for (const node of await readAccessibilityNodes(control.selector)) {
+              if (control.rendered) {
+                assert.deepEqual(node, { ignored: false, role: "button", disabled: true },
+                  `${label}: ${control.name} must be announced as unavailable`);
+              } else {
+                assert.equal(node.ignored, true, `${label}: ${control.name} must stay out of the accessibility tree`);
+              }
+            }
+          }
+
+          const dishes = page.locator(".dish");
+          for (const dish of await dishes.all()) {
+            assert.equal(await dish.isVisible(), true, `${label}: every dish must stay visible without filtering`);
+          }
+          const images = page.locator(".dish__thumb picture img, .gallery__item picture img");
+          assert.equal(await images.count(), await page.locator(".dish__thumb, .gallery__item").count(),
+            `${label}: every preview and gallery item must keep its nested picture`);
+          for (const image of await images.all()) {
+            assert.equal(await image.isVisible(), true, `${label}: dish and gallery images must stay visible`);
+            assert.equal(await image.evaluate((element) => element.complete && element.naturalWidth > 0), true,
+              `${label}: dish and gallery images must load without JavaScript`);
+          }
+
+          const galleryLinks = page.locator(".gallery__item");
+          assert.equal(stops.filter((stop) => stop.galleryLink).length, await galleryLinks.count(),
+            `${label}: Tab must reach every gallery image link`);
+          for (const href of await galleryLinks.evaluateAll((links) => links.map((link) => link.href))) {
+            const response = await page.request.get(href);
+            assert.equal(response.ok(), true, `${label}: gallery link ${href} must resolve`);
+            assert.match(response.headers()["content-type"] || "", /^image\//, `${label}: gallery link ${href} must open an image`);
+          }
+
+          const disclosures = page.locator("details");
+          assert.equal(stops.filter((stop) => stop.disclosure).length, await disclosures.count(),
+            `${label}: Tab must reach every native disclosure`);
+          if (await disclosures.count() > 0) {
+            await disclosures.first().locator("summary").focus();
+            await page.keyboard.press("Enter");
+            assert.equal(await disclosures.first().evaluate((element) => element.open), true,
+              `${label}: native disclosures must open from the keyboard`);
+          }
+
+          if (await galleryLinks.count() > 0) {
+            const destination = await galleryLinks.first().evaluate((link) => link.href);
+            await galleryLinks.first().focus();
+            await Promise.all([page.waitForURL(destination, { timeout: 10000 }), page.keyboard.press("Enter")]);
+            assert.match(await page.evaluate(() => document.contentType), /^image\//,
+              `${label}: activating a gallery link must open its native image destination`);
+          }
+        });
+      }
+    }
 
     const assertNoHorizontalOverflow = async () => {
       const dimensions = await page.evaluate(() => ({

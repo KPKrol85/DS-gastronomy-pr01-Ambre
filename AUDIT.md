@@ -88,13 +88,10 @@ None detected.
 
 ### [P2-03] JavaScript-only controls remain enabled in the native baseline
 
-- **Classification:** Defect
-- **Affected area:** Progressive enhancement, menu filters, image previews and theme control.
-- **Evidence:** `menu.html:153-170,203-218`; `css/components/utilities.css:1-53`; `js/modules/tabs.js:5-47`; `js/modules/lightbox.js:306-325`.
-- **Current behavior:** The no-JavaScript CSS hides the mobile toggle but leaves other enhancement-only buttons visible and enabled. On `menu.html` at 390 px with JavaScript disabled, activating Desery left all four dishes visible; the theme button and dish-preview buttons also remained available without an action or native image destination. Native page links and disclosures remained usable.
-- **Impact:** The baseline offers keyboard stops and apparent actions that do nothing, despite keeping the underlying content accessible.
-- **Recommended direction:** Expose enhancement controls only when their feature initializes, or provide a meaningful native fallback. Retain menu content, images and navigation in the baseline.
-- **Verification criteria:** With JavaScript disabled, no enabled filter/theme/preview control promises an unavailable action; native links and disclosures still work. With JavaScript enabled, current filtering, theme and lightbox regressions continue to pass.
+- **Status:** COMPLETED — implemented and verified.
+- **Issue:** Without JavaScript, the category filters on `index.html`, `menu.html` and `galeria.html`, the `.dish__thumb` preview buttons and the theme toggle on all eight pages stayed enabled keyboard stops, although only `tabs.js`, `lightbox.js` and `theme.js` provide their actions.
+- **Resolution:** These buttons ship `disabled` and each module enables its own controls only after binding their handlers, independently of `no-js` removal. Disabled filters and the toggle are `visibility: hidden`, keeping their layout box so enabling them causes no load-time shift; disabled previews keep their visible `<picture>`, while dishes, gallery links, disclosures and navigation are unchanged.
+- **Verification:** `npm run qa:nojs` — PASS, including a new eight-page check at 390/1280 px: no targeted control is enabled, focusable or a Tab stop, filters/toggle are absent from the Chromium accessibility tree and previews are exposed as disabled, while dishes and images stay visible, navigation and disclosures stay keyboard-reachable and gallery links open their images. `test:e2e:menu-details` (7/7), `test:e2e:lightbox` (13/13), `test:e2e:gallery-status` (6/6), `test:e2e:theme` (6/6), the other E2E suites, `qa:a11y`, `lint:css`, `qa:html`, `qa:csp` and `git diff --check` — PASS; ESLint passed on a copy outside the dot-path worktree. Chromium only; no manual screen-reader pass.
 
 ## 7. Extra quality improvements
 

@@ -15,9 +15,8 @@
 
 ## Current priorities
 
-1. `PH1-02` — Remove inactive JavaScript-only controls from the native baseline.
-2. `PH1-03` — Align mobile drawer modality with its keyboard trap.
-3. `PH2-01` — Run the filesystem build and full local quality gate.
+1. `PH1-03` — Align mobile drawer modality with its keyboard trap.
+2. `PH2-01` — Run the filesystem build and full local quality gate.
 
 ## Phase 1 — Accessibility and progressive enhancement
 
@@ -31,12 +30,12 @@
   - **Source:** `AUDIT.md` — P2-01
   - **Completion condition:** without JavaScript, both actions are readable under light and dark system preferences, and explicit-theme behavior is unchanged with JavaScript enabled.
 
-- [ ] **PH1-02 — Remove inactive JavaScript-only controls from the native baseline**
-  - [ ] cover every enhancement-only control that stays enabled without JavaScript: category filter tabs on `index.html`, `menu.html` and `galeria.html`, `.dish__thumb` preview buttons, and the theme toggle on all eight pages
-  - [ ] ensure each control is unavailable until its module initializes, or gives it a meaningful native action; gallery preview links keep their native image destinations
-  - [ ] keep dishes, images, page navigation and native disclosures available in the baseline
-  - [ ] extend `scripts/qa-nojs-e2e.mjs` to assert that no enabled filter, preview or theme control is exposed without JavaScript
-  - [ ] confirm `npm run qa:nojs`, `npm run test:e2e:menu-details`, `npm run test:e2e:lightbox`, `npm run test:e2e:gallery-status` and `npm run test:e2e:theme` pass
+- [x] **PH1-02 — Remove inactive JavaScript-only controls from the native baseline**
+  - [x] cover every enhancement-only control that stays enabled without JavaScript: category filter tabs on `index.html`, `menu.html` and `galeria.html`, `.dish__thumb` preview buttons, and the theme toggle on all eight pages
+  - [x] ensure each control is unavailable until its module initializes, or gives it a meaningful native action; gallery preview links keep their native image destinations
+  - [x] keep dishes, images, page navigation and native disclosures available in the baseline
+  - [x] extend `scripts/qa-nojs-e2e.mjs` to assert that no enabled filter, preview or theme control is exposed without JavaScript
+  - [x] confirm `npm run qa:nojs`, `npm run test:e2e:menu-details`, `npm run test:e2e:lightbox`, `npm run test:e2e:gallery-status` and `npm run test:e2e:theme` pass
   - **Source:** `AUDIT.md` — P2-03
   - **Completion condition:** the no-JavaScript baseline presents no enabled control that promises an unavailable action, and the enhanced filtering, lightbox and theme behavior is unchanged.
 

@@ -651,5 +651,10 @@ export function initLightbox() {
   window.openLB = (src, alt, startIndex) => open(src, alt, startIndex);
   window.closeLB = close;
 
+  // Dish previews ship disabled; they are offered only once every handler above is bound.
+  document.querySelectorAll(".dish__thumb").forEach((thumb) => {
+    thumb.disabled = false;
+  });
+
   log();
 }

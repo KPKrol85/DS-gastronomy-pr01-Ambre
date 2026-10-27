@@ -48,6 +48,12 @@
   outline-offset: 3px;
 }
 
+/* Tabs ship disabled and are enabled by their filtering module; until then the row
+   keeps its height without offering filters, and every item stays listed. */
+.tabs__tab[disabled] {
+  visibility: hidden;
+}
+
 @media (pointer: coarse) {
   :is(.menu--home, .page-menu) .tabs__tab,
   .gallery__tabs .tabs__tab {

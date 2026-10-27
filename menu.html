@@ -150,7 +150,7 @@
             </span>
             <span class="site-header__phone">+48&nbsp;533&nbsp;537&nbsp;091</span>
           </a>
-          <button class="site-header__theme-toggle" data-testid="site-header__theme-toggle" type="button" aria-label="Przełącz motyw" aria-pressed="false" title="Motyw">
+          <button class="site-header__theme-toggle" data-testid="site-header__theme-toggle" type="button" disabled aria-label="Przełącz motyw" aria-pressed="false" title="Motyw">
             <svg class="theme-switch" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
               <mask id="theme-switch-cutout" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
                 <rect x="0" y="0" width="24" height="24" fill="#ffffff" />
@@ -201,14 +201,14 @@
         <section id="menu" class="menu">
           <h2 class="sr-only">Pozycje menu</h2>
           <div class="tabs menu__tabs" aria-label="Kategorie menu">
-            <button class="tabs__tab" aria-pressed="true" data-filter="all">Wszystko</button>
-            <button class="tabs__tab" aria-pressed="false" data-filter="przystawki">Przystawki</button>
-            <button class="tabs__tab" aria-pressed="false" data-filter="dania-glowne">Dania główne</button>
-            <button class="tabs__tab" aria-pressed="false" data-filter="desery">Desery</button>
+            <button class="tabs__tab" aria-pressed="true" data-filter="all" disabled>Wszystko</button>
+            <button class="tabs__tab" aria-pressed="false" data-filter="przystawki" disabled>Przystawki</button>
+            <button class="tabs__tab" aria-pressed="false" data-filter="dania-glowne" disabled>Dania główne</button>
+            <button class="tabs__tab" aria-pressed="false" data-filter="desery" disabled>Desery</button>
           </div>
           <div class="menu__grid" role="region" aria-live="polite" data-lightbox-mode="single">
             <article class="dish dish--has-thumb" aria-labelledby="dish-ostrygi" data-cat="przystawki">
-              <button class="dish__thumb" type="button" aria-haspopup="dialog" aria-controls="lb" data-full="/assets/img/dishes/ostrygi-z-granita-1200" aria-label="Powiększ zdjęcie: Ostrygi z granitą">
+              <button class="dish__thumb" type="button" disabled aria-haspopup="dialog" aria-controls="lb" data-full="/assets/img/dishes/ostrygi-z-granita-1200" aria-label="Powiększ zdjęcie: Ostrygi z granitą">
                 <picture>
                   <source type="image/avif" srcset="/assets/img/_optimized/dishes/ostrygi-z-granita-600.avif 2x, /assets/img/_optimized/dishes/ostrygi-z-granita-200.avif 1x" />
                   <source type="image/webp" srcset="/assets/img/_optimized/dishes/ostrygi-z-granita-600.webp 2x, /assets/img/_optimized/dishes/ostrygi-z-granita-200.webp 1x" />
@@ -240,6 +240,7 @@
               <button
                 class="dish__thumb"
                 type="button"
+                disabled
                 aria-haspopup="dialog"
                 aria-controls="lb"
                 data-full="/assets/img/dishes/polik-wolowy-1200"
@@ -276,6 +277,7 @@
               <button
                 class="dish__thumb"
                 type="button"
+                disabled
                 aria-haspopup="dialog"
                 aria-controls="lb"
                 data-full="/assets/img/dishes/creme-z-brulee-z-tonka-1200"
@@ -309,7 +311,7 @@
               </details>
             </article>
             <article class="dish dish--has-thumb" aria-labelledby="dish-sandacz" data-cat="dania-glowne">
-              <button class="dish__thumb" type="button" aria-haspopup="dialog" aria-controls="lb" data-full="/assets/img/dishes/sandacz-1200" aria-label="Powiększ zdjęcie: Sandacz / szafran / fenkuł">
+              <button class="dish__thumb" type="button" disabled aria-haspopup="dialog" aria-controls="lb" data-full="/assets/img/dishes/sandacz-1200" aria-label="Powiększ zdjęcie: Sandacz / szafran / fenkuł">
                 <picture>
                   <source type="image/avif" srcset="/assets/img/_optimized/dishes/sandacz-600.avif 2x, /assets/img/_optimized/dishes/sandacz-200.avif 1x" />
                   <source type="image/webp" srcset="/assets/img/_optimized/dishes/sandacz-600.webp 2x, /assets/img/_optimized/dishes/sandacz-200.webp 1x" />

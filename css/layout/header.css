@@ -114,6 +114,12 @@ html[data-theme="light"] .logo-light {
   transform: scale(0.97);
 }
 
+/* The toggle ships disabled and is enabled by the theme module once its handler is
+   bound; until then it keeps its place in the header without being offered. */
+.site-header__theme-toggle[disabled] {
+  visibility: hidden;
+}
+
 .site-header__nav {
   flex: 1 1 auto;
   min-width: 0;

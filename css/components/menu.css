@@ -105,6 +105,11 @@
   outline-offset: 3px;
 }
 
+/* Previews ship disabled until the lightbox is ready; the photograph stays in place. */
+.dish__thumb[disabled] {
+  cursor: default;
+}
+
 .menu__actions {
   display: flex;
   justify-content: center;

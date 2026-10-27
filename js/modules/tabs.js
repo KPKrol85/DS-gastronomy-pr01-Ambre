@@ -42,6 +42,10 @@ export function initTabs() {
     },
     { passive: true }
   );
+  // The markup ships the tabs disabled, so filters are offered only once they work.
+  tabs.forEach((tab) => {
+    tab.disabled = false;
+  });
 
   log(byTestId("menu-tabs"), tabs.length);
 }
@@ -83,6 +87,9 @@ export function initGalleryFilter() {
 
   const activeTab = tabs.find((tab) => tab.getAttribute("aria-pressed") === "true") || tabs[0];
   if (activeTab) apply(activeTab);
+  tabs.forEach((tab) => {
+    tab.disabled = false;
+  });
 
   log(tabs.length, items.length);
 }
