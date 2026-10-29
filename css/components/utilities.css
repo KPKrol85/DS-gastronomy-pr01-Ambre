@@ -3,7 +3,9 @@
   display: none;
 }
 
-@media (max-width: 939.98px) {
+/* `scripting: none` keeps the expanded fallback out of first paints that JavaScript
+   later collapses, which would shift the whole page below the header. */
+@media (max-width: 939.98px) and (scripting: none) {
   /* The expanded fallback header must occupy space instead of covering the page. */
   body.no-js {
     padding-top: 0;

@@ -23,6 +23,12 @@ const backgroundFocusTargets = [
 ];
 const backgroundBaselines = new WeakMap();
 const axSessions = new WeakMap();
+// Lighthouse's mobile emulation and audited pages, which all share the mobile header fallback.
+const lighthouseMobile = { viewport: { width: 412, height: 823 }, deviceScaleFactor: 1.75, isMobile: true, hasTouch: true };
+const layoutShiftPages = [
+  "index.html", "menu.html", "galeria.html", "cookies.html",
+  "polityka-prywatnosci.html", "regulamin.html", "offline.html", "404.html"
+];
 
 const mimeTypes = new Map([
   [".html", "text/html; charset=utf-8"],
@@ -511,6 +517,60 @@ const runScenario = async (browser, scenario) => {
   }
 };
 
+// A throttled Lighthouse run can paint before the deferred bundle boots. Holding the bundle until the
+// first contentful paint makes that no-JavaScript to enhanced header change happen on every run.
+const runHeaderLayoutShiftTest = async (browser, pagePath) => {
+  const context = await browser.newContext({ ...lighthouseMobile, serviceWorkers: "block" });
+  try {
+    await context.addInitScript(() => {
+      localStorage.setItem("demoLegalAccepted", "true");
+      window.qaLayoutShifts = [];
+      new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          window.qaLayoutShifts.push({
+            value: entry.value,
+            movedMain: entry.sources.some(({ node }) => node === document.querySelector("main"))
+          });
+        }
+      }).observe({ type: "layout-shift", buffered: true });
+    });
+    const page = await context.newPage();
+    const runtimeErrors = [];
+    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+    page.setDefaultTimeout(10000);
+    let releaseBundle;
+    const bundleHeld = new Promise((resolve) => { releaseBundle = resolve; });
+    await page.route(`${baseUrl}/js/script.js`, async (route) => {
+      await bundleHeld;
+      await route.continue();
+    });
+    const readHeaderLayout = () => page.evaluate(() => ({
+      noJs: document.body.classList.contains("no-js"),
+      headerHeight: Math.round(document.querySelector(".site-header").getBoundingClientRect().height),
+      mainTop: Math.round(document.querySelector("main").getBoundingClientRect().top + window.scrollY)
+    }));
+
+    await page.goto(`${baseUrl}/${pagePath}`, { waitUntil: "commit" });
+    await page.waitForFunction(() => performance.getEntriesByName("first-contentful-paint").length > 0);
+    const painted = await readHeaderLayout();
+    assert.equal(painted.noJs, true, `${pagePath}: the first frame must be painted before the bundle removes no-js`);
+
+    releaseBundle();
+    await page.waitForFunction(() => !document.body.classList.contains("no-js"));
+    await page.waitForLoadState("load");
+    await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    const enhanced = await readHeaderLayout();
+    // Layout-shift attribution only sees a visible main; index.html paints its hero above it, so compare positions too.
+    assert.equal(enhanced.mainTop, painted.mainTop,
+      `${pagePath}: main must keep its painted position (header ${painted.headerHeight}px to ${enhanced.headerHeight}px)`);
+    assert.deepEqual(await page.evaluate(() => window.qaLayoutShifts.filter(({ movedMain }) => movedMain)), [],
+      `${pagePath}: no layout shift may move main when the header is enhanced`);
+    assert.deepEqual(runtimeErrors, [], `${pagePath}: header enhancement must not raise runtime errors`);
+  } finally {
+    await context.close();
+  }
+};
+
 const run = async () => {
   console.log("QA MOBILE NAV E2E: starting static server...");
   const server = await createStaticServer();
@@ -521,7 +581,12 @@ const run = async () => {
       console.log(`QA MOBILE NAV E2E: ${scenario.label}`);
       await runScenario(browser, scenario);
     }
-    console.log(`QA MOBILE NAV E2E: PASS (${scenarios.length}/${scenarios.length} scenarios)`);
+    for (const pagePath of layoutShiftPages) {
+      console.log(`QA MOBILE NAV E2E: header enhancement after first paint keeps main in place at 412px (${pagePath})`);
+      await runHeaderLayoutShiftTest(browser, pagePath);
+    }
+    console.log(`QA MOBILE NAV E2E: PASS (${scenarios.length}/${scenarios.length} scenarios, ` +
+      `${layoutShiftPages.length}/${layoutShiftPages.length} layout-shift pages)`);
   } finally {
     try {
       if (browser) await browser.close();
