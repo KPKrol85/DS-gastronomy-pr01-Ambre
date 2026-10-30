@@ -56,7 +56,7 @@
 - [ ] **PH2-01 — Run the filesystem build and full local quality gate**
   - [x] run `npm run build` and confirm `dist/` contains the eight pages, `css/style.min.css`, `js/script.min.js`, rewritten HTML and `sw.js` references, `_headers` and `_redirects`
   - [x] run `npm run qa:server` against the generated package
-  - [ ] run the full `npm run qa` aggregate, including Lighthouse CI thresholds from `lighthouserc.json`
+  - [x] run the full `npm run qa` aggregate, including Lighthouse CI thresholds from `lighthouserc.json`
   - [x] run `npm run qa:service-worker`, which is outside the `qa` aggregate
   - [x] record actual results and any failure as new plan work rather than adjusting thresholds
   - **Result (2026-10-28, `99ca2b8`):** `npm run build` PASS — 239 files, eight pages rewritten to the `.min` assets, all local HTML, `sw.js` precache and manifest references resolve, identical output after the Lighthouse rebuild; `npm run qa:server` (`/`, `/menu.html` → 200) and `npm run qa:service-worker` PASS. `npm run qa` FAIL at `lint:js`; run stage by stage, the other `qa:fast` steps, a diagnostic `eslint --no-eslintrc -c .eslintrc.cjs` (40 files, 0 problems), `qa:nojs`, `test:e2e` (9 suites) and `qa:a11y` (14 scans) PASS, while `qa:lighthouse` FAIL on Performance (median, min 0.85) for all eight URLs: index 0.76, menu 0.74, galeria 0.63, cookies 0.76, polityka-prywatnosci 0.83, regulamin 0.83, offline 0.79, 404 0.77. SEO 1.00 and Best Practices ≥ 0.96 pass; `offline.html`/`404.html` SEO 0.69 remains a configured warning.
@@ -82,9 +82,11 @@
   - **Depends on:** `PH1-01`, `PH1-02`, `PH1-03`, `PH2-01`
   - **Completion condition:** no open finding remains in the current audit, its archived copy preserves all original findings, and README descriptions match the implemented behavior.
 
-- [ ] **PH2-04 — Remove the layout shift when JavaScript collapses the mobile fallback header**
-  - [ ] below 940 px, prevent the expanded, static `no-js` header (367 px tall at 412 px width, against 65 px enhanced) from being painted and then collapsed when `initHelpers()` in the deferred module bundle removes `no-js`
-  - [ ] preserve the no-JavaScript navigation fallback introduced in `856b8dc` and the existing `qa:nojs` assertions
-  - [ ] add a layout-shift check at Lighthouse mobile width confirming that `main` is not moved by the header state change
+
+- [x] **PH2-04 — Remove the layout shift when JavaScript collapses the mobile fallback header**
+  - [x] below 940 px, prevent the expanded, static `no-js` header (367 px tall at 412 px width, against 65 px enhanced) from being painted and then collapsed when `initHelpers()` in the deferred module bundle removes `no-js`
+  - [x] preserve the no-JavaScript navigation fallback introduced in `856b8dc` and the existing `qa:nojs` assertions
+  - [x] add a layout-shift check at Lighthouse mobile width confirming that `main` is not moved by the header state change
   - **Source:** `PH2-01` Lighthouse run — a `main#main` shift of 0.340–0.353 in 10 of 24 runs on six URLs (all three `404.html` runs); a CPU-throttled Chromium probe reproduced 0.340 (`main` top 367 → 64 px) on `404.html` and `menu.html`
   - **Completion condition:** enhanced pages show no header-induced layout shift, the no-JavaScript fallback is unchanged, and `npm run qa:nojs` and `npm run test:e2e:mobile-nav` pass.
+
