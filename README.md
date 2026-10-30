@@ -34,6 +34,8 @@ Strony HTML w katalogu głównym są źródłem treści i struktury. `css/style.
 
 Treści menu i galerii są zapisane w HTML; filtry operują na atrybutach elementów. `js/sw-register.js` i `js/pwa-install.js` są osobnymi skryptami. Źródła pozostają czytelne, a bundlowanie i minifikacja odbywają się przy tworzeniu dystrybucji.
 
+Bez JavaScriptu strony zachowują treść, nawigację, natywne szczegóły dań, linki galerii do pełnych zdjęć i natywne wysłanie formularza. Poniżej 940 px nawigacja jest wtedy rozwinięta w nagłówku; ten układ działa tylko przy `@media (scripting: none)`, więc nie trafia do pierwszego renderu stron z JavaScriptem. Filtry kategorii, przyciski podglądu dań i przełącznik motywu mają w HTML atrybut `disabled` i są aktywowane dopiero przez moduł obsługujący ich działanie; do tego czasu filtry i przełącznik są niewidoczne, ale zachowują miejsce w układzie.
+
 ### Struktura projektu
 
 ```text
@@ -124,7 +126,9 @@ Ręczny podgląd produkcyjnego `dist/` opisuje [procedura podglądu](docs/settin
 
 Testy Playwright korzystają z lokalnych serwerów i Chromium. Regresje formularza przechwytują odpowiedzi POST, więc sprawdzają zachowanie klienta, nie rzeczywisty odbiór przez Netlify. `qa:a11y` obejmuje osiem stron oraz stan otwartego dialogu i stan po akceptacji tam, gdzie dialog występuje. Lighthouse CI buduje dystrybucję i zbiera po trzy pomiary dla ośmiu stron; progi w `lighthouserc.json` są wymaganiami konfiguracji, nie deklarowanymi wynikami.
 
-[Workflow CI](.github/workflows/main.yml) jest skonfigurowany dla push i pull request do `main`: instalacja zależności, szybkie QA i build. Nie uruchamia pełnego zestawu QA. Dostępne kontrole nie stanowią deklaracji ich zaliczenia ani zgodności dostępności.
+`qa:nojs` sprawdza osiem stron bez JavaScriptu: nawigację i klawiaturę przy 320–1280 px, brak aktywnych lub fokusowalnych kontrolek zależnych od JavaScriptu, natywne ograniczenia formularza oraz kontrast przycisku rezerwacji i linku powrotu na `404.html` bez atrybutu `data-theme` przy jasnej i ciemnej preferencji systemowej. `test:e2e:mobile-nav` obejmuje także `aria-modal`, `inert` tła i jego przywracanie, drzewo dostępności Chromium oraz stałą pozycję `main` po usunięciu `no-js` na ośmiu stronach przy mobilnej emulacji Lighthouse (412 px).
+
+[Workflow CI](.github/workflows/main.yml) jest skonfigurowany dla push i pull request do `main`: instalacja zależności, szybkie QA i build. Nie uruchamia pełnego zestawu QA. Dostępne kontrole nie stanowią deklaracji ich zaliczenia ani zgodności dostępności. Kontrole lokalne nie weryfikują wdrożenia Netlify, dostarczania nagłówków i przekierowań, odbioru formularza przez dostawcę ani działania PWA w środowisku produkcyjnym. Zapisane wyniki weryfikacji i jej ograniczenia zawiera [zarchiwizowany audyt z 2026-10-26](docs/archive/audits/AUDIT-2026-10-26.md).
 
 ### Wdrożenie
 
@@ -136,7 +140,9 @@ Formularz w `index.html` ma `data-netlify="true"` i ukryte `form-name`. `js/modu
 
 Implementacja zawiera semantyczne regiony, linki pomijające nawigację, etykiety formularza, widoczne style fokusu oraz synchronizację `aria-current`, `aria-expanded` i `aria-pressed`. Dialog demonstracyjny ogranicza fokus do panelu, oznacza tło jako `inert` i przy zamknięciu przywraca fokus; lightbox obsługuje klawiaturę i przywraca fokus po zamknięciu.
 
-Błędy formularza korzystają z `aria-invalid` i komunikatów `aria-live`. Tabele prawne mają fokusowalne obszary przewijania poziomego. Animacje i przewijanie uwzględniają `prefers-reduced-motion`. Są to mechanizmy implementacji, bez deklaracji formalnej zgodności WCAG.
+Otwarty panel nawigacji mobilnej ma `aria-modal="true"`, ogranicza fokus do siebie i oznacza pozostałe elementy `<body>` poza nakładką jako `inert`. Każde zamknięcie — także przez Escape, kliknięcie nakładki lub przejście do 940 px — przywraca wcześniejszy stan `inert` tła. Panel nie otwiera się, gdy tło jest już izolowane przez dialog demonstracyjny.
+
+Błędy formularza korzystają z `aria-invalid` i komunikatów `aria-live`. Tabele prawne mają fokusowalne obszary przewijania poziomego. Przy ciemnej preferencji systemowej bez JavaScriptu, czyli bez atrybutu `data-theme`, przyciski korzystają z kolorów ciemnego motywu, a przycisk formularza zachowuje ciemny tekst na bursztynowym tle. Animacje i przewijanie uwzględniają `prefers-reduced-motion`. Są to mechanizmy implementacji, bez deklaracji formalnej zgodności WCAG.
 
 ### SEO
 
@@ -203,6 +209,8 @@ The repository contains eight pages, local assets, a production build, and QA to
 Root-level HTML pages own content and structure. `css/style.css` imports base styles, tokens, typography, layouts, components, and page styles. `js/script.js` initializes modules from `js/modules/` after `DOMContentLoaded`, handling each initializer's errors separately. `js/icons.js` contains the shared SVG icon registry.
 
 Menu and gallery content lives in HTML; filters read element attributes. `js/sw-register.js` and `js/pwa-install.js` are separate scripts. Sources remain readable, while bundling and minification happen when the distribution is built.
+
+Without JavaScript, pages keep their content, navigation, native dish details, gallery links to full images, and native form submission. Below 940 px, navigation is then expanded in the header; this layout applies only under `@media (scripting: none)`, so it does not enter the first render of JavaScript-enabled pages. Category filters, dish preview buttons, and the theme toggle ship with the `disabled` attribute in HTML and are enabled only by the module that implements their action; until then, the filters and toggle are hidden while keeping their place in the layout.
 
 ### Project Structure
 
@@ -294,7 +302,9 @@ For a manual preview of production `dist/`, see the [preview procedure](docs/set
 
 Playwright tests use local servers and Chromium. Form regressions intercept POST responses, testing client behavior rather than actual Netlify receipt. `qa:a11y` covers eight pages, including the open-dialog and accepted states where a dialog exists. Lighthouse CI builds the distribution and collects three measurements per page across eight pages; thresholds in `lighthouserc.json` are configured requirements, not reported results.
 
-The [CI workflow](.github/workflows/main.yml) is configured for pushes and pull requests to `main`: dependency installation, fast QA, and a build. It does not run the full QA suite. Available checks do not establish that they passed or that accessibility conformance was achieved.
+`qa:nojs` checks eight pages without JavaScript: navigation and keyboard access at 320–1280 px, the absence of enabled or focusable JavaScript-dependent controls, native form constraints, and the contrast of the reservation button and the `404.html` recovery link without a `data-theme` attribute under light and dark system preferences. `test:e2e:mobile-nav` also covers `aria-modal`, background `inert` state and its restoration, the Chromium accessibility tree, and a stable `main` position after `no-js` removal on eight pages under Lighthouse mobile emulation (412 px).
+
+The [CI workflow](.github/workflows/main.yml) is configured for pushes and pull requests to `main`: dependency installation, fast QA, and a build. It does not run the full QA suite. Available checks do not establish that they passed or that accessibility conformance was achieved. Local checks do not verify the Netlify deployment, header and redirect delivery, form receipt by the provider, or PWA behavior in production. Recorded verification results and their limitations are kept in the [archived 2026-10-26 audit](docs/archive/audits/AUDIT-2026-10-26.md).
 
 ### Deployment
 
@@ -306,7 +316,9 @@ The form in `index.html` has `data-netlify="true"` and a hidden `form-name`. `js
 
 The implementation includes semantic regions, skip links, form labels, visible focus styles, and synchronized `aria-current`, `aria-expanded`, and `aria-pressed`. The demonstration dialog contains focus within its panel, marks the background `inert`, and restores focus on close; the lightbox supports keyboard input and restores focus when closed.
 
-Form errors use `aria-invalid` and `aria-live` messages. Legal tables have focusable horizontal scrolling regions. Animations and scrolling account for `prefers-reduced-motion`. These are implementation mechanisms, without a claim of formal WCAG conformance.
+The open mobile navigation drawer has `aria-modal="true"`, contains focus within itself, and marks the other `<body>` elements except its overlay `inert`. Every close path — including Escape, an overlay click, or crossing to 940 px — restores the background's earlier `inert` state. The drawer does not open while the demonstration dialog already isolates the background.
+
+Form errors use `aria-invalid` and `aria-live` messages. Legal tables have focusable horizontal scrolling regions. With a dark system preference and no JavaScript, and therefore no `data-theme` attribute, buttons use dark-theme colors and the form button keeps dark text on its amber background. Animations and scrolling account for `prefers-reduced-motion`. These are implementation mechanisms, without a claim of formal WCAG conformance.
 
 ### SEO
 
