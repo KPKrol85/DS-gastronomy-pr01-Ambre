@@ -53,7 +53,7 @@
 
 **Goal:** Confirm the production package and quality gate after Phase 1, verify the hosted contracts the repository cannot prove locally, and close the current audit.
 
-- [ ] **PH2-01 — Run the filesystem build and full local quality gate**
+- [x] **PH2-01 — Run the filesystem build and full local quality gate**
   - [x] run `npm run build` and confirm `dist/` contains the eight pages, `css/style.min.css`, `js/script.min.js`, rewritten HTML and `sw.js` references, `_headers` and `_redirects`
   - [x] run `npm run qa:server` against the generated package
   - [x] run the full `npm run qa` aggregate, including Lighthouse CI thresholds from `lighthouserc.json`
@@ -90,4 +90,3 @@
   - [x] add a layout-shift check at Lighthouse mobile width confirming that `main` is not moved by the header state change
   - **Source:** `PH2-01` Lighthouse run — a `main#main` shift of 0.340–0.353 in 10 of 24 runs on six URLs (all three `404.html` runs); a CPU-throttled Chromium probe reproduced 0.340 (`main` top 367 → 64 px) on `404.html` and `menu.html`
   - **Completion condition:** enhanced pages show no header-induced layout shift, the no-JavaScript fallback is unchanged, and `npm run qa:nojs` and `npm run test:e2e:mobile-nav` pass.
-
