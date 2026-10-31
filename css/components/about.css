@@ -109,24 +109,47 @@
 }
 
 /* Two flex items only — icon and text. The `.about__bullet-text` wrapper keeps
-   the row gap between them instead of between every word of the row. */
+   the row gap between them instead of between every word of the row. Stacked
+   and centred on narrow screens, like the highlights above it. */
 .about__bullet {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: var(--space-03);
-  justify-content: center;
+  gap: var(--space-02);
 }
 
+/* Two levels: a quiet uppercase label over the days and hours it names. */
 .about__bullet-text {
+  display: grid;
+  gap: var(--space-01);
   color: var(--c-ink);
 }
 
+/* Set like the eyebrow, but muted, so it reads as a caption to the line below. */
 .about__bullet-label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-sans-emphasis);
+  line-height: var(--lh-normal);
+  letter-spacing: var(--ls-very-wide);
+  text-transform: uppercase;
   color: var(--c-muted);
 }
 
+.about__bullet-detail {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-sans-emphasis);
+  line-height: var(--lh-normal);
+  text-wrap: balance;
+}
+
+.about__bullet-separator {
+  color: var(--c-accent-contrast);
+}
+
+/* The day range and the time range each stay whole, so a narrow column wraps
+   only after the separator. */
 .about__bullets a,
-.about__bullets time {
+.about__bullet-group {
   white-space: nowrap;
 }
 
@@ -205,7 +228,14 @@
   }
 
   .about__bullet {
-    justify-content: flex-start;
+    flex-direction: row;
+    gap: var(--space-03);
+  }
+
+  /* The icon fills the highlight rule's column, so the hours text starts on
+     the same edge as the highlight terms. */
+  .about__bullet-icon {
+    margin-inline-end: calc(var(--space-05) - var(--about-icon-size));
   }
 }
 
