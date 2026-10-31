@@ -128,6 +128,7 @@ html[data-theme="light"] {
   --c-border: #e6e2e6;
   --c-link: #6f4800;
   --c-link-hover: #9e5a00;
+  --c-accent-contrast: #8a4f00;
   --nav-hover-bg: rgba(0, 0, 0, 0.06);
 }
 

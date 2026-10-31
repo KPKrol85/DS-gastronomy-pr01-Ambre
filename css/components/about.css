@@ -18,12 +18,66 @@
   text-align: center;
 }
 
+/* Uppercase label in the accent text colour, signing the section above the
+   title the way the legal pages' eyebrow does. */
+.about__eyebrow {
+  margin: 0 0 var(--space-02);
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-sans-emphasis);
+  line-height: var(--lh-normal);
+  letter-spacing: var(--ls-very-wide);
+  text-transform: uppercase;
+  color: var(--c-accent-contrast);
+}
+
 .about__lead {
   margin-block: 0;
   margin-inline: auto;
   max-width: var(--about-measure);
   line-height: var(--lh-relaxed);
   text-wrap: pretty;
+}
+
+/* Culinary highlights: a term/description list, stacked and centred under the
+   lead on narrow screens. */
+.about__highlights {
+  display: grid;
+  gap: var(--space-05);
+  margin: var(--space-06) auto 0;
+  max-width: var(--about-measure);
+}
+
+.about__highlight {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-01);
+}
+
+/* A short gold rule above each term, echoing the title's accent line. */
+.about__highlight::before {
+  content: "";
+  inline-size: var(--space-05);
+  block-size: var(--border-thin);
+  margin-block-end: var(--space-02);
+  background: var(--c-accent);
+  opacity: 0.6;
+}
+
+.about__highlight-term {
+  font-family: var(--font-display);
+  font-size: var(--fs-smd);
+  font-weight: var(--fw-display-emphasis);
+  line-height: var(--lh-tight);
+  color: var(--c-ink);
+}
+
+.about__highlight-text {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
+  color: var(--c-muted);
+  text-wrap: balance;
 }
 
 .about__photo {
@@ -49,8 +103,8 @@
   padding: var(--space-04) 0 0;
   max-width: var(--about-measure);
 
-  /* The section's one decorative accent: a hairline that closes the copy and
-     opens the practical details, warmed just enough to read as Ambre gold. */
+  /* A full-width hairline that closes the copy and opens the practical
+     details, warmed just enough to read as Ambre gold. */
   border-top: var(--border-thin) solid color-mix(in oklab, var(--c-border), var(--c-accent) 30%);
 }
 
@@ -125,8 +179,29 @@
   }
 
   .about__lead,
+  .about__highlights,
   .about__bullets {
     margin-inline: 0;
+  }
+
+  /* Beside the photo the highlights become aligned rows — rule, term,
+     description — so each description keeps to one line next to its term. */
+  .about__highlights {
+    grid-template-columns: auto max-content minmax(0, 1fr);
+    gap: var(--space-03);
+  }
+
+  .about__highlight {
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    gap: normal;
+    align-items: baseline;
+    justify-items: start;
+  }
+
+  .about__highlight::before {
+    align-self: center;
+    margin-block-end: 0;
   }
 
   .about__bullet {
@@ -135,8 +210,8 @@
 }
 
 /* At desktop the reading column is sized by the grid itself, so the lead, the
-   accent rule and the detail rows all share one edge and the photo takes the
-   larger share of the composition. */
+   highlights, the accent rule and the detail rows all share one edge and the
+   photo takes the larger share of the composition. */
 @media (min-width: 1024px) {
   .about .grid-2 {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
@@ -144,6 +219,7 @@
   }
 
   .about__lead,
+  .about__highlights,
   .about__bullets {
     max-width: none;
   }
