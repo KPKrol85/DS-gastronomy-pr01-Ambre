@@ -157,6 +157,16 @@ Review closure does not imply that every recommendation was implemented.
 
 Close, edit, or archive reports only within the explicitly approved task scope.
 
+## Documentation standards
+
+All project documentation, including archived records, must be concise, professional, technical, factual, and easy to read.
+
+- Keep content proportional to its purpose and required structure.
+- Preserve essential findings, decisions, verification evidence, limitations, and historical accuracy.
+- Remove redundant explanations, repetitive test logs, obsolete instructions, and unnecessary implementation narratives.
+- Summarize completed work by its verified results, not by the chronological history of implementation.
+- Prefer short, clear sentences and compact sections without sacrificing technical accuracy.
+
 ## Delivery safety
 
 Do not stage, commit, push, tag, deploy, create or modify branches or worktrees, or perform other repository-delivery actions unless the project owner explicitly requests them.
