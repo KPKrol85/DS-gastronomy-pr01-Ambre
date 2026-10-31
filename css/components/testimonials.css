@@ -173,7 +173,7 @@
     background-color: color-mix(in oklab, var(--c-surface), white 10%);
   }
 
-  .testimonials__rating:hover {
+  .testimonials__rating[href]:hover {
     border-color: color-mix(in oklab, var(--c-border), var(--c-accent-contrast) 28%);
     box-shadow: var(--shadow-xs);
     background-color: color-mix(in oklab, var(--c-surface), white 12%);

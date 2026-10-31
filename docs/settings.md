@@ -91,7 +91,7 @@ Przy domyślnych ustawieniach otwórz `http://127.0.0.1:4174`. Podgląd serwuje 
 ## Skupione testy E2E
 
 - `test:e2e:menu-details` — siedem izolowanych scenariuszy Chromium na prawdziwej stronie `menu.html`: inicjalizacja dla `main.page-menu`, przechwytywanie natywnych, niebąbelkujących zdarzeń `toggle` i wyłączność paneli również bez kliknięcia, obsługa myszy i klawiatury (Enter, Spacja, Tab), Escape oraz kliknięcie poza panelem w obrębie i poza `main`. Sprawdza zakres działania, filtrowanie i pojedynczy podgląd zdjęcia dania z powrotem fokusu, natywne `<details>` przy wyłączonym JavaScripcie oraz brak nieobsłużonych wyjątków. Blokuje Service Workery; w scenariuszach z JavaScriptem zapisuje akceptację dialogu demonstracyjnego przed załadowaniem strony.
-- `test:e2e:reservation` — regresje wysyłania formularza rezerwacji i natywnego fallbacku.
+- `test:e2e:reservation` — regresje wysyłania formularza kontaktowego i natywnego fallbacku.
 - `test:e2e:demo-legal` — regresje początkowego dialogu informacyjnego i jego pamięci akceptacji.
 - `test:e2e:scroll-to-top` — regresje wspólnego przycisku przewijania do góry.
 - `test:e2e:legal-tables` — regresje poziomego przepełnienia, dostępności i obsługi klawiaturą tabel na stronach prawnych przy szerokościach 320 px i 390 px.

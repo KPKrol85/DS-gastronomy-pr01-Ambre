@@ -121,7 +121,7 @@ html[data-theme="dark"] .site-hero {
   font-size: var(--fs-sm);
 }
 
-/* The light edition defines the reservation label's ink; this fallback keeps
+/* The light edition defines the primary label's ink; this fallback keeps
    it dark on amber before the theme script has run, too. */
 .site-hero__actions .site-button--primary {
   color: var(--c-accent-ink, #1b1b1f);

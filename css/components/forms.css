@@ -1,4 +1,4 @@
-/* Rezerwacja */
+/* Formularz kontaktowy */
 
 .booking {
   padding-inline: clamp(var(--space-04), 5vw, var(--space-06));
@@ -208,49 +208,24 @@ html[data-theme="dark"] .booking {
   text-align: center;
 }
 
-/* Consent */
+/* Privacy notice */
 
-.booking-form__consent-row {
+.booking-form__notice-row {
   margin-top: var(--space-03);
   padding-top: var(--booking-group-gap);
   border-top: 1px solid var(--booking-hairline);
 }
 
-.booking-form__consent {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: start;
-  gap: var(--space-02);
+.booking-form__notice {
+  margin: 0;
   padding-block: var(--space-01);
   font-size: var(--fs-sm);
   font-weight: 400;
   line-height: var(--lh-normal);
   color: var(--c-muted);
-  cursor: pointer;
 }
 
-.booking-form__consent .booking-form__field {
-  width: 18px;
-  height: 18px;
-  min-height: 0;
-  margin: 0;
-  margin-block-start: 0.15em;
-  padding: 0;
-  accent-color: var(--c-accent-contrast);
-  cursor: pointer;
-}
-
-/* A native checkbox ignores border colour, so its error state needs a ring. */
-
-.booking-form__consent .booking-form__field[aria-invalid="true"] {
-  box-shadow: 0 0 0 2px var(--booking-error);
-}
-
-.booking-form__consent .booking-form__field:user-invalid {
-  box-shadow: 0 0 0 2px var(--booking-error);
-}
-
-.booking-form__consent a {
+.booking-form__notice a {
   color: var(--c-link);
   text-decoration-line: underline;
   text-decoration-thickness: 1px;
@@ -258,8 +233,8 @@ html[data-theme="dark"] .booking {
   text-decoration-skip-ink: auto;
 }
 
-.booking-form__consent a:hover,
-.booking-form__consent a:focus-visible {
+.booking-form__notice a:hover,
+.booking-form__notice a:focus-visible {
   text-decoration-thickness: 2px;
 }
 
@@ -308,47 +283,6 @@ html[data-theme="dark"] .booking-form :is(input, select, textarea):-webkit-autof
 
 html[data-theme="dark"] .booking-form :is(input, select, textarea) {
   background: #0f0f14;
-}
-
-/* The UA paints the calendar / clock glyph from the element's used `color-scheme`.
-   The `light dark` on .booking-form__field hands that decision to the OS preference,
-   which leaves a dark glyph on the dark field (and a white one on the white field)
-   whenever the OS and the site theme disagree. Pinning these two inputs to the
-   visible theme makes the glyph follow the field it sits in. */
-
-.booking-form input[type="date"],
-.booking-form input[type="time"] {
-  color-scheme: light;
-}
-
-html[data-theme="dark"] .booking-form input[type="date"],
-html[data-theme="dark"] .booking-form input[type="time"] {
-  color-scheme: dark;
-}
-
-/* The UA glyph is near-black in light and near-white in dark; these two steps settle
-   it on --c-muted in both, so it carries the same tone as the custom chevron next to it. */
-
-.booking-form input[type="date"]::-webkit-calendar-picker-indicator,
-.booking-form input[type="time"]::-webkit-calendar-picker-indicator {
-  opacity: 0.75;
-}
-
-html[data-theme="dark"] .booking-form input[type="date"]::-webkit-calendar-picker-indicator,
-html[data-theme="dark"] .booking-form input[type="time"]::-webkit-calendar-picker-indicator {
-  opacity: 0.62;
-}
-
-@media (prefers-color-scheme: dark) {
-  html:not([data-theme="light"]) .booking-form input[type="date"],
-  html:not([data-theme="light"]) .booking-form input[type="time"] {
-    color-scheme: dark;
-  }
-
-  html:not([data-theme="light"]) .booking-form input[type="date"]::-webkit-calendar-picker-indicator,
-  html:not([data-theme="light"]) .booking-form input[type="time"]::-webkit-calendar-picker-indicator {
-    opacity: 0.62;
-  }
 }
 
 /* Information panel */
@@ -422,8 +356,8 @@ html[data-theme="dark"] .booking-form input[type="time"]::-webkit-calendar-picke
 /* Two-up fields once the card is wide enough for a comfortable half column. */
 
 @media (min-width: 560px) {
-  /* The consent row already ends in a reserved message line, so the submit block
-     keeps the smaller step here and still reads as a separate group. */
+  /* The privacy notice row opens with a hairline, so the submit block keeps the
+     smaller step here and still reads as a separate group. */
   .booking {
     --booking-row-gap: var(--space-04);
     --booking-group-gap: var(--space-05);
@@ -431,8 +365,7 @@ html[data-theme="dark"] .booking-form input[type="time"]::-webkit-calendar-picke
     --booking-info-pad: var(--space-03);
   }
 
-  .booking-form__row--half,
-  .booking-form__row--third {
+  .booking-form__row--half {
     grid-column: span 3;
   }
 
@@ -451,14 +384,6 @@ html[data-theme="dark"] .booking-form input[type="time"]::-webkit-calendar-picke
     flex: 1 1 auto;
     min-height: 0;
     text-align: left;
-  }
-}
-
-/* Date / time / guests fit three-up. */
-
-@media (min-width: 720px) {
-  .booking-form__row--third {
-    grid-column: span 2;
   }
 }
 

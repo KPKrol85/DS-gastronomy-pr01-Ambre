@@ -60,9 +60,9 @@
       ]
     },
     {
-      "name": "Rezerwacja stolika",
-      "short_name": "Rezerwacja",
-      "description": "Zarezerwuj stolik w restauracji Ambre",
+      "name": "Zapytaj o projekt",
+      "short_name": "Kontakt",
+      "description": "Wyślij zapytanie do KP_Code Digital Studio, autora projektu Ambre",
       "url": "/index.html#rezerwacja",
       "icons": [
         {

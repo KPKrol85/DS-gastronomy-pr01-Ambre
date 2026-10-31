@@ -6,7 +6,7 @@
 
 **Ambre** to demonstracyjna, wielostronicowa strona fikcyjnej restauracji fine dining, przygotowana przez KP_Code Digital Studio jako projekt portfolio. Interfejs w języku polskim wykorzystuje HTML, CSS i modułowy Vanilla JavaScript bez frameworka aplikacyjnego.
 
-Repozytorium zawiera osiem stron, lokalne zasoby, build produkcyjny i narzędzia QA. Treści restauracyjne są poglądowe. Formularz prezentuje obsługę zgłoszenia; projekt nie zawiera własnego backendu rezerwacji, bazy danych, kont użytkowników ani płatności.
+Repozytorium zawiera osiem stron, lokalne zasoby, build produkcyjny i narzędzia QA. Treści restauracyjne są poglądowe. Formularz kontaktowy przesyła rzeczywiste zapytania do KP_Code Digital Studio przez Netlify Forms i nie tworzy rezerwacji; projekt nie zawiera własnego backendu, bazy danych, kont użytkowników ani płatności.
 
 ### Wersja online
 
@@ -14,10 +14,10 @@ Repozytorium zawiera osiem stron, lokalne zasoby, build produkcyjny i narzędzia
 
 ### Kluczowe funkcje
 
-- Strona główna z prezentacją restauracji, podglądem menu i galerii, FAQ oraz formularzem rezerwacji; osobne strony menu, galerii i informacji prawnych, a także widoki 404 i offline.
+- Strona główna z prezentacją restauracji, podglądem menu i galerii, FAQ o projekcie oraz formularzem kontaktowym; osobne strony menu, galerii i informacji prawnych, a także widoki 404 i offline.
 - Nawigacja mobilna, oznaczanie aktualnej strony i sekcji, przełączanie jasnego i ciemnego motywu oraz przyciski przewijania.
 - Filtry kategorii dań i zdjęć, rozwijane szczegóły dań oraz lightbox z obsługą klawiatury: przeglądanie grupy zdjęć galerii lub podgląd pojedynczego dania.
-- Formularz z walidacją wymaganych pól, formatowaniem polskiego numeru telefonu, sprawdzaniem zgody, polem honeypot i komunikatami wysyłania.
+- Formularz kontaktowy z walidacją wymaganych pól i adresu e-mail, opcjonalnym numerem telefonu w formacie polskim lub międzynarodowym (wysyłanym bez zmian), informacją o przetwarzaniu danych, polem honeypot i komunikatami wysyłania.
 - Dialog informujący o demonstracyjnym charakterze serwisu oraz mapa Google ładowana po kliknięciu użytkownika.
 
 ### Stack technologiczny
@@ -101,7 +101,7 @@ Serwer live-server udostępnia źródła pod `http://127.0.0.1:4183` i przełado
 | `npm run build` | Odtworzenie produkcyjnego katalogu `dist/`. |
 | `npm run lint` | Lint JavaScriptu, CSS i wybranych błędów w publicznych tekstach. |
 | `npm run qa:fast` | Lint, HTML, lokalne linki i kotwice, SEO, polityka JSON-LD oraz kontrola hashy CSP. |
-| `npm run test:e2e` | Uruchomienie dziewięciu skupionych regresji: formularz rezerwacji, dialog demonstracyjny, przewijanie do góry, tabele prawne, lightbox, status galerii, nawigacja mobilna, zachowanie motywu i panele szczegółów dań (natywne `toggle`, wyłączność, zamykanie, klawiatura, zgodność z filtrami/lightboxem i działanie bez JavaScriptu). |
+| `npm run test:e2e` | Uruchomienie dziewięciu skupionych regresji: formularz kontaktowy, dialog demonstracyjny, przewijanie do góry, tabele prawne, lightbox, status galerii, nawigacja mobilna, zachowanie motywu i panele szczegółów dań (natywne `toggle`, wyłączność, zamykanie, klawiatura, zgodność z filtrami/lightboxem i działanie bez JavaScriptu). |
 | `npm run qa` | Szybkie QA, zachowanie bez JavaScriptu, E2E, axe-core i Lighthouse CI. |
 | `npm run qa:service-worker` | Osobny test aktywacji Service Workera i własności cache; poza agregatem `qa`. |
 | `npm run qa:server` | Kontrola odpowiedzi lokalnego serwera dystrybucji; wymaga istniejącego `dist/`. |
@@ -126,7 +126,7 @@ Ręczny podgląd produkcyjnego `dist/` opisuje [procedura podglądu](docs/settin
 
 Testy Playwright korzystają z lokalnych serwerów i Chromium. Regresje formularza przechwytują odpowiedzi POST, więc sprawdzają zachowanie klienta, nie rzeczywisty odbiór przez Netlify. `qa:a11y` obejmuje osiem stron oraz stan otwartego dialogu i stan po akceptacji tam, gdzie dialog występuje. Lighthouse CI buduje dystrybucję i zbiera po trzy pomiary dla ośmiu stron; progi w `lighthouserc.json` są wymaganiami konfiguracji, nie deklarowanymi wynikami.
 
-`qa:nojs` sprawdza osiem stron bez JavaScriptu: nawigację i klawiaturę przy 320–1280 px, brak aktywnych lub fokusowalnych kontrolek zależnych od JavaScriptu, natywne ograniczenia formularza oraz kontrast przycisku rezerwacji i linku powrotu na `404.html` bez atrybutu `data-theme` przy jasnej i ciemnej preferencji systemowej. `test:e2e:mobile-nav` obejmuje także `aria-modal`, `inert` tła i jego przywracanie, drzewo dostępności Chromium oraz stałą pozycję `main` po usunięciu `no-js` na ośmiu stronach przy mobilnej emulacji Lighthouse (412 px).
+`qa:nojs` sprawdza osiem stron bez JavaScriptu: nawigację i klawiaturę przy 320–1280 px, brak aktywnych lub fokusowalnych kontrolek zależnych od JavaScriptu, natywne ograniczenia formularza oraz kontrast przycisku formularza i linku powrotu na `404.html` bez atrybutu `data-theme` przy jasnej i ciemnej preferencji systemowej. `test:e2e:mobile-nav` obejmuje także `aria-modal`, `inert` tła i jego przywracanie, drzewo dostępności Chromium oraz stałą pozycję `main` po usunięciu `no-js` na ośmiu stronach przy mobilnej emulacji Lighthouse (412 px).
 
 [Workflow CI](.github/workflows/main.yml) jest skonfigurowany dla push i pull request do `main`: instalacja zależności, szybkie QA i build. Nie uruchamia pełnego zestawu QA. Dostępne kontrole nie stanowią deklaracji ich zaliczenia ani zgodności dostępności. Kontrole lokalne nie weryfikują wdrożenia Netlify, dostarczania nagłówków i przekierowań, odbioru formularza przez dostawcę ani działania PWA w środowisku produkcyjnym. Zapisane wyniki weryfikacji i jej ograniczenia zawiera [zarchiwizowany audyt z 2026-10-26](docs/archive/audits/AUDIT-2026-10-26.md).
 
@@ -134,7 +134,7 @@ Testy Playwright korzystają z lokalnych serwerów i Chromium. Regresje formular
 
 Pakiet do hostingu statycznego powstaje w `dist/`. Build przenosi do niego `_headers` i `_redirects` z regułami dla Netlify: przekierowaniami adresów, odpowiedzią 404 i nagłówkami, w tym CSP. Strony zakładają publikację w katalogu głównym domeny. Workflow CI nie zawiera kroku wdrożenia.
 
-Formularz w `index.html` ma `data-netlify="true"` i ukryte `form-name`. `js/modules/form.js` wysyła dane przez `fetch` metodą POST na `/`, uznaje za sukces tylko `response.ok`, a przy błędzie zachowuje pola i wyświetla komunikat. Natywne wysłanie pozostaje dostępne bez JavaScriptu lub bez `fetch`/`FormData`; błąd żądania nie powoduje automatycznego ponownego wysłania. Odbiór danych wymaga konfiguracji hostingu i nie potwierdza rezerwacji stolika.
+Formularz kontaktowy w `index.html` ma `name="contact"`, `data-netlify="true"`, `netlify-honeypot="company"` i ukryte `form-name`. `js/modules/form.js` wysyła dane przez `fetch` metodą POST na `/`, uznaje za sukces tylko `response.ok`, a przy błędzie zachowuje pola i wyświetla komunikat. Natywne wysłanie pozostaje dostępne bez JavaScriptu lub bez `fetch`/`FormData`; błąd żądania nie powoduje automatycznego ponownego wysłania. Odbiór zapytań wymaga konfiguracji hostingu; wysłanie formularza nie tworzy rezerwacji.
 
 ### Dostępność
 
@@ -164,7 +164,7 @@ Produkcja używa minifikowanego CSS i bundla JavaScript. HTML zawiera obrazy AVI
 
 ### Dane i trwałość stanu
 
-Treści stron, dania i zdjęcia pochodzą z lokalnego HTML i zasobów. `localStorage` przechowuje wybór motywu pod kluczem `theme` oraz akceptację informacji demonstracyjnej pod `demoLegalAccepted`. Cache Storage służy Service Workerowi do przechowywania odpowiedzi. Nie jest to baza rezerwacji ani synchronizacja między urządzeniami.
+Treści stron, dania i zdjęcia pochodzą z lokalnego HTML i zasobów. `localStorage` przechowuje wybór motywu pod kluczem `theme` oraz akceptację informacji demonstracyjnej pod `demoLegalAccepted`. Cache Storage służy Service Workerowi do przechowywania odpowiedzi. Nie jest to baza zgłoszeń ani synchronizacja między urządzeniami.
 
 ### Utrzymanie projektu
 
@@ -182,7 +182,7 @@ Projekt podlega [Własnościowej Licencji Projektu KP_CODE](LICENSE.md), wersja 
 
 **Ambre** is a demonstration multi-page website for a fictional fine-dining restaurant, created by KP_Code Digital Studio as a portfolio project. Its Polish-language interface uses HTML, CSS, and modular Vanilla JavaScript without an application framework.
 
-The repository contains eight pages, local assets, a production build, and QA tooling. Restaurant content is illustrative. The form demonstrates submission handling; the project does not include its own reservation backend, database, user accounts, or payments.
+The repository contains eight pages, local assets, a production build, and QA tooling. Restaurant content is illustrative. The contact form sends real inquiries to KP_Code Digital Studio through Netlify Forms and does not create reservations; the project does not include its own backend, database, user accounts, or payments.
 
 ### Live Version
 
@@ -190,10 +190,10 @@ The repository contains eight pages, local assets, a production build, and QA to
 
 ### Key Features
 
-- A homepage with restaurant presentation, menu and gallery previews, FAQ, and a reservation form; separate menu, gallery, and legal pages, plus 404 and offline views.
+- A homepage with restaurant presentation, menu and gallery previews, a project FAQ, and a contact form; separate menu, gallery, and legal pages, plus 404 and offline views.
 - Mobile navigation, current page and section indicators, light and dark theme switching, and scroll controls.
 - Dish and image category filters, expandable dish details, and a keyboard-operated lightbox for browsing a gallery group or viewing a single dish.
-- A form with required-field validation, Polish phone-number formatting, consent checks, a honeypot field, and submission status messages.
+- A contact form with required-field and email validation, an optional Polish or international phone number (submitted as entered), a data-processing notice, a honeypot field, and submission status messages.
 - A dialog explaining the demonstration nature of the site and a Google map loaded after user activation.
 
 ### Tech Stack
@@ -277,7 +277,7 @@ live-server serves sources at `http://127.0.0.1:4183` and reloads the page after
 | `npm run build` | Recreate the production `dist/` directory. |
 | `npm run lint` | Lint JavaScript, CSS, and selected errors in public text. |
 | `npm run qa:fast` | Lint, HTML, local links and anchors, SEO, JSON-LD policy, and CSP hash checks. |
-| `npm run test:e2e` | Run nine focused regressions: reservation form, demonstration dialog, scroll-to-top, legal tables, lightbox, gallery status, mobile navigation, theme behavior, and dish detail panels (native `toggle`, exclusivity, dismissal, keyboard, filter/lightbox compatibility, and no-JavaScript operation). |
+| `npm run test:e2e` | Run nine focused regressions: contact form, demonstration dialog, scroll-to-top, legal tables, lightbox, gallery status, mobile navigation, theme behavior, and dish detail panels (native `toggle`, exclusivity, dismissal, keyboard, filter/lightbox compatibility, and no-JavaScript operation). |
 | `npm run qa` | Fast QA, no-JavaScript behavior, E2E, axe-core, and Lighthouse CI. |
 | `npm run qa:service-worker` | Separate Service Worker activation and cache ownership test; outside the `qa` aggregate. |
 | `npm run qa:server` | Check responses from the local distribution server; requires an existing `dist/`. |
@@ -302,7 +302,7 @@ For a manual preview of production `dist/`, see the [preview procedure](docs/set
 
 Playwright tests use local servers and Chromium. Form regressions intercept POST responses, testing client behavior rather than actual Netlify receipt. `qa:a11y` covers eight pages, including the open-dialog and accepted states where a dialog exists. Lighthouse CI builds the distribution and collects three measurements per page across eight pages; thresholds in `lighthouserc.json` are configured requirements, not reported results.
 
-`qa:nojs` checks eight pages without JavaScript: navigation and keyboard access at 320–1280 px, the absence of enabled or focusable JavaScript-dependent controls, native form constraints, and the contrast of the reservation button and the `404.html` recovery link without a `data-theme` attribute under light and dark system preferences. `test:e2e:mobile-nav` also covers `aria-modal`, background `inert` state and its restoration, the Chromium accessibility tree, and a stable `main` position after `no-js` removal on eight pages under Lighthouse mobile emulation (412 px).
+`qa:nojs` checks eight pages without JavaScript: navigation and keyboard access at 320–1280 px, the absence of enabled or focusable JavaScript-dependent controls, native form constraints, and the contrast of the form submit button and the `404.html` recovery link without a `data-theme` attribute under light and dark system preferences. `test:e2e:mobile-nav` also covers `aria-modal`, background `inert` state and its restoration, the Chromium accessibility tree, and a stable `main` position after `no-js` removal on eight pages under Lighthouse mobile emulation (412 px).
 
 The [CI workflow](.github/workflows/main.yml) is configured for pushes and pull requests to `main`: dependency installation, fast QA, and a build. It does not run the full QA suite. Available checks do not establish that they passed or that accessibility conformance was achieved. Local checks do not verify the Netlify deployment, header and redirect delivery, form receipt by the provider, or PWA behavior in production. Recorded verification results and their limitations are kept in the [archived 2026-10-26 audit](docs/archive/audits/AUDIT-2026-10-26.md).
 
@@ -310,7 +310,7 @@ The [CI workflow](.github/workflows/main.yml) is configured for pushes and pull 
 
 The static-hosting package is built into `dist/`. The build copies `_headers` and `_redirects` with Netlify rules: URL redirects, a 404 response, and headers including CSP. Pages assume publication at the domain root. The CI workflow has no deployment step.
 
-The form in `index.html` has `data-netlify="true"` and a hidden `form-name`. `js/modules/form.js` uses `fetch` to send a POST to `/`, treats only `response.ok` as success, and preserves fields while displaying a message on failure. Native submission remains available without JavaScript or without `fetch`/`FormData`; a request failure does not trigger an automatic resubmission. Data receipt requires hosting configuration and does not confirm a table reservation.
+The contact form in `index.html` has `name="contact"`, `data-netlify="true"`, `netlify-honeypot="company"`, and a hidden `form-name`. `js/modules/form.js` uses `fetch` to send a POST to `/`, treats only `response.ok` as success, and preserves fields while displaying a message on failure. Native submission remains available without JavaScript or without `fetch`/`FormData`; a request failure does not trigger an automatic resubmission. Inquiry receipt requires hosting configuration; submitting the form does not create a reservation.
 
 ### Accessibility
 
@@ -340,7 +340,7 @@ Production uses minified CSS and a JavaScript bundle. HTML contains AVIF/WebP im
 
 ### Data and State Persistence
 
-Page content, dishes, and images come from local HTML and assets. `localStorage` stores the theme choice under `theme` and acceptance of the demonstration notice under `demoLegalAccepted`. Cache Storage holds Service Worker responses. This is neither a reservation database nor synchronization between devices.
+Page content, dishes, and images come from local HTML and assets. `localStorage` stores the theme choice under `theme` and acceptance of the demonstration notice under `demoLegalAccepted`. Cache Storage holds Service Worker responses. This is neither a submission database nor synchronization between devices.
 
 ### Project Maintenance
 

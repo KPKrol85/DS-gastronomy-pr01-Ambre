@@ -26,6 +26,10 @@ Record changes that materially affect UI/UX, accessibility, public content, buil
 
 ### Changed
 
+- Converted the homepage reservation form into a KP_Code Digital Studio project inquiry form with name, email, optional phone, subject, and message fields, renaming the Netlify form from `reservation` to `contact` while preserving the honeypot, AJAX, and native submission paths.
+- Standardized the footer demonstration disclosure on all eight pages and attributed the real telephone, email, and address to KP_Code Digital Studio instead of the fictional restaurant.
+- Replaced the restaurant-operation FAQ with four project-oriented questions and labeled testimonials and the rating badge as illustrative, removing the Google reviews attribution and link.
+- Aligned navigation labels, hero and contact CTAs, the PWA shortcut, homepage metadata, legal documents, and form regression tests with the contact workflow.
 - Redesigned the homepage contact card as an open editorial postscript with an amber rule, smaller heading, and accessible telephone link.
 - Added header-aware scroll offsets to headings on the cookies, privacy, and terms pages while preserving existing anchor behavior.
 - Enforced reservation dates from today through 90 days ahead, Tuesday–Sunday, 17:00–22:00 in 15-minute intervals, with field-specific feedback; native no-JavaScript limits cannot exclude Mondays.

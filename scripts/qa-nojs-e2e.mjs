@@ -19,7 +19,7 @@ const navigationLinks = [
   { name: "Galeria", href: "index.html#galeria" },
   { name: "Pełna galeria", href: "galeria.html" },
   { name: "Opinie", href: "index.html#opinie" },
-  { name: "Rezerwacja", href: "index.html#rezerwacja" },
+  { name: "Kontakt", href: "index.html#rezerwacja" },
   { name: "FAQ", href: "index.html#faq" }
 ];
 /* Controls whose only action is provided by a JavaScript module. Filters and the theme
@@ -87,33 +87,7 @@ const ensureDir = (directoryPath) => {
 
 const sanitizeStepName = (value) => value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
-/* Bez JavaScriptu obowiązują statyczne atrybuty min/max z index.html, dlatego daty
-   testowe wyliczane są z nich, a nie z dnia uruchomienia testu ani z wartości na stałe.
-   Arytmetyka pracuje na lokalnych komponentach kalendarza, bez konwersji przez UTC. */
-const MONDAY = 1;
-
-const padTwo = (value) => String(value).padStart(2, "0");
-const toIsoDate = (date) => `${date.getFullYear()}-${padTwo(date.getMonth() + 1)}-${padTwo(date.getDate())}`;
-
-const shiftIsoDate = (isoDate, days) => {
-  const [year, month, day] = isoDate.split("-").map(Number);
-  return toIsoDate(new Date(year, month - 1, day + days, 12, 0, 0, 0));
-};
-
-const isoWeekday = (isoDate) => {
-  const [year, month, day] = isoDate.split("-").map(Number);
-  return new Date(year, month - 1, day, 12, 0, 0, 0).getDay();
-};
-
-const firstMatchingDate = (isoDate, matches) => {
-  let candidate = isoDate;
-  for (let step = 0; step < 7; step += 1) {
-    if (matches(candidate)) return candidate;
-    candidate = shiftIsoDate(candidate, 1);
-  }
-
-  throw new Error(`No matching reservation date found from ${isoDate}`);
-};
+const contactHeading = "Zapytaj o projekt Ambre lub podobną stronę";
 
 /* Contrast is calculated from the browser's computed colors with the WCAG 2.x formula,
    never from screenshots. Chromium serializes color-mix() results as oklab() or
@@ -174,19 +148,16 @@ const run = async () => {
   let browser;
   let context;
   let page;
-  let dateBounds;
   const interceptedPosts = [];
 
-  const fillNativeForm = async (form, { date, time }) => {
+  const fillNativeForm = async (form, { email = "jan.kowalski@example.com", phone = "123 456 789" } = {}) => {
     await form.locator("#name").fill("Jan Kowalski");
-    await form.locator("#phone").fill("123456789");
-    await form.locator("#date").fill(date);
-    await form.locator("#time").fill(time);
-    await form.locator("#guests").selectOption("2");
-    await form.locator("#notes").fill("Stolik przy oknie");
+    await form.locator("#email").fill(email);
+    await form.locator("#phone").fill(phone);
+    await form.locator("#subject").selectOption("Strona dla restauracji");
+    await form.locator("#message").fill("Chcę zamówić podobną stronę.");
     // Cancel smooth scrolling from native field focus before checking pointer actionability.
-    await form.locator("#consent").evaluate((element) => element.scrollIntoView({ behavior: "instant", block: "center" }));
-    await form.locator("#consent").check();
+    await form.locator('button[type="submit"]').evaluate((element) => element.scrollIntoView({ behavior: "instant", block: "center" }));
   };
 
   try {
@@ -467,41 +438,31 @@ const run = async () => {
     await page.goto(`${baseUrl}/index.html`, { waitUntil: "domcontentloaded", timeout: 15000 });
 
     await runStep("navigate through header link", async () => {
-      await page.getByTestId("site-header-nav").getByRole("link", { name: "Rezerwacja" }).click();
+      await page.getByTestId("site-header-nav").getByRole("link", { name: "Kontakt" }).click();
       await page.waitForURL("**/index.html#rezerwacja", { timeout: 10000 });
-      await page.getByRole("heading", { level: 2, name: "Rezerwacja" }).waitFor();
+      await page.getByRole("heading", { level: 2, name: contactHeading }).waitFor();
     });
 
-    await runStep("open contact section and validate booking form", async () => {
+    await runStep("open contact section and validate contact form", async () => {
       await page.goto(`${baseUrl}/index.html#rezerwacja`, { waitUntil: "domcontentloaded", timeout: 15000 });
-      await page.getByRole("heading", { level: 2, name: "Rezerwacja" }).waitFor();
+      await page.getByRole("heading", { level: 2, name: contactHeading }).waitFor();
 
       const form = page.locator("#booking-form");
       await form.waitFor();
+      assert.equal(await form.getAttribute("name"), "contact", "The Netlify form name must identify the contact form");
       await form.locator('input[name="name"][required]').waitFor();
-      await form.locator('input[name="phone"][required]').waitFor();
-      await form.locator('input[name="date"][required]').waitFor();
-      await form.locator('input[name="time"][required]').waitFor();
-      await form.locator('select[name="guests"][required]').waitFor();
-      await form.locator('input[name="consent"][required]').waitFor();
-
-      dateBounds = await form.locator("#date").evaluate((element) => ({ min: element.min, max: element.max }));
-      assert.match(dateBounds.min, /^\d{4}-\d{2}-\d{2}$/, "The date field must carry a static native lower boundary");
-      assert.match(dateBounds.max, /^\d{4}-\d{2}-\d{2}$/, "The date field must carry a static native upper boundary");
-      assert.equal(dateBounds.min < dateBounds.max, true, "The native date boundaries must span a window");
-      assert.equal(
-        shiftIsoDate(dateBounds.min, 90),
-        dateBounds.max,
-        "The static native window must span today through 90 days ahead as configured"
-      );
-      assert.deepEqual(
-        await form.locator("#time").evaluate((element) => ({ min: element.min, max: element.max, step: element.step })),
-        { min: "17:00", max: "22:00", step: "900" },
-        "The time field must carry the accepted native hours and the 15-minute step"
-      );
+      await form.locator('input[name="email"][type="email"][required]').waitFor();
+      await form.locator('select[name="subject"][required]').waitFor();
+      await form.locator('textarea[name="message"][required]').waitFor();
+      assert.equal(await form.locator('input[name="phone"]').evaluate((element) => element.required), false,
+        "The phone field must stay optional");
+      assert.equal(await form.locator('[name="date"], [name="time"], [name="guests"], [name="notes"], [name="consent"]').count(), 0,
+        "Reservation-only fields and the former consent checkbox must not be submitted with the contact form");
+      assert.equal(await form.locator("#form-notice").getByRole("link", { name: "Polityce prywatności" }).getAttribute("href"),
+        "/polityka-prywatnosci.html", "The privacy notice must link the privacy policy without JavaScript");
     });
 
-    await runStep("block an invalid empty booking submission natively", async () => {
+    await runStep("block an invalid empty contact submission natively", async () => {
       const form = page.locator("#booking-form");
       const nameInput = form.locator("#name");
       const pageUrl = page.url();
@@ -533,73 +494,45 @@ const run = async () => {
       );
     });
 
-    await runStep("reject out-of-window dates and times natively", async () => {
-      const rejections = [
-        { field: "date", value: shiftIsoDate(dateBounds.min, -1), flag: "rangeUnderflow" },
-        { field: "date", value: shiftIsoDate(dateBounds.max, 1), flag: "rangeOverflow" },
-        { field: "time", value: "16:45", flag: "rangeUnderflow" },
-        { field: "time", value: "22:15", flag: "rangeOverflow" },
-        { field: "time", value: "18:10", flag: "stepMismatch" }
-      ];
-
-      for (const rejection of rejections) {
-        await page.goto(`${baseUrl}/index.html#rezerwacja`, { waitUntil: "domcontentloaded", timeout: 15000 });
-        const form = page.locator("#booking-form");
-        await fillNativeForm(form, {
-          date: firstMatchingDate(dateBounds.min, (candidate) => isoWeekday(candidate) !== MONDAY),
-          time: "18:00"
-        });
-        await form.locator(`#${rejection.field}`).fill(rejection.value);
-
-        const postsBefore = interceptedPosts.length;
-        // Jak w kroku pustego formularza: natywna walidacja przewija do błędnego pola,
-        // więc wysyłka uruchamiana jest z klawiatury, bez oczekiwania na stabilny przycisk.
-        await form.locator('button[type="submit"]').focus();
-        await page.keyboard.press("Enter");
-
-        assert.equal(
-          await form.locator(`#${rejection.field}`).evaluate((element, flag) => element.validity[flag], rejection.flag),
-          true,
-          `Native validation must report ${rejection.flag} for ${rejection.field}=${rejection.value}`
-        );
-        assert.equal(
-          await form.evaluate((element) => element.checkValidity()),
-          false,
-          `${rejection.field}=${rejection.value} must keep the script-less form natively invalid`
-        );
-        assert.equal(
-          interceptedPosts.length,
-          postsBefore,
-          `${rejection.field}=${rejection.value} must not initiate a POST request`
-        );
-      }
-    });
-
-    await runStep("document the unsupported native Monday restriction", async () => {
-      /* Natywne atrybuty HTML nie wyrażają wykluczenia dnia tygodnia: poniedziałek w oknie
-         min/max przechodzi walidację natywną i jest odrzucany wyłącznie przez JavaScript.
-         Krok utrwala to ograniczenie, zamiast przedstawiać je jako pełne wymuszenie reguły. */
+    await runStep("reject an invalid email address natively", async () => {
       await page.goto(`${baseUrl}/index.html#rezerwacja`, { waitUntil: "domcontentloaded", timeout: 15000 });
       const form = page.locator("#booking-form");
-      const monday = firstMatchingDate(dateBounds.min, (candidate) => isoWeekday(candidate) === MONDAY);
-      assert.equal(monday <= dateBounds.max, true, "The sampled Monday must fall inside the native window");
+      await fillNativeForm(form, { email: "jan.kowalski" });
 
-      await fillNativeForm(form, { date: monday, time: "18:00" });
+      const postsBefore = interceptedPosts.length;
+      // Jak w kroku pustego formularza: natywna walidacja przewija do błędnego pola,
+      // więc wysyłka uruchamiana jest z klawiatury, bez oczekiwania na stabilny przycisk.
+      await form.locator('button[type="submit"]').focus();
+      await page.keyboard.press("Enter");
 
-      assert.deepEqual(
-        await form.locator("#date").evaluate((element) => ({
-          valid: element.validity.valid,
-          rangeUnderflow: element.validity.rangeUnderflow,
-          rangeOverflow: element.validity.rangeOverflow
-        })),
-        { valid: true, rangeUnderflow: false, rangeOverflow: false },
-        "A Monday inside the native window stays natively valid - the weekday rule needs JavaScript"
-      );
-      assert.equal(
-        await form.evaluate((element) => element.checkValidity()),
-        true,
-        "Native validation alone cannot reject a Monday inside the configured date window"
-      );
+      assert.equal(await form.locator("#email").evaluate((element) => element.validity.typeMismatch), true,
+        "Native validation must report typeMismatch for an invalid email address");
+      assert.equal(await form.evaluate((element) => element.checkValidity()), false,
+        "An invalid email address must keep the script-less form natively invalid");
+      assert.equal(interceptedPosts.length, postsBefore, "An invalid email address must not initiate a POST request");
+    });
+
+    await runStep("accept an empty optional phone natively", async () => {
+      await page.goto(`${baseUrl}/index.html#rezerwacja`, { waitUntil: "domcontentloaded", timeout: 15000 });
+      const form = page.locator("#booking-form");
+      await fillNativeForm(form, { phone: "" });
+      assert.equal(await form.evaluate((element) => element.checkValidity()), true,
+        "The script-less form must be natively valid without the optional phone");
+    });
+
+    await runStep("apply the native phone pattern without JavaScript", async () => {
+      await page.goto(`${baseUrl}/index.html#rezerwacja`, { waitUntil: "domcontentloaded", timeout: 15000 });
+      const phone = page.locator("#booking-form #phone");
+      for (const value of ["123 456 789", "+48 123 456 789", "+44 20 7946 0958", "+1 (555) 123-4567"]) {
+        await phone.fill(value);
+        assert.deepEqual(await phone.evaluate((element) => ({ value: element.value, valid: element.validity.valid })),
+          { value, valid: true }, `The native pattern must accept ${value} and keep it unchanged`);
+      }
+      for (const value of ["123", "abc", "123+456789"]) {
+        await phone.fill(value);
+        assert.equal(await phone.evaluate((element) => element.validity.patternMismatch), true,
+          `The native pattern must reject ${value}`);
+      }
     });
 
     await runStep("validate footer legal links", async () => {
@@ -634,11 +567,10 @@ const run = async () => {
       }
     });
 
-    await runStep("intercept a valid native booking submission", async () => {
+    await runStep("intercept a valid native contact submission", async () => {
       await page.goto(`${baseUrl}/index.html#rezerwacja`, { waitUntil: "domcontentloaded", timeout: 15000 });
       const form = page.locator("#booking-form");
-      const reservationDate = firstMatchingDate(dateBounds.min, (candidate) => isoWeekday(candidate) !== MONDAY);
-      await fillNativeForm(form, { date: reservationDate, time: "18:00" });
+      await fillNativeForm(form);
 
       assert.equal(await form.evaluate((element) => element.checkValidity()), true, "The completed no-JavaScript form must be natively valid");
 
@@ -652,14 +584,14 @@ const run = async () => {
       assert.match((await request.headerValue("content-type")) || "", /^application\/x-www-form-urlencoded/);
 
       const submission = new URLSearchParams(request.postData() || "");
-      assert.equal(submission.get("form-name"), "reservation");
+      assert.equal(submission.get("form-name"), "contact");
+      assert.equal(submission.get("company"), "");
       assert.equal(submission.get("name"), "Jan Kowalski");
-      assert.equal(submission.get("phone"), "123456789");
-      assert.equal(submission.get("date"), reservationDate);
-      assert.equal(submission.get("time"), "18:00");
-      assert.equal(submission.get("guests"), "2");
-      assert.equal(submission.get("notes"), "Stolik przy oknie");
-      assert.equal(submission.get("consent"), "on");
+      assert.equal(submission.get("email"), "jan.kowalski@example.com");
+      assert.equal(submission.get("phone"), "123 456 789");
+      assert.equal(submission.get("subject"), "Strona dla restauracji");
+      assert.equal(submission.get("message"), "Chcę zamówić podobną stronę.");
+      assert.equal(submission.has("consent"), false);
     });
 
     const measureLabelContrast = async (control, label) => {
@@ -734,18 +666,15 @@ const run = async () => {
           await page.locator("#top").waitFor();
         });
 
-        await runStep(`read and submit the booking action with a ${colorScheme} system preference`, async () => {
+        await runStep(`read and submit the contact action with a ${colorScheme} system preference`, async () => {
           await page.goto(`${baseUrl}/index.html#rezerwacja`, { waitUntil: "domcontentloaded", timeout: 15000 });
           await assertSystemFallback();
           const form = page.locator("#booking-form");
           const submit = form.locator('button[type="submit"]');
-          await fillNativeForm(form, {
-            date: firstMatchingDate(dateBounds.min, (candidate) => isoWeekday(candidate) !== MONDAY),
-            time: "18:00"
-          });
+          await fillNativeForm(form);
           assert.equal(await submit.isEnabled(), true, "The submit action must stay enabled");
 
-          await measurePointerStates(submit, `booking submit (${colorScheme})`);
+          await measurePointerStates(submit, `contact submit (${colorScheme})`);
           const postsBefore = interceptedPosts.length;
           const [request] = await Promise.all([
             page.waitForRequest((candidate) => candidate.method() === "POST"),
@@ -755,7 +684,7 @@ const run = async () => {
           await request.response();
           assert.equal(interceptedPosts.length, postsBefore + 1, "Releasing the pressed action must submit the form natively once");
           assert.equal(new URL(request.url()).pathname, "/index.html");
-          assert.equal(new URLSearchParams(request.postData() || "").get("form-name"), "reservation");
+          assert.equal(new URLSearchParams(request.postData() || "").get("form-name"), "contact");
         });
       }
     } finally {

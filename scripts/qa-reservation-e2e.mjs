@@ -8,43 +8,19 @@ const rootDir = process.cwd();
 const host = "127.0.0.1";
 const port = Number(process.env.QA_RESERVATION_PORT || 4176);
 const baseUrl = `http://${host}:${port}`;
-const successMessage = "Dziękujemy! Oddzwonimy, aby potwierdzić rezerwację.";
+const successMessage = "Dziękujemy! Zapytanie zostało wysłane do KP_Code Digital Studio.";
 const failureMessage = "Nie udało się wysłać formularza. Sprawdź połączenie i spróbuj ponownie.";
 const requiredFieldsMessage = "Uzupełnij wymagane pola.";
-const windowMessage = "Popraw datę lub godzinę rezerwacji: wtorek–niedziela, od 17:00 do 22:00, do 90 dni naprzód.";
+const invalidFieldsMessage = "Popraw zaznaczone pola.";
+const submitLabel = "Wyślij zapytanie";
 
-/* Okno rezerwacji liczone jest tak jak w js/modules/form.js: na lokalnych komponentach
-   kalendarza, bez konwersji przez UTC, więc fixture'y pozostają poprawne niezależnie
-   od dnia uruchomienia testu i nie wygasają jak data zapisana na stałe. */
-const RESERVATION_WINDOW_DAYS = 90;
-const MONDAY = 1;
-
-const padTwo = (value) => String(value).padStart(2, "0");
-const localDate = (year, month, day) => new Date(year, month, day, 12, 0, 0, 0);
-const toIsoDate = (date) => `${date.getFullYear()}-${padTwo(date.getMonth() + 1)}-${padTwo(date.getDate())}`;
-const formatDatePl = (isoDate) => {
-  const [year, month, day] = isoDate.split("-");
-  return `${day}.${month}.${year}`;
+const validEntry = {
+  name: "Jan Kowalski",
+  email: "jan.kowalski@example.com",
+  phone: "123 456 789",
+  subject: "Strona dla restauracji",
+  message: "Chcę zamówić podobną stronę dla mojej restauracji."
 };
-
-const shiftFromToday = (days) => {
-  const now = new Date();
-  return localDate(now.getFullYear(), now.getMonth(), now.getDate() + days);
-};
-
-const windowStart = toIsoDate(shiftFromToday(0));
-const windowEnd = toIsoDate(shiftFromToday(RESERVATION_WINDOW_DAYS));
-
-// Najbliższy akceptowany dzień: dziś, a gdy dziś wypada poniedziałek - wtorek.
-const firstOpenDate = toIsoDate(shiftFromToday(shiftFromToday(0).getDay() === MONDAY ? 1 : 0));
-// Ostatni akceptowany dzień w oknie 90 dni, z pominięciem poniedziałku.
-const lastOpenDate = toIsoDate(
-  shiftFromToday(shiftFromToday(RESERVATION_WINDOW_DAYS).getDay() === MONDAY ? RESERVATION_WINDOW_DAYS - 1 : RESERVATION_WINDOW_DAYS)
-);
-const pastDate = toIsoDate(shiftFromToday(-1));
-const tooDistantDate = toIsoDate(shiftFromToday(RESERVATION_WINDOW_DAYS + 1));
-// Pierwszy poniedziałek w oknie - zawsze w zakresie min/max, odrzucany tylko regułą dnia tygodnia.
-const mondayDate = toIsoDate(shiftFromToday(((MONDAY - shiftFromToday(0).getDay()) + 7) % 7 || 7));
 
 const mimeTypes = new Map([
   [".html", "text/html; charset=utf-8"],
@@ -111,33 +87,22 @@ const openFormPage = async (browser, options = {}) => {
   return { context, page };
 };
 
-const fillValidForm = async (page, { date = firstOpenDate, time = "18:00" } = {}) => {
-  await page.locator("#name").fill("Jan Kowalski");
-  await page.locator("#phone").fill("123456789");
-  await page.locator("#date").fill(date);
-  await page.locator("#time").fill(time);
-  await page.locator("#guests").selectOption("2");
-  await page.locator("#notes").fill("Stolik przy oknie");
-  await page.locator("#consent").check();
-};
-
-const assertDateWindowApplied = async (page) => {
-  assert.deepEqual(
-    await page.locator("#date").evaluate((input) => ({ min: input.min, max: input.max })),
-    { min: windowStart, max: windowEnd },
-    "The enhanced form must bound the date field to today through 90 days ahead"
-  );
+const fillValidForm = async (page, overrides = {}) => {
+  const entry = { ...validEntry, ...overrides };
+  await page.locator("#name").fill(entry.name);
+  await page.locator("#email").fill(entry.email);
+  await page.locator("#phone").fill(entry.phone);
+  await page.locator("#subject").selectOption(entry.subject);
+  await page.locator("#message").fill(entry.message);
 };
 
 const readFormState = (page) =>
   page.locator("#booking-form").evaluate((form) => ({
     name: form.elements.namedItem("name").value,
+    email: form.elements.namedItem("email").value,
     phone: form.elements.namedItem("phone").value,
-    date: form.elements.namedItem("date").value,
-    time: form.elements.namedItem("time").value,
-    guests: form.elements.namedItem("guests").value,
-    notes: form.elements.namedItem("notes").value,
-    consent: form.elements.namedItem("consent").checked
+    subject: form.elements.namedItem("subject").value,
+    message: form.elements.namedItem("message").value
   }));
 
 const assertFailureState = async (page, expectedState) => {
@@ -152,7 +117,7 @@ const assertButtonUsable = async (page) => {
   const submitButton = page.locator('.site-button--form[type="submit"]');
   assert.equal(await submitButton.isEnabled(), true);
   assert.equal(await submitButton.getAttribute("aria-busy"), null);
-  assert.equal(await submitButton.textContent(), "Wyślij rezerwację");
+  assert.equal(await submitButton.textContent(), submitLabel);
 };
 
 const interceptPosts = async (context) => {
@@ -204,7 +169,7 @@ const assertFieldError = async (page, field, validityMessage, errorMessage) => {
   assert.equal(await page.locator(`#${field}-error`).textContent(), errorMessage);
 };
 
-const assertCorrectedSubmission = async (page, posts, { date = firstOpenDate, time = "18:00" } = {}) => {
+const assertCorrectedSubmission = async (page, posts, { phone = validEntry.phone } = {}) => {
   assert.equal(await page.locator("#booking-form").evaluate((form) => form.checkValidity()), true);
   await page.locator('.site-button--form[type="submit"]').click();
   await page.locator("#form-msg").filter({ hasText: successMessage }).waitFor();
@@ -215,17 +180,15 @@ const assertCorrectedSubmission = async (page, posts, { date = firstOpenDate, ti
   assert.equal(request.url(), `${baseUrl}/`);
   assert.match((await request.headerValue("content-type")) || "", /^application\/x-www-form-urlencoded/);
   const payload = new URLSearchParams(request.postData() || "");
-  assert.equal([...payload].length, 9, "The Netlify payload must retain all fields without duplicates");
+  assert.equal([...payload].length, 7, "The Netlify payload must retain all fields without duplicates");
   assert.deepEqual(Object.fromEntries(payload), {
-    "form-name": "reservation",
+    "form-name": "contact",
     company: "",
-    name: "Jan Kowalski",
-    phone: "+48 123 456 789",
-    date,
-    time,
-    guests: "2",
-    notes: "Stolik przy oknie",
-    consent: "on"
+    name: validEntry.name,
+    email: validEntry.email,
+    phone,
+    subject: validEntry.subject,
+    message: validEntry.message
   });
 };
 
@@ -234,87 +197,96 @@ const runEmptyFormTest = async (browser) => {
   try {
     const posts = await interceptPosts(context);
     const expectedState = await readFormState(page);
-    await assertDateWindowApplied(page);
     await assertInvalidSubmission(page, posts, expectedState);
-    assert.equal(await page.locator("#name").evaluate((input) => input.validity.valueMissing), true);
-    await assertFieldError(page, "date", "Wybierz datę rezerwacji.", "Wybierz datę rezerwacji.");
-    await assertFieldError(page, "time", "Wybierz godzinę rezerwacji.", "Wybierz godzinę rezerwacji.");
+    for (const field of ["name", "email", "subject", "message"]) {
+      assert.equal(await page.locator(`#${field}`).evaluate((input) => input.validity.valueMissing), true,
+        `The required ${field} field must report a missing value`);
+    }
+    assert.equal(await page.locator("#phone").evaluate((input) => input.required), false, "The phone field must stay optional");
+    await assertFieldError(page, "phone", "", "");
+    // An empty email is reported natively as missing, never as a format error.
+    assert.deepEqual(await page.locator("#email").evaluate((input) => ({
+      customError: input.validity.customError,
+      ariaInvalid: input.getAttribute("aria-invalid")
+    })), { customError: false, ariaInvalid: null });
+    assert.equal(await page.locator("#email-error").textContent(), "");
   } finally {
     await context.close();
   }
 };
 
-const runCorrectionTest = async (browser, field, phone = "123456789") => {
+/* The privacy notice replaces the former consent checkbox: it names the data controller,
+   links the policy from the keyboard order and adds no field or validation of its own. */
+const runPrivacyNoticeTest = async (browser) => {
+  const { context, page } = await openFormPage(browser);
+  try {
+    assert.equal(await page.locator('#booking-form [name="consent"], #consent, #consent-error').count(), 0,
+      "The contact form must not render a consent checkbox or its error lane");
+    const notice = page.locator("#booking-form #form-notice");
+    assert.match((await notice.textContent()) || "", /KP_Code Digital Studio/);
+    const policyLink = notice.getByRole("link", { name: "Polityce prywatności" });
+    assert.equal(await policyLink.getAttribute("href"), "/polityka-prywatnosci.html");
+    const submitButton = page.locator('.site-button--form[type="submit"]');
+    assert.equal(await submitButton.getAttribute("aria-describedby"), "form-notice");
+
+    await page.locator("#message").focus();
+    await page.keyboard.press("Tab");
+    assert.equal(await policyLink.evaluate((element) => document.activeElement === element), true,
+      "Tab from the message must reach the privacy policy link");
+    await page.keyboard.press("Tab");
+    assert.equal(await submitButton.evaluate((element) => document.activeElement === element), true,
+      "Tab from the privacy policy link must reach the submit button");
+  } finally {
+    await context.close();
+  }
+};
+
+const correctionScenarios = {
+  phone: {
+    validityMessage: "Podaj poprawny numer telefonu.",
+    errorMessage: "Podaj poprawny numer telefonu (np. +48 123 456 789) lub pozostaw pole puste.",
+    status: invalidFieldsMessage
+  },
+  email: {
+    validityMessage: "Podaj poprawny adres e-mail.",
+    errorMessage: "Podaj poprawny adres e-mail (np. jan.kowalski@example.com).",
+    status: invalidFieldsMessage
+  }
+};
+
+const runCorrectionTest = async (browser, field, { invalidValue, correctedValue }) => {
+  const scenario = correctionScenarios[field];
   const { context, page } = await openFormPage(browser);
   try {
     const posts = await interceptPosts(context);
     await fillValidForm(page);
-    if (field === "phone") await page.locator("#phone").fill("123");
-    else await page.locator("#consent").uncheck();
+    await page.locator(`#${field}`).fill(invalidValue);
 
     const expectedState = await readFormState(page);
-    await assertInvalidSubmission(page, posts, expectedState);
-    await assertFieldError(page, field,
-      field === "phone" ? "Podaj poprawny numer telefonu." : "Wyraź zgodę na przetwarzanie danych.",
-      field === "phone" ? "Podaj poprawny numer telefonu (np. +48 123 456 789)." : "Aby wysłać formularz, zaznacz zgodę."
-    );
+    assert.equal(expectedState[field], invalidValue, "Typing must not alter the entered value");
+    await assertInvalidSubmission(page, posts, expectedState, scenario.status);
+    await assertFieldError(page, field, scenario.validityMessage, scenario.errorMessage);
 
-    if (field === "phone") await page.locator("#phone").fill(phone);
-    else await page.locator("#consent").check();
+    await page.locator(`#${field}`).fill(correctedValue);
 
     await assertFieldError(page, field, "", "");
-    assert.deepEqual(await readFormState(page), {
-      ...expectedState,
-      phone: "+48 123 456 789",
-      consent: true
-    }, "Correction must normalize the phone and preserve the remaining entered values");
+    assert.deepEqual(await readFormState(page), { ...expectedState, [field]: correctedValue },
+      "Correction must keep the corrected value as typed and preserve the remaining entered values");
     assert.equal(posts.length, 0, "Correcting a field must not submit the form");
     await assertButtonUsable(page);
-    await assertCorrectedSubmission(page, posts);
+    await assertCorrectedSubmission(page, posts, field === "phone" ? { phone: correctedValue } : {});
   } finally {
     await context.close();
   }
 };
 
-/* Jedno nieprawidłowe pole w komplecie poprawnych danych: zgłoszenie nie wychodzi,
-   wartości zostają, komunikat jest konkretny, a po poprawie wysyłka przechodzi raz. */
-const runWindowRejectionTest = async (browser, scenario) => {
+const runOptionalPhoneTest = async (browser) => {
   const { context, page } = await openFormPage(browser);
   try {
     const posts = await interceptPosts(context);
-    await fillValidForm(page);
-    await assertDateWindowApplied(page);
-    await page.locator(`#${scenario.field}`).fill(scenario.value);
-
-    const expectedState = await readFormState(page);
-    await assertInvalidSubmission(page, posts, expectedState, windowMessage);
-    await assertFieldError(page, scenario.field, scenario.validityMessage, scenario.errorMessage);
-
-    const correction = scenario.field === "date" ? firstOpenDate : "18:00";
-    await page.locator(`#${scenario.field}`).fill(correction);
-    await assertFieldError(page, scenario.field, "", "");
-    assert.deepEqual(
-      await readFormState(page),
-      { ...expectedState, [scenario.field]: correction },
-      "Correcting the rejected field must preserve the remaining entered values"
-    );
-    assert.equal(posts.length, 0, "Correcting a field must not submit the form");
-    await assertButtonUsable(page);
-    await assertCorrectedSubmission(page, posts);
-  } finally {
-    await context.close();
-  }
-};
-
-const runWindowBoundaryTest = async (browser, date, time) => {
-  const { context, page } = await openFormPage(browser);
-  try {
-    const posts = await interceptPosts(context);
-    await fillValidForm(page, { date, time });
-    await assertDateWindowApplied(page);
-    await assertFieldError(page, "date", "", "");
-    await assertFieldError(page, "time", "", "");
-    await assertCorrectedSubmission(page, posts, { date, time });
+    await fillValidForm(page, { phone: "" });
+    await assertFieldError(page, "phone", "", "");
+    await assertCorrectedSubmission(page, posts, { phone: "" });
   } finally {
     await context.close();
   }
@@ -326,6 +298,7 @@ const runAcceptedResponseTest = async (browser) => {
   const responseGate = new Promise((resolve) => {
     releaseResponse = resolve;
   });
+  let deliveredPosts = 0;
 
   await context.route(`${baseUrl}/`, async (route) => {
     if (route.request().method() !== "POST") {
@@ -333,6 +306,7 @@ const runAcceptedResponseTest = async (browser) => {
       return;
     }
 
+    deliveredPosts += 1;
     await responseGate;
     await route.fulfill({ status: 204, body: "" });
   });
@@ -345,18 +319,28 @@ const runAcceptedResponseTest = async (browser) => {
     await page.waitForFunction(() => document.querySelector('.site-button--form[type="submit"]')?.disabled === true);
     assert.equal(await submitButton.getAttribute("aria-busy"), "true");
     assert.equal(await submitButton.textContent(), "Wysyłanie…");
+
+    // A repeated submission while the first request is pending must be swallowed.
+    assert.equal(await page.locator("#booking-form").evaluate((form) => {
+      let repeatEvent;
+      form.addEventListener("submit", (event) => {
+        repeatEvent = event;
+      }, { once: true });
+      form.requestSubmit();
+      return repeatEvent?.defaultPrevented === true;
+    }), true, "A repeated submission during loading must be prevented");
+
     releaseResponse();
     await submission;
 
     await page.locator("#form-msg").filter({ hasText: successMessage }).waitFor();
+    assert.equal(deliveredPosts, 1, "Duplicate-submission protection must send exactly one POST request");
     assert.deepEqual(await readFormState(page), {
       name: "",
+      email: "",
       phone: "",
-      date: "",
-      time: "",
-      guests: "",
-      notes: "",
-      consent: false
+      subject: "",
+      message: ""
     });
     await assertButtonUsable(page);
   } finally {
@@ -421,8 +405,13 @@ const runNativeFallbackTest = async (browser) => {
     assert.equal(interceptedPosts, 1);
     assert.equal(new URL(request.url()).pathname, "/index.html");
     assert.match((await request.headerValue("content-type")) || "", /^application\/x-www-form-urlencoded/);
-    assert.match(request.postData() || "", /form-name=reservation/);
-    assert.match(request.postData() || "", /name=Jan\+Kowalski/);
+    const payload = new URLSearchParams(request.postData() || "");
+    assert.equal(payload.get("form-name"), "contact");
+    assert.equal(payload.get("company"), "");
+    assert.equal(payload.get("name"), validEntry.name);
+    assert.equal(payload.get("email"), validEntry.email);
+    assert.equal(payload.get("phone"), validEntry.phone);
+    assert.equal(payload.has("consent"), false);
   } finally {
     await context.close();
   }
@@ -437,70 +426,27 @@ const run = async () => {
     browser = await chromium.launch({ headless: true });
 
     const scenarios = [
-      ["accepted HTTP response", () => runAcceptedResponseTest(browser)],
+      ["accepted HTTP response with duplicate-submission protection", () => runAcceptedResponseTest(browser)],
       ["rejected HTTP response", () => runFailureTest(browser, "http")],
       ["network failure", () => runFailureTest(browser, "network")],
       ["native fallback without fetch", () => runNativeFallbackTest(browser)],
       ["empty form sends no POST and retains values", () => runEmptyFormTest(browser)],
-      ...["123456789", "+48 123 456 789", "0048123456789"].map((phone) => [
-        `short phone rejection and correction with ${phone}`,
-        () => runCorrectionTest(browser, "phone", phone)
-      ]),
-      ["missing consent rejection and correction", () => runCorrectionTest(browser, "consent")],
+      ["privacy notice replaces the consent checkbox", () => runPrivacyNoticeTest(browser)],
+      ["optional phone left empty", () => runOptionalPhoneTest(browser)],
       ...[
-        [`today boundary ${firstOpenDate} at 17:00`, firstOpenDate, "17:00"],
-        [`90-day boundary ${lastOpenDate} at 22:00`, lastOpenDate, "22:00"]
-      ].map(([label, date, time]) => [
-        `accepted reservation window: ${label}`,
-        () => runWindowBoundaryTest(browser, date, time)
+        ["123", "123 456 789"],
+        ["tel. 123 456 789", "+48 123 456 789"],
+        ["+48 123 456 789 012 345 67", "0048 123 456 789"],
+        ["123+456789", "+44 20 7946 0958"],
+        ["abc", "+1 (555) 123-4567"]
+      ].map(([invalidValue, correctedValue]) => [
+        `invalid phone "${invalidValue}" rejected, then "${correctedValue}" submitted unchanged`,
+        () => runCorrectionTest(browser, "phone", { invalidValue, correctedValue })
       ]),
-      ...[
-        {
-          label: `past date ${pastDate}`,
-          field: "date",
-          value: pastDate,
-          validityMessage: "Wybierz datę od dziś.",
-          errorMessage: `Rezerwacje przyjmujemy od dziś (najwcześniej ${formatDatePl(windowStart)}).`
-        },
-        {
-          label: `date beyond 90 days ${tooDistantDate}`,
-          field: "date",
-          value: tooDistantDate,
-          validityMessage: "Wybierz datę w ciągu 90 dni.",
-          errorMessage: `Rezerwacje przyjmujemy do 90 dni naprzód (najpóźniej ${formatDatePl(windowEnd)}).`
-        },
-        {
-          label: `Monday ${mondayDate}`,
-          field: "date",
-          value: mondayDate,
-          validityMessage: "W poniedziałki nie przyjmujemy rezerwacji.",
-          errorMessage: "W poniedziałki nie przyjmujemy rezerwacji. Wybierz dzień od wtorku do niedzieli."
-        },
-        {
-          label: "time before 17:00",
-          field: "time",
-          value: "16:45",
-          validityMessage: "Rezerwacje od 17:00 do 22:00.",
-          errorMessage: "Rezerwacje przyjmujemy od 17:00 do 22:00."
-        },
-        {
-          label: "time after 22:00",
-          field: "time",
-          value: "22:15",
-          validityMessage: "Rezerwacje od 17:00 do 22:00.",
-          errorMessage: "Rezerwacje przyjmujemy od 17:00 do 22:00."
-        },
-        {
-          label: "time outside the 15-minute step",
-          field: "time",
-          value: "18:10",
-          validityMessage: "Wybierz godzinę co 15 minut.",
-          errorMessage: "Wybierz godzinę w odstępach 15 minut (np. 18:00, 18:15)."
-        }
-      ].map((scenario) => [
-        `rejected reservation window: ${scenario.label}`,
-        () => runWindowRejectionTest(browser, scenario)
-      ])
+      ["invalid email rejection and correction", () => runCorrectionTest(browser, "email", {
+        invalidValue: "jan.kowalski",
+        correctedValue: validEntry.email
+      })]
     ];
     for (const [label, scenario] of scenarios) {
       console.log(`QA RESERVATION E2E: ${label}`);

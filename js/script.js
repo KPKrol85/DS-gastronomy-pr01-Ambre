@@ -8,7 +8,7 @@ import { initCtaPulse } from "./modules/cta.js";
 import { initLoadMoreMenu, initLoadMoreGallery } from "./modules/load-more.js";
 import { initTabs, initGalleryFilter } from "./modules/tabs.js";
 import { initPageMenuPanel } from "./modules/page-menu.js";
-import { initReservationForm } from "./modules/form.js";
+import { initContactForm } from "./modules/form.js";
 import { initLightbox } from "./modules/lightbox.js";
 import { initFaqAria } from "./modules/faq.js";
 import { initDemoLegalModal } from "./modules/demo-legal.js";
@@ -38,7 +38,7 @@ const FEATURES = [
   { name: "LOAD MORE MENU", init: initLoadMoreMenu },
   { name: "TABS", init: initTabs },
   { name: "PAGE MENU", init: initPageMenuPanel },
-  { name: "RESERVATION FORM", init: initReservationForm },
+  { name: "CONTACT FORM", init: initContactForm },
 
   { name: "LOAD MORE GALLERY", init: initLoadMoreGallery },
   { name: "GALLERY FILTER", init: initGalleryFilter },
