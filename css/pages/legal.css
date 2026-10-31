@@ -39,7 +39,6 @@
 }
 
 .legal__link {
-  text-decoration: none;
   color: var(--c-link);
   font-weight: var(--fw-sans-emphasis);
   transition: color var(--dur-fast) var(--ease-standard);
@@ -76,7 +75,6 @@
 
 .legal__toc-link {
   display: inline-block;
-  text-decoration: none;
   color: var(--c-ink);
   font-weight: var(--fw-sans-emphasis);
   transition: color var(--dur-fast) var(--ease-standard);

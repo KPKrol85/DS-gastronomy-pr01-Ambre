@@ -37,14 +37,13 @@
 
 .breadcrumbs__link {
   color: var(--c-muted);
-  text-decoration: none;
   transition: color 0.15s ease;
 }
 
 .breadcrumbs__link:hover,
 .breadcrumbs__link:focus-visible {
   color: var(--c-accent-contrast);
-  text-decoration: underline;
+  text-decoration-line: underline;
 }
 
 .breadcrumbs__item[aria-current="page"],

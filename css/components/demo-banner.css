@@ -53,13 +53,11 @@
 .demo-legal-modal__text a,
 .demo-legal-modal__links a {
   color: var(--c-link);
-  text-decoration: none;
 }
 
 .demo-legal-modal__text a:hover,
 .demo-legal-modal__links a:hover {
   color: var(--c-link);
-  text-decoration: underline;
 }
 
 .demo-legal-modal__links {

@@ -33,15 +33,11 @@
   min-height: 44px;
   color: var(--c-link);
   font-weight: var(--fw-sans-emphasis);
-  text-decoration: underline;
-  text-decoration-thickness: var(--border-thin);
-  text-underline-offset: 0.2em;
 }
 
 .cta__lead a:hover,
 .cta__lead a:active {
   color: var(--c-accent-contrast);
-  text-decoration-thickness: var(--border-medium);
 }
 
 .cta__lead a:focus-visible {

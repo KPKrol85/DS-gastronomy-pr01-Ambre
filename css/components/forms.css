@@ -45,16 +45,26 @@ html[data-theme="dark"] .booking {
   min-width: 0;
 }
 
-.booking__header {
-  text-align: center;
+/* The header reads from the card's left edge, so the shared section-title and
+   u-lead centring is undone here and the title's accent rule follows the text. */
+
+.booking__header,
+.booking__title,
+.booking__lead {
+  text-align: left;
 }
 
 .booking__title {
   margin-bottom: var(--space-04);
 }
 
+.booking__title::after {
+  left: 0;
+  transform: none;
+}
+
 .booking__lead {
-  margin: 0 auto;
+  margin: 0;
   max-width: 46ch;
   font-size: var(--fs-sm);
 }
@@ -63,7 +73,7 @@ html[data-theme="dark"] .booking {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-04);
-  margin-top: var(--space-05);
+  margin-top: var(--space-06);
 }
 
 /* Form */
@@ -225,17 +235,11 @@ html[data-theme="dark"] .booking {
   color: var(--c-muted);
 }
 
-.booking-form__notice a {
-  color: var(--c-link);
-  text-decoration-line: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.14em;
-  text-decoration-skip-ink: auto;
-}
+/* With no underline at rest, the emphasis weight is the link's non-colour cue in
+   the muted notice copy, as on the other in-text links. */
 
-.booking-form__notice a:hover,
-.booking-form__notice a:focus-visible {
-  text-decoration-thickness: 2px;
+.booking-form__notice a {
+  font-weight: var(--fw-sans-emphasis);
 }
 
 /* Submit */

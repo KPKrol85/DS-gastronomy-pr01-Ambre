@@ -66,12 +66,16 @@ img {
 
 a {
   color: var(--c-link);
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  text-decoration-line: none;
+  text-decoration-thickness: var(--border-thin);
+  text-underline-offset: 0.2em;
 }
 
-a:hover {
-  text-decoration-thickness: 2px;
+/* Text links underline on hover only. :where() keeps this at element weight, so
+   buttons, navigation and section CTAs that set `text-decoration: none` keep it. */
+
+a:where(:hover) {
+  text-decoration-line: underline;
 }
 
 button,
