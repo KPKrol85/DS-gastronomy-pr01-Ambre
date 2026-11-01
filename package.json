@@ -4,6 +4,7 @@
   "private": true,
   "description": "A portfolio demonstration website for a fictional fine-dining restaurant, created by KP_Code Digital Studio.",
   "author": "Kamil Król | KP_Code Digital Studio",
+  "homepage": "https://ds-gastronomy-pr01-ambre.netlify.app/",
   "license": "SEE LICENSE IN LICENSE.md",
   "repository": {
     "type": "git",
