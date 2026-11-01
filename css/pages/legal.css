@@ -52,6 +52,7 @@
   position: relative;
   padding-bottom: var(--space-04);
   margin-bottom: var(--space-05);
+  scroll-margin-top: calc(var(--header-h, 64px) + 12px);
 }
 
 .legal__toc::after {
@@ -106,6 +107,67 @@
   width: 40px;
   height: 1px;
   background: color-mix(in oklab, var(--c-border), transparent 35%);
+}
+
+/* Section heading with its return-to-TOC link. The wrapper takes over the
+   heading's outer margins so vertical rhythm stays unchanged. */
+
+.legal__section-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  column-gap: var(--space-03);
+  margin-top: var(--space-06);
+  margin-bottom: var(--space-02);
+}
+
+.legal__section-head h2 {
+  margin-block: 0;
+}
+
+.legal__toc-return {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  /* Centres the link on the heading's first line without growing the row. */
+  margin-top: calc((var(--fs-lg) * var(--lh-tight) - 2rem) / 2);
+  border: var(--border-thin) solid color-mix(in oklab, var(--c-border), var(--c-muted) 25%);
+  border-radius: var(--radius-full);
+  color: var(--c-muted);
+  transition:
+    color var(--dur-fast) var(--ease-standard),
+    border-color var(--dur-fast) var(--ease-standard),
+    background-color var(--dur-fast) var(--ease-standard);
+}
+
+/* Widens the touch target to 44px without affecting layout. */
+.legal__toc-return::before {
+  content: "";
+  position: absolute;
+  inset: calc((2rem - 44px) / 2 - var(--border-thin));
+}
+
+.legal__toc-return::after {
+  content: "";
+  inline-size: 0.875rem;
+  block-size: 0.875rem;
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 19V5M5 12l7-7 7 7'/></svg>")
+    center/contain no-repeat;
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 19V5M5 12l7-7 7 7'/></svg>")
+    center/contain no-repeat;
+  background: currentColor;
+}
+
+.legal__toc-return:is(:hover, :focus-visible) {
+  color: var(--c-link-hover, var(--c-link));
+  border-color: color-mix(in oklab, currentColor, transparent 45%);
+  background-color: color-mix(in oklab, var(--c-accent) 6%, transparent);
+}
+
+.legal__toc-return:focus-visible {
+  border-radius: var(--radius-full);
 }
 
 .legal__doc p {
@@ -165,5 +227,17 @@
 @media (min-width: 480px) {
   .legal {
     padding: var(--space-06) var(--space-08);
+  }
+}
+
+@media (forced-colors: active) {
+  .legal__toc-return::after {
+    background: LinkText;
+  }
+}
+
+@media print {
+  .legal__toc-return {
+    display: none;
   }
 }
