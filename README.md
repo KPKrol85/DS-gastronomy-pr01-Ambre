@@ -10,7 +10,7 @@ Repozytorium zawiera osiem stron, lokalne zasoby, build produkcyjny i narzędzia
 
 ### Wersja online
 
-[Demo Ambre](https://ds-gastronomy-pr01-ambre.netlify.app/) — adres wskazany w `package.json` i `regulamin.html`. Dostępność adresu oraz zgodność wdrożenia z bieżącą rewizją repozytorium nie zostały potwierdzone.
+[Demo Ambre](https://ds-gastronomy-pr01-ambre.netlify.app/) — adres wskazany w `package.json` i `regulamin.html`. 1 listopada 2026 r. właściciel projektu wdrożył na nim świeżo zbudowany katalog `dist/` i ręcznie zweryfikował wdrożenie produkcyjne: nagłówki z CSP, odpowiedź 404, odbiór formularza kontaktowego przez Netlify Forms oraz działanie Service Workera i strony offline. Deklarowane przekierowanie `/menu` → `/menu.html` nie zwraca kodu 301 (obie ścieżki odpowiadają kodem 200); właściciel projektu zaakceptował to zachowanie. Weryfikacja dotyczy tego wdrożenia; kolejne wdrożenia nie są sprawdzane automatycznie.
 
 ### Kluczowe funkcje
 
@@ -128,7 +128,7 @@ Testy Playwright korzystają z lokalnych serwerów i Chromium. Regresje formular
 
 `qa:nojs` sprawdza osiem stron bez JavaScriptu: nawigację i klawiaturę przy 320–1280 px, brak aktywnych lub fokusowalnych kontrolek zależnych od JavaScriptu, natywne ograniczenia formularza oraz kontrast przycisku formularza i linku powrotu na `404.html` bez atrybutu `data-theme` przy jasnej i ciemnej preferencji systemowej. `test:e2e:mobile-nav` obejmuje także `aria-modal`, `inert` tła i jego przywracanie, drzewo dostępności Chromium oraz stałą pozycję `main` po usunięciu `no-js` na ośmiu stronach przy mobilnej emulacji Lighthouse (412 px).
 
-[Workflow CI](.github/workflows/main.yml) jest skonfigurowany dla push i pull request do `main`: instalacja zależności, szybkie QA i build. Nie uruchamia pełnego zestawu QA. Dostępne kontrole nie stanowią deklaracji ich zaliczenia ani zgodności dostępności. Kontrole lokalne nie weryfikują wdrożenia Netlify, dostarczania nagłówków i przekierowań, odbioru formularza przez dostawcę ani działania PWA w środowisku produkcyjnym. Zapisane wyniki weryfikacji i jej ograniczenia zawiera [zarchiwizowany audyt z 2026-10-26](docs/archive/audits/AUDIT-2026-10-26.md).
+[Workflow CI](.github/workflows/main.yml) jest skonfigurowany dla push i pull request do `main`: instalacja zależności, szybkie QA i build. Nie uruchamia pełnego zestawu QA. Dostępne kontrole nie stanowią deklaracji ich zaliczenia ani zgodności dostępności. Kontrole lokalne nie weryfikują wdrożenia Netlify, dostarczania nagłówków i przekierowań, odbioru formularza przez dostawcę ani działania PWA w środowisku produkcyjnym; te elementy sprawdzono ręcznie na wdrożeniu produkcyjnym z 1 listopada 2026 r. (`PH2-02` w [planie rozwoju](PLAN.md)). Zapisane wyniki weryfikacji i jej ograniczenia zawiera [zarchiwizowany audyt z 2026-10-26](docs/archive/audits/AUDIT-2026-10-26.md).
 
 ### Wdrożenie
 
@@ -156,7 +156,7 @@ Strony mają tytuły, opisy, canonicale, Open Graph i Twitter Cards; repozytoriu
 
 `sw.js` precache’uje strony i podstawowe zasoby. Nawigacja, CSS i JavaScript korzystają najpierw z sieci, a przy błędzie sieci z cache; obrazy korzystają najpierw z cache, a następnie z sieci. Brak dokumentu lub obrazu w trybie offline prowadzi do odpowiednich zasobów zastępczych. Cache mają prefiks `ambre-`; aktywacja usuwa przestarzałe cache projektu i jawnie wskazane stare klucze, zachowując nieznane cache tego samego originu.
 
-`js/sw-register.js` pomija rejestrację na lokalnych hostach i prywatnych adresach IP oraz wyrejestrowuje tam istniejące Service Workery. Zwykły development lokalny nie sprawdza więc działania offline. Zasoby spoza precache zależą od wcześniejszego pobrania; instalacja, cache i zewnętrzna mapa wymagają osobnej weryfikacji w docelowym środowisku.
+`js/sw-register.js` pomija rejestrację na lokalnych hostach i prywatnych adresach IP oraz wyrejestrowuje tam istniejące Service Workery. Zwykły development lokalny nie sprawdza więc działania offline. Zasoby spoza precache zależą od wcześniejszego pobrania. Rejestrację i aktywację Service Workera, cache `ambre-app-shell-v1.8` i `ambre-runtime-img-v1.8` oraz stronę offline potwierdzono ręcznie na wdrożeniu produkcyjnym z 1 listopada 2026 r.; instalacja aplikacji i zewnętrzna mapa nie były przedmiotem tej weryfikacji.
 
 ### Wydajność
 
@@ -186,7 +186,7 @@ The repository contains eight pages, local assets, a production build, and QA to
 
 ### Live Version
 
-[Ambre demo](https://ds-gastronomy-pr01-ambre.netlify.app/) — the address listed in `package.json` and `regulamin.html`. Availability and alignment of the deployment with the current repository revision have not been confirmed.
+[Ambre demo](https://ds-gastronomy-pr01-ambre.netlify.app/) — the address listed in `package.json` and `regulamin.html`. On November 1, 2026, the project owner deployed a freshly built `dist/` directory to it and manually verified the production deployment: headers including CSP, the 404 response, contact form receipt by Netlify Forms, and Service Worker and offline page behavior. The declared `/menu` → `/menu.html` redirect does not return 301 (both paths respond with 200); the project owner accepted this behavior. The verification applies to that deployment; later deployments are not verified automatically.
 
 ### Key Features
 
@@ -304,7 +304,7 @@ Playwright tests use local servers and Chromium. Form regressions intercept POST
 
 `qa:nojs` checks eight pages without JavaScript: navigation and keyboard access at 320–1280 px, the absence of enabled or focusable JavaScript-dependent controls, native form constraints, and the contrast of the form submit button and the `404.html` recovery link without a `data-theme` attribute under light and dark system preferences. `test:e2e:mobile-nav` also covers `aria-modal`, background `inert` state and its restoration, the Chromium accessibility tree, and a stable `main` position after `no-js` removal on eight pages under Lighthouse mobile emulation (412 px).
 
-The [CI workflow](.github/workflows/main.yml) is configured for pushes and pull requests to `main`: dependency installation, fast QA, and a build. It does not run the full QA suite. Available checks do not establish that they passed or that accessibility conformance was achieved. Local checks do not verify the Netlify deployment, header and redirect delivery, form receipt by the provider, or PWA behavior in production. Recorded verification results and their limitations are kept in the [archived 2026-10-26 audit](docs/archive/audits/AUDIT-2026-10-26.md).
+The [CI workflow](.github/workflows/main.yml) is configured for pushes and pull requests to `main`: dependency installation, fast QA, and a build. It does not run the full QA suite. Available checks do not establish that they passed or that accessibility conformance was achieved. Local checks do not verify the Netlify deployment, header and redirect delivery, form receipt by the provider, or PWA behavior in production; these were checked manually on the November 1, 2026 production deployment (`PH2-02` in the [development plan](PLAN.md)). Recorded verification results and their limitations are kept in the [archived 2026-10-26 audit](docs/archive/audits/AUDIT-2026-10-26.md).
 
 ### Deployment
 
@@ -332,7 +332,7 @@ Pages include titles, descriptions, canonicals, Open Graph, and Twitter Cards; t
 
 `sw.js` precaches pages and basic assets. Navigation, CSS, and JavaScript use the network first with a cache fallback on network failure; images use the cache first, then the network. Missing offline documents or images lead to their respective fallback assets. Cache names use the `ambre-` prefix; activation removes obsolete project caches and explicitly listed legacy keys while preserving unknown caches on the same origin.
 
-`js/sw-register.js` skips registration on local hosts and private IP addresses and unregisters existing Service Workers there. Ordinary local development therefore does not exercise offline behavior. Assets outside precache depend on earlier retrieval; installation, caching, and the external map require separate verification in the target environment.
+`js/sw-register.js` skips registration on local hosts and private IP addresses and unregisters existing Service Workers there. Ordinary local development therefore does not exercise offline behavior. Assets outside precache depend on earlier retrieval. Service Worker registration and activation, the `ambre-app-shell-v1.8` and `ambre-runtime-img-v1.8` caches, and the offline page were confirmed manually on the November 1, 2026 production deployment; app installation and the external map were not part of that verification.
 
 ### Performance
 

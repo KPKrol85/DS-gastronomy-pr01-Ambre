@@ -1,6 +1,6 @@
 # Ambre — Development Plan
 
-**Last reviewed:** 2026-10-28
+**Last reviewed:** 2026-11-01
 **Project type:** Eight-page Polish portfolio demonstration of a fictional restaurant — static HTML, modular CSS, Vanilla JavaScript, Node.js production build and Netlify-oriented hosting rules
 **Plan status:** Active
 
@@ -64,14 +64,15 @@
   - **Depends on:** `PH1-01`, `PH1-02`, `PH1-03`, `PH2-04`
   - **Completion condition:** the build, server check, full QA aggregate and Service Worker regression pass on the current revision; no Lighthouse scores are claimed beyond the recorded run.
 
-- [ ] **PH2-02 — Verify hosted Netlify contracts** — **Status:** Blocked
-  - [ ] confirm that the configured site serves the current revision of `dist/`
-  - [ ] verify `_headers` delivery, including the CSP with current script hashes, and absence of CSP violations on the eight pages
-  - [ ] verify `_redirects` behavior and the 404 response, including extensionless `/regulamin`, which has no explicit rule
-  - [ ] verify reservation form detection and receipt by the provider with a test submission
-  - [ ] verify Service Worker registration, cache activation and offline fallback on the hosted origin
-  - **Blocker:** the README states that availability of the referenced Netlify address and its correspondence with the current revision are unconfirmed; provider form handling cannot be verified from the repository.
-  - **Unblocks when:** the project owner confirms the target deployment and provides access to verify it.
+- [x] **PH2-02 — Verify hosted Netlify contracts** — **Status:** Completed with one accepted routing exception
+  - [x] confirm that the configured site serves a freshly generated `dist/`
+  - [x] verify `_headers` delivery, including the CSP with current script hashes, and absence of CSP violations on the eight pages
+  - [x] verify `_redirects` behavior and the 404 response, including extensionless `/regulamin`, which has no explicit rule
+  - [x] verify contact form detection and receipt by the provider with a test submission
+  - [x] verify Service Worker registration, cache activation and offline fallback on the hosted origin
+  - **Result (2026-11-01, manual, `https://ds-gastronomy-pr01-ambre.netlify.app/`):** production deployed by the project owner with `npm run build` and `netlify deploy --prod --dir=dist --no-build`, both successful, and confirmed live by Netlify. Responses carried the configured CSP with the current script hashes and the other configured security headers; all eight pages showed no visible CSP violations in Chromium. An unknown URL returned 404 with the custom Ambre error page, and `/regulamin` returned 200. Netlify Forms detected the `contact` form and listed a real test submission under Verified submissions, with an email notification received. The Service Worker registered and activated, Cache Storage held `ambre-app-shell-v1.8` and `ambre-runtime-img-v1.8`, and the offline fallback displayed the custom offline page.
+  - **Accepted exception:** `/menu` and `/menu.html` both returned 200 with matching ETags; the declared `/menu` → `/menu.html` rule did not produce a 301. The project owner accepted this behavior and kept the existing configuration. Only the redirects listed above were checked; other `_redirects` rules were not tested individually.
+  - **Observation:** the delivered HSTS `max-age` was `31536000`, while `_headers` specifies `63072000`; recorded without a configuration change.
   - **Depends on:** `PH2-01`
 
 - [x] **PH2-03 — Close and archive the 2026-10-26 audit**
