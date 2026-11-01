@@ -59,7 +59,9 @@
   }
 }
 
-/* Section CTA — lightweight text link closing the Menu / Gallery sections */
+/* Section CTA — lightweight text link closing the Menu / Gallery sections.
+   One rule underlines the label: a hairline at rest that warms to the accent on
+   hover. Focus keeps the hairline so the outline is the only line it adds. */
 
 .section-cta {
   --section-cta-gap: var(--space-02);
@@ -77,28 +79,19 @@
   transition: color var(--dur-normal) var(--ease-standard);
 }
 
-.section-cta::before,
 .section-cta::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
   bottom: var(--section-cta-gap);
-  border-radius: var(--radius-xs);
-  pointer-events: none;
-}
-
-.section-cta::before {
   height: var(--border-thin);
-  background: color-mix(in oklab, var(--c-ink), transparent 72%);
-}
-
-.section-cta::after {
-  height: var(--border-medium);
-  background: var(--c-accent);
-  transform: scaleX(0);
-  transform-origin: 50% 100%;
-  transition: transform var(--dur-normal) var(--ease-standard);
+  border-radius: var(--radius-xs);
+  background-color: color-mix(in oklab, var(--c-ink), transparent 72%);
+  pointer-events: none;
+  transition:
+    height var(--dur-normal) var(--ease-standard),
+    background-color var(--dur-normal) var(--ease-standard);
 }
 
 .section-cta:focus-visible {
@@ -106,10 +99,6 @@
   outline: 2px solid var(--c-accent-contrast);
   outline-offset: 4px;
   border-radius: var(--radius-xs);
-}
-
-.section-cta:focus-visible::after {
-  transform: scaleX(1);
 }
 
 .section-cta:active {
@@ -127,7 +116,8 @@
     color: var(--c-accent-contrast);
   }
   .section-cta:hover::after {
-    transform: scaleX(1);
+    height: var(--border-medium);
+    background-color: var(--c-accent);
   }
 }
 
