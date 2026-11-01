@@ -1,8 +1,8 @@
 /* Page Menu
    The full card reuses the refined dish + tab treatment from
    `components/menu.css`; what lives here is the composition the longer list
-   needs — a wider measure, two columns from the desktop breakpoint, and the
-   expandable dish details folded into the card's text column. */
+   needs — a wider measure, two columns from the desktop breakpoint, the card
+   footer that leads to the dish details, and the dish-details dialog. */
 
 .page-menu {
   --menu-col-max: 680px;
@@ -31,21 +31,46 @@
   padding: 0;
 }
 
-/* The description hands its closing space to the disclosure below it. */
+/* Only the photograph and the footer action respond to a click; the rest of
+   the card reads as copy, so it keeps the ordinary cursor. */
+.page-menu .dish {
+  cursor: auto;
+}
+
+.page-menu .dish__title {
+  text-wrap: balance;
+}
+
+.page-menu .dish__price {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* The description hands its closing space to the card footer below it. */
 .page-menu .dish__desc {
   padding-bottom: 0;
 }
 
-/* Expandable details: a plain hairline closes the description and opens the
-   detail, so the panel reads as part of the card instead of a second card
-   nested inside it — and the card keeps one accent, the title separator. */
-.page-menu .dish-more {
+/* Card footer: the native disclosure without JavaScript, the "Poznaj danie"
+   action once the dialog is ready. Both share one box — margins, hairline and
+   row height — so swapping one for the other never moves the card. The
+   hairline closes the description, and the card keeps one accent, the title
+   separator. */
+.page-menu :is(.dish-more, .dish__action) {
   margin: var(--space-03) var(--dish-pad) var(--dish-pad);
-  padding: var(--space-02) 0 0;
   border: 0;
   border-top: var(--border-thin) solid color-mix(in oklab, var(--c-border), transparent 25%);
   background: none;
-  transition: border-color var(--dur-normal) var(--ease-standard);
+  transition:
+    border-color var(--dur-normal) var(--ease-standard),
+    color var(--dur-normal) var(--ease-standard);
+}
+
+.page-menu :is(.dish-more, .dish__action)[hidden] {
+  display: none;
+}
+
+.page-menu .dish-more {
+  padding: var(--space-02) 0 0;
 }
 
 .page-menu .dish-more__summary {
@@ -59,12 +84,6 @@
   transition: color var(--dur-normal) var(--ease-standard);
 }
 
-.page-menu .dish-more__summary:focus-visible {
-  outline: 3px solid var(--c-accent-contrast);
-  outline-offset: 3px;
-  border-radius: var(--radius-xs);
-}
-
 .page-menu .dish-more__content {
   margin-top: var(--space-02);
   padding: 0;
@@ -76,15 +95,61 @@
   text-wrap: pretty;
 }
 
+.page-menu .dish-more__content p {
+  margin: 0;
+}
+
 .page-menu .dish-more__content strong {
   font-weight: var(--fw-sans-emphasis);
   color: var(--c-ink);
   letter-spacing: var(--ls-wide);
 }
 
+/* The action reads as the card's last line of a menu: the label on the left,
+   a quiet arrow at the measure's end, and the whole row as the target. Its
+   padding mirrors the disclosure's own spacing plus its summary's. */
+.page-menu .dish__action {
+  --dish-action-pad: var(--space-02);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-03);
+  inline-size: calc(100% - 2 * var(--dish-pad));
+  padding: calc(var(--space-02) + var(--dish-action-pad)) 0 var(--dish-action-pad);
+  color: var(--c-ink);
+  font: inherit;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-sans-emphasis);
+  line-height: var(--lh-normal);
+  letter-spacing: var(--ls-wide);
+  text-align: start;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.page-menu .dish__action-icon {
+  flex: none;
+  color: var(--c-accent-contrast);
+}
+
+.page-menu :is(.dish-more__summary, .dish__action):focus-visible {
+  outline: 3px solid var(--c-accent-contrast);
+  outline-offset: 3px;
+  border-radius: var(--radius-xs);
+}
+
+/* Without JavaScript the disclosure opens in place; aligning each row to its
+   start keeps the neighbouring card at its own height while it does. */
+@media (scripting: none) {
+  .page-menu .menu__grid {
+    align-items: start;
+  }
+}
+
 @media (min-width: 480px) {
   /* Three content rows between the elastic spacers — title, description and
-     the disclosure — all inside the text column, so the photograph keeps the
+     the footer — all inside the text column, so the photograph keeps the
      full height of the card and nothing spans underneath it. */
   .page-menu .dish--has-thumb {
     /* A slightly narrower media column than the homepage preview — the denser
@@ -101,7 +166,7 @@
       "thumb .";
   }
 
-  .page-menu .dish--has-thumb .dish-more {
+  .page-menu .dish--has-thumb :is(.dish-more, .dish__action) {
     grid-area: more;
   }
 }
@@ -110,23 +175,216 @@
   .page-menu .dish-more__summary {
     padding-block: var(--space-03);
   }
+
+  .page-menu .dish__action {
+    --dish-action-pad: var(--space-03);
+  }
 }
 
 @media (hover: hover) {
-  /* Warming the hairline and the label is the whole hover — the disclosure has
-     no box of its own to light up any more. */
-  .page-menu .dish-more:hover {
+  /* Warming the hairline and the label is the whole hover — the footer has no
+     box of its own to light up. */
+  .page-menu :is(.dish-more, .dish__action):hover {
     border-top-color: color-mix(in oklab, var(--c-border), var(--c-accent) 55%);
   }
 
-  .page-menu .dish-more__summary:hover {
+  .page-menu :is(.dish-more__summary, .dish__action):hover {
+    color: var(--c-accent-contrast);
+  }
+}
+
+/* Dish details
+   One native modal dialog serves every card. The photograph and the copy sit
+   side by side from the tablet breakpoint and stack on narrow screens. The
+   dialog is its own scroll container, so the sticky close button stays in
+   reach — and keyboard scrolling works — when the viewport is short. */
+
+.page-menu .dish-dialog {
+  --dish-dialog-gutter: var(--space-03);
+  --dish-dialog-close: 40px;
+
+  inline-size: min(56rem, 100% - 2 * var(--dish-dialog-gutter));
+  max-inline-size: none;
+  max-block-size: calc(100dvh - 2 * var(--dish-dialog-gutter));
+  padding: 0;
+  border: var(--border-thin) solid var(--c-border);
+  border-radius: var(--radius-md);
+  background: var(--dish-surface);
+  color: var(--c-ink);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden auto;
+  overscroll-behavior: contain;
+}
+
+.page-menu .dish-dialog::backdrop {
+  background: rgba(8, 8, 12, 0.6);
+}
+
+/* Sticky in the dialog's own flow: the negative bottom margin lets the layout
+   start at the top edge, so the button floats over the photograph. */
+.page-menu .dish-dialog__close {
+  position: sticky;
+  top: var(--dish-dialog-gutter);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--dish-dialog-close);
+  block-size: var(--dish-dialog-close);
+  margin: var(--dish-dialog-gutter) var(--dish-dialog-gutter) calc(-1 * (var(--dish-dialog-close) + var(--dish-dialog-gutter))) auto;
+  padding: 0;
+  border: var(--border-thin) solid var(--c-border);
+  border-radius: var(--radius-full);
+  background: var(--dish-surface);
+  color: var(--c-ink);
+  box-shadow: var(--shadow-xs);
+  cursor: pointer;
+  transition:
+    border-color var(--dur-normal) var(--ease-standard),
+    color var(--dur-normal) var(--ease-standard);
+}
+
+.page-menu .dish-dialog__close:focus-visible {
+  outline: 3px solid var(--c-accent-contrast);
+  outline-offset: 3px;
+}
+
+.page-menu .dish-dialog__close-icon {
+  display: block;
+}
+
+.page-menu .dish-dialog__layout {
+  display: grid;
+}
+
+/* The frame keeps the photograph's place while the image loads. */
+.page-menu .dish-dialog__media {
+  display: block;
+  aspect-ratio: 3 / 2;
+  max-block-size: 45dvh;
+  overflow: hidden;
+  background: var(--c-surface);
+}
+
+.page-menu .dish-dialog__image {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.page-menu .dish-dialog__body {
+  display: grid;
+  align-content: center;
+  gap: var(--space-04);
+  padding: var(--space-05) var(--space-05) var(--space-06);
+}
+
+/* Name and price read as one heading block; the accent rule beneath echoes the
+   card's title separator. */
+.page-menu .dish-dialog__head {
+  position: relative;
+  display: grid;
+  gap: var(--space-02);
+  padding-bottom: var(--space-04);
+}
+
+.page-menu .dish-dialog__head::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: var(--space-05);
+  height: var(--border-thin);
+  border-radius: var(--radius-xs);
+  background: color-mix(in oklab, var(--c-border), var(--c-accent) 55%);
+}
+
+.page-menu .dish-dialog__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-display-emphasis);
+  line-height: var(--lh-tight);
+  text-wrap: balance;
+}
+
+.page-menu .dish-dialog__price {
+  margin: 0;
+  color: var(--c-accent-contrast);
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-display-emphasis);
+  letter-spacing: var(--ls-sm);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.page-menu .dish-dialog__text {
+  margin: 0;
+  max-inline-size: 60ch;
+  color: color-mix(in oklab, var(--c-ink), var(--c-muted) 35%);
+  font-size: var(--fs-md);
+  line-height: var(--lh-relaxed);
+  text-wrap: pretty;
+}
+
+.page-menu .dish-dialog__facts {
+  display: grid;
+  gap: var(--space-01);
+  margin: 0;
+  padding-top: var(--space-04);
+  border-top: var(--border-thin) solid color-mix(in oklab, var(--c-border), transparent 25%);
+}
+
+.page-menu .dish-dialog__facts[hidden] {
+  display: none;
+}
+
+.page-menu .dish-dialog__label {
+  color: var(--c-muted);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-sans-emphasis);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+}
+
+.page-menu .dish-dialog__allergens {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
+}
+
+/* Side by side from the tablet breakpoint, and on landscape phones, where a
+   stacked photograph would fill the short screen on its own. */
+@media (min-width: 720px), (orientation: landscape) and (min-width: 560px) {
+  .page-menu .dish-dialog__layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  /* Square like the source photographs; the frame grows with longer copy and
+     the image covers it. */
+  .page-menu .dish-dialog__media {
+    aspect-ratio: 1;
+    max-block-size: none;
+    align-self: stretch;
+  }
+
+  .page-menu .dish-dialog__body {
+    padding: var(--space-08) var(--space-06) var(--space-07);
+  }
+}
+
+@media (hover: hover) {
+  .page-menu .dish-dialog__close:hover {
+    border-color: color-mix(in oklab, var(--c-border), var(--c-accent) 55%);
     color: var(--c-accent-contrast);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .page-menu .dish-more,
-  .page-menu .dish-more__summary {
+  .page-menu :is(.dish-more, .dish__action),
+  .page-menu .dish-more__summary,
+  .page-menu .dish-dialog__close {
     transition: none;
   }
 }
