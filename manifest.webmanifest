@@ -1,7 +1,7 @@
 {
   "name": "Ambre – Restauracja Fine Dining",
   "short_name": "Ambre",
-  "description": "Ambre to kameralna restauracja fine dining z autorską kuchnią, sezonowym menu degustacyjnym i starannie dobraną selekcją win.",
+  "description": "Ambre to demonstracyjny projekt strony fikcyjnej restauracji fine dining, przygotowany w celach prezentacyjnych i portfolio przez KP_Code Digital Studio.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -91,18 +91,18 @@
 
   "screenshots": [
     {
-      "src": "assets/icons/screenshots/mobile.jpg",
+      "src": "assets/icons/screenshots/mobile-v2.jpg",
       "sizes": "720x1280",
       "type": "image/jpeg",
       "form_factor": "narrow",
-      "label": "Ambre – strona główna (mobile)"
+      "label": "Ambre – strona główna projektu demonstracyjnego na telefonie"
     },
     {
-      "src": "assets/icons/screenshots/desktop.jpg",
+      "src": "assets/icons/screenshots/desktop-v2.jpg",
       "sizes": "1280x720",
       "type": "image/jpeg",
       "form_factor": "wide",
-      "label": "Ambre – strona główna (desktop)"
+      "label": "Ambre – strona główna projektu demonstracyjnego na komputerze"
     }
   ]
 }
