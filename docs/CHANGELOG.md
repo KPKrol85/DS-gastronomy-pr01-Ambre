@@ -78,6 +78,7 @@ Record changes that materially affect UI/UX, accessibility, public content, buil
 - Replaced hero and About photographs with the Amber dining journal set and regenerated responsive WebP/AVIF variants.
 - Redesigned the homepage hero with an editorial text/image split, theme-aware wordmark, and responsive photographic framing.
 - Redesigned homepage and full-gallery layouts as editorial photo sequences with responsive width-based `srcset` and gap-free category filtering.
+- Applied the saved or system theme before the first paint with a CSP-hashed inline `<head>` script on all eight pages, removing the incorrect-theme flash on navigation and reload; added first-frame E2E coverage.
 
 ### Fixed
 

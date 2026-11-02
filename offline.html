@@ -17,6 +17,17 @@
     <!-- Preload fonts -->
     <link rel="preload" href="/assets/fonts/poppins-v24-latin-600.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/assets/fonts/source-sans-3-v19-latin-regular.woff2" as="font" type="font/woff2" crossorigin />
+    <!-- Theme: mirrors js/modules/theme.js before the first paint (CSP hash in _headers) -->
+    <script>
+      (function () {
+        var theme = null;
+        try {
+          theme = localStorage.getItem("theme");
+        } catch (error) {}
+        if (theme === null) theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        if (theme === "light" || theme === "dark") document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
     <!-- Styles -->
     <link rel="stylesheet" href="/css/style.css" />
   </head>

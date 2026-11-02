@@ -216,6 +216,86 @@ const runStorageFailureScenario = async (browser, operation, initialScheme) => {
   }
 };
 
+/* Installed before any page script runs. A document's first animation frame precedes its
+   first paint, so the theme recorded there is the theme the browser renders first; later
+   data-theme value changes are recorded to catch a switch during initialization. */
+const recordFirstFrameTheme = () => {
+  let current = null;
+  window.__qaThemeChanges = [];
+  new MutationObserver(() => {
+    const theme = document.documentElement.getAttribute("data-theme");
+    if (window.__qaFirstFrame && theme !== current) window.__qaThemeChanges.push(theme);
+    current = theme;
+  }).observe(document, { subtree: true, attributes: true, attributeFilter: ["data-theme"] });
+
+  const sample = () => {
+    if (!document.body) {
+      requestAnimationFrame(sample);
+      return;
+    }
+    current = document.documentElement.getAttribute("data-theme");
+    window.__qaFirstFrame = {
+      theme: current,
+      ready: document.documentElement.hasAttribute("data-theme-ready"),
+      background: getComputedStyle(document.body).backgroundColor
+    };
+  };
+  requestAnimationFrame(sample);
+};
+
+const runFirstRenderScenario = async (browser, savedTheme) => {
+  const systemScheme = savedTheme === "light" ? "dark" : "light";
+  const label = `first render, saved ${savedTheme}, ${systemScheme} system preference`;
+  const context = await browser.newContext({
+    colorScheme: systemScheme,
+    serviceWorkers: "block",
+    storageState: { cookies: [], origins: [{ origin: baseUrl, localStorage: [{ name: "theme", value: savedTheme }] }] }
+  });
+  try {
+    await context.addInitScript(recordFirstFrameTheme);
+    const page = await context.newPage();
+    const runtimeErrors = [];
+    page.on("pageerror", (error) => runtimeErrors.push(`${page.url()}: ${error.message}`));
+    page.setDefaultTimeout(10000);
+
+    // The application bundle is held until the first frame is recorded, so that frame is
+    // always rendered before the theme module initializes.
+    let releaseApp;
+    let appGate;
+    await page.route("**/js/script.js", async (route) => {
+      await appGate;
+      await route.continue();
+    });
+
+    for (const pagePath of ["index.html", "galeria.html"]) {
+      const pageLabel = `${label}, ${pagePath}`;
+      appGate = new Promise((resolve) => { releaseApp = resolve; });
+      await page.goto(`${baseUrl}/${pagePath}`, { waitUntil: "commit" });
+      const firstFrame = await (await page.waitForFunction(() => window.__qaFirstFrame)).jsonValue();
+      releaseApp();
+      await page.locator("html[data-theme-ready]").waitFor({ state: "attached" });
+      await assertThemeState(page, savedTheme, savedTheme, `${pageLabel}: initializer keeps the saved theme`);
+      const { changes, background } = await page.evaluate(() => ({
+        changes: window.__qaThemeChanges,
+        background: getComputedStyle(document.body).backgroundColor
+      }));
+
+      assert.equal(firstFrame.ready, false, `${pageLabel}: the first frame must precede theme initialization`);
+      assert.equal(firstFrame.theme, savedTheme, `${pageLabel}: the first frame must render the saved theme`);
+      assert.equal(firstFrame.background, background, `${pageLabel}: the first frame must use the saved theme colors`);
+      assert.deepEqual(changes, [], `${pageLabel}: initialization must not switch the rendered theme`);
+      console.log(`QA THEME E2E: PASS — ${pageLabel}: first frame renders the saved theme`);
+    }
+
+    assert.deepEqual(runtimeErrors, [], `${label}: no uncaught runtime errors`);
+    console.log(`QA THEME E2E: PASS — ${label}: no uncaught runtime errors`);
+  } catch (error) {
+    throw new Error(`${label}: ${error.message}`, { cause: error });
+  } finally {
+    await context.close();
+  }
+};
+
 const run = async () => {
   console.log("QA THEME E2E: starting static server...");
   const server = await createStaticServer();
@@ -232,7 +312,11 @@ const run = async () => {
         await runStorageFailureScenario(browser, operation, scheme);
       }
     }
-    console.log("QA THEME E2E: PASS (6/6 isolated scenarios)");
+    for (const savedTheme of ["light", "dark"]) {
+      console.log(`QA THEME E2E: first render with a saved ${savedTheme} theme`);
+      await runFirstRenderScenario(browser, savedTheme);
+    }
+    console.log("QA THEME E2E: PASS (8/8 isolated scenarios)");
   } finally {
     try {
       if (browser) await browser.close();

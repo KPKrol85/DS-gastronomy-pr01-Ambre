@@ -27,6 +27,7 @@ export function initThemeSwitcher() {
     toggle.setAttribute("aria-pressed", "false");
   };
 
+  // Each page's inline <head> script applies this same theme before the first paint; keep both in sync.
   apply(stored ?? (prefersDark ? "dark" : "light"));
 
   // The sun/moon control snaps to its state until the document is flagged ready,
