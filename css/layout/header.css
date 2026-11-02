@@ -58,7 +58,9 @@ body.site-header-is-shrunk {
   color: var(--c-ink);
 }
 
-.site-header__brand .logo {
+/* :where() keeps this at single-class weight, so the later .logo-dark rule still hides
+   the inactive variant when no data-theme is set (light system, no JavaScript). */
+.site-header__brand :where(.logo) {
   display: block;
   height: var(--header-logo-h);
   width: auto;

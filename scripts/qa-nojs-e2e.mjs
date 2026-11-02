@@ -652,6 +652,47 @@ const run = async () => {
           `The ${colorScheme} system preference must apply without a data-theme attribute`
         );
 
+        // Every shell repeats the header markup, so each is checked in both header layouts.
+        await runStep(`render only the ${colorScheme} header logo with a ${colorScheme} system preference`, async () => {
+          for (const width of [390, 1280]) {
+            await page.setViewportSize({ width, height: 844 });
+            for (const pagePath of navigationPages) {
+              await page.goto(`${baseUrl}/${pagePath}`, { waitUntil: "load", timeout: 15000 });
+              await assertSystemFallback();
+              const label = `${pagePath} at ${width}px`;
+              const { brand, logoHeight, logos } = await page.locator(".site-header__brand").evaluate((element) => {
+                const box = (node) => {
+                  const { width, height } = node.getBoundingClientRect();
+                  return { width, height };
+                };
+                return {
+                  brand: box(element),
+                  logoHeight: getComputedStyle(element).getPropertyValue("--header-logo-h").trim(),
+                  logos: [...element.querySelectorAll(".logo")].map((image) => {
+                    const { display, visibility, height } = getComputedStyle(image);
+                    return {
+                      variant: image.classList.contains("logo-dark") ? "dark" : "light",
+                      display, visibility, cssHeight: height, box: box(image),
+                      loaded: image.complete && image.naturalWidth > 0
+                    };
+                  })
+                };
+              });
+
+              assert.deepEqual(logos.map((logo) => logo.variant), ["light", "dark"], `${label}: the header must ship both logo variants`);
+              const active = logos.find((logo) => logo.variant === colorScheme);
+              const inactive = logos.find((logo) => logo.variant !== colorScheme);
+              assert.deepEqual({ display: inactive.display, box: inactive.box }, { display: "none", box: { width: 0, height: 0 } },
+                `${label}: the ${inactive.variant} header logo must not be rendered`);
+              assert.deepEqual({ display: active.display, visibility: active.visibility, cssHeight: active.cssHeight, loaded: active.loaded },
+                { display: "block", visibility: "visible", cssHeight: logoHeight, loaded: true },
+                `${label}: the ${colorScheme} header logo must be rendered at the header logo height`);
+              assert.deepEqual(brand, active.box, `${label}: the header brand must take only the ${colorScheme} logo's space`);
+            }
+          }
+          await page.setViewportSize({ width: 1280, height: 720 });
+        });
+
         await runStep(`read and follow the 404 recovery link with a ${colorScheme} system preference`, async () => {
           await page.goto(`${baseUrl}/404.html`, { waitUntil: "load", timeout: 15000 });
           await assertSystemFallback();
