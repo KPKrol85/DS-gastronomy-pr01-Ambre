@@ -112,19 +112,19 @@
 
 Sprawdź najważniejsze widoki na szerokościach około 375 px, 768 px i 1280 px oraz dodatkowo 320 px dla wąskich ekranów; dostosuj zakres do projektu.
 
-- [ ] Strona główna wygląda poprawnie.
-- [ ] Wszystkie istotne podstrony wyglądają poprawnie.
-- [ ] Formularz kontaktowy wygląda poprawnie, jeśli występuje.
-- [ ] FAQ wygląda poprawnie, jeśli występuje.
-- [ ] Galeria działa poprawnie, jeśli występuje.
-- [ ] Nawigacja mobilna działa poprawnie.
-- [ ] Stopki są responsywne.
-- [ ] Motyw jasny działa poprawnie, jeśli występuje.
-- [ ] Motyw ciemny działa poprawnie, jeśli występuje.
-- [ ] Motyw systemowy działa poprawnie, jeśli występuje.
-- [ ] Nie występuje niepożądane poziome przewijanie.
-- [ ] Obrazy zachowują prawidłowe proporcje.
-- [ ] Nie występują regresje wizualne.
+- [x] Strona główna wygląda poprawnie.
+- [x] Wszystkie istotne podstrony wyglądają poprawnie.
+- [x] Formularz kontaktowy wygląda poprawnie, jeśli występuje.
+- [x] FAQ wygląda poprawnie, jeśli występuje.
+- [x] Galeria działa poprawnie, jeśli występuje.
+- [x] Nawigacja mobilna działa poprawnie.
+- [x] Stopki są responsywne.
+- [x] Motyw jasny działa poprawnie, jeśli występuje.
+- [x] Motyw ciemny działa poprawnie, jeśli występuje.
+- [x] Motyw systemowy działa poprawnie, jeśli występuje.
+- [x] Nie występuje niepożądane poziome przewijanie.
+- [x] Obrazy zachowują prawidłowe proporcje.
+- [x] Nie występują regresje wizualne.
 
 ## 10. SEO i metadane
 
