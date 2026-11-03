@@ -70,7 +70,7 @@ html[data-theme="light"] .site-footer {
 .site-footer__description {
   max-width: 28ch;
   margin-inline: 0;
-  text-align: left;
+  text-align: center;
 }
 
 .site-footer strong {
