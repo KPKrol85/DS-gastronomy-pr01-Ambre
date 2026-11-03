@@ -53,9 +53,12 @@ body.site-header-is-shrunk {
   min-width: 0;
 }
 
+/* The font leaves more room below the baseline than above the digits; trimming the
+   line box to cap height and baseline lets flex centering match the icon. */
 .site-header__phone {
   font-weight: 500;
   color: var(--c-ink);
+  text-box: trim-both cap alphabetic;
 }
 
 /* :where() keeps this at single-class weight, so the later .logo-dark rule still hides

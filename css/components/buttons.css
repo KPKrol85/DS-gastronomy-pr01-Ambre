@@ -385,7 +385,10 @@ html[data-theme="dark"] .site-button--form:hover {
   align-self: center;
 }
 
+/* Block display takes the icon off the wrapper's text baseline, so the wrapper is
+   exactly the icon's height and flex centering centers the icon itself. */
 .site-header__actions .site-button--ring :is(img, svg) {
+  display: block;
   width: 16px;
   height: 16px;
 }
