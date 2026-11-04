@@ -14,15 +14,15 @@
 
 ## 1. GitHub Actions — CI
 
-- [ ] Workflow CI jest poprawnie wykrywany przez GitHub.
-- [ ] Automatyczne uruchamianie po `push` do głównej gałęzi działa.
-- [ ] Instalacja zależności w CI przechodzi poprawnie.
-- [ ] Kontrola jakości i linting kończą się sukcesem.
-- [ ] Wszystkie skonfigurowane testy automatyczne przechodzą.
-- [ ] Kontrola referencji źródłowych przechodzi, jeśli jest dostępna.
-- [ ] Produkcyjny build kończy się sukcesem.
-- [ ] Kontrola referencji produkcyjnych przechodzi, jeśli jest dostępna.
-- [ ] Cały workflow ma status **SUCCESS**.
+- [x] Workflow CI jest poprawnie wykrywany przez GitHub.
+- [x] Automatyczne uruchamianie po `push` do głównej gałęzi działa.
+- [x] Instalacja zależności w CI przechodzi poprawnie.
+- [x] Kontrola jakości i linting kończą się sukcesem.
+- [x] Wszystkie skonfigurowane testy automatyczne przechodzą.
+- [x] Kontrola referencji źródłowych przechodzi, jeśli jest dostępna.
+- [x] Produkcyjny build kończy się sukcesem.
+- [ ] Kontrola referencji produkcyjnych przechodzi, jeśli jest dostępna. N/A — brak takiego testu w CI.
+- [x] Cały workflow ma status **SUCCESS**.
 
 ## 2. PWA — Manifest
 
