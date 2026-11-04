@@ -38,12 +38,12 @@
 
 ## 3. PWA — Shortcuts
 
-- [ ] Sprawdzono wszystkie istniejące skróty w manifeście.
-- [ ] Nazwy skrótów są czytelne i aktualne.
-- [ ] Każdy skrót prowadzi do właściwego miejsca.
-- [ ] Nie występują nieaktualne adresy ani odnośniki.
-- [ ] Ikony skrótów istnieją i mają odpowiednie parametry.
-- [ ] Skróty działają po uruchomieniu z zainstalowanej PWA.
+- [x] Sprawdzono wszystkie istniejące skróty w manifeście.
+- [x] Nazwy skrótów są czytelne i aktualne.
+- [x] Każdy skrót prowadzi do właściwego miejsca.
+- [x] Nie występują nieaktualne adresy ani odnośniki.
+- [x] Ikony skrótów istnieją i mają odpowiednie parametry.
+- [x] Skróty działają po uruchomieniu z zainstalowanej PWA.
 
 ## 4. PWA — Screenshots
 
