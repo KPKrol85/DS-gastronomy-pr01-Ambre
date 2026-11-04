@@ -1,4 +1,4 @@
-const CACHE_VERSION = "v1.8";
+const CACHE_VERSION = "v1.9";
 const CACHE_NAMESPACE = "ambre-";
 
 const APP_SHELL_CACHE = `${CACHE_NAMESPACE}app-shell-${CACHE_VERSION}`;
