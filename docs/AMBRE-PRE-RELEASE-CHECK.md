@@ -26,15 +26,15 @@
 
 ## 2. PWA — Manifest
 
-- [ ] Zweryfikowano poprawność manifestu, jeśli projekt udostępnia PWA.
-- [ ] `name` i `short_name` są poprawne.
-- [ ] `start_url` prowadzi do właściwej strony.
-- [ ] `scope` odpowiada strukturze aplikacji.
-- [ ] `display` jest właściwie skonfigurowane.
-- [ ] `theme_color` i `background_color` są odpowiednie.
-- [ ] Wszystkie ikony istnieją i poprawnie się wyświetlają.
-- [ ] Instalacja PWA działa na urządzeniu mobilnym.
-- [ ] Uruchomienie zainstalowanej aplikacji działa poprawnie.
+- [x] Zweryfikowano poprawność manifestu, jeśli projekt udostępnia PWA.
+- [x] `name` i `short_name` są poprawne.
+- [x] `start_url` prowadzi do właściwej strony.
+- [x] `scope` odpowiada strukturze aplikacji.
+- [x] `display` jest właściwie skonfigurowane.
+- [x] `theme_color` i `background_color` są odpowiednie.
+- [x] Wszystkie ikony istnieją i poprawnie się wyświetlają.
+- [x] Instalacja PWA działa na urządzeniu mobilnym.
+- [x] Uruchomienie zainstalowanej aplikacji działa poprawnie.
 
 ## 3. PWA — Shortcuts
 
