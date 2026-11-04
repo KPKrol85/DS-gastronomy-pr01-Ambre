@@ -47,15 +47,16 @@
 
 ## 4. PWA — Screenshots
 
-- [ ] Sprawdzono, czy manifest zawiera właściwą sekcję `screenshots`.
-- [ ] Zweryfikowano wszystkie istniejące zrzuty ekranu.
-- [ ] Screenshoty przedstawiają aktualny wygląd projektu.
-- [ ] Zweryfikowano proporcje, rozdzielczość i format plików.
-- [ ] Sprawdzono poprawność ścieżek do obrazów.
-- [ ] W razie potrzeby przygotowano nowe screenshoty mobilne.
-- [ ] W razie potrzeby przygotowano nowe screenshoty desktopowe.
-- [ ] Po ewentualnej wymianie zweryfikowano manifest ponownie.
-- [ ] Sprawdzono aktualność osobnych screenshotów portfolio, jeśli istnieją.
+- [x] Sprawdzono, czy manifest zawiera właściwą sekcję `screenshots`.
+- [x] Zweryfikowano wszystkie istniejące zrzuty ekranu.
+- [x] Screenshoty przedstawiają aktualny wygląd projektu.
+- [x] Zweryfikowano proporcje, rozdzielczość i format plików.
+- [x] Sprawdzono poprawność ścieżek do obrazów.
+- [ ] W razie potrzeby przygotowano nowe screenshoty mobilne. N/A — obecny screenshot jest aktualny.
+- [ ] W razie potrzeby przygotowano nowe screenshoty desktopowe. N/A — obecny screenshot jest aktualny.
+- [ ] Po ewentualnej wymianie zweryfikowano manifest ponownie. N/A — nie wymieniano screenshotów.
+- [ ] Sprawdzono aktualność osobnych screenshotów portfolio, jeśli istnieją. N/A — brak osobnych screenshotów portfolio w repozytorium.
+
 
 ## 5. PWA — Service Worker i Offline
 
