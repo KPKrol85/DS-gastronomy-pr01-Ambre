@@ -79,7 +79,7 @@
 - [x] Odnośniki `tel:` i `mailto:` działają, jeśli występują.
 - [x] Na właściwych podstronach znajdują się dyskretne noty demonstracyjne, jeśli są wymagane.
 - [x] Nie występują sprzeczne deklaracje dotyczące charakteru działalności.
-- [ ] Nie występują zbędne bannery, modale ani powtarzające się komunikaty demonstracyjne.
+- [x] Nie występują zbędne bannery, modale ani powtarzające się komunikaty demonstracyjne.
 
 ## 7. Formularz kontaktowy
 

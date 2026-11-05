@@ -1,6 +1,7 @@
 import { log } from "./utils.js";
 
 const ACCEPTED_KEY = "demoLegalAccepted";
+const SHOWN_KEY = "demoLegalShown";
 const FOCUSABLE_SELECTOR = [
   "a[href]:not([tabindex='-1'])",
   "area[href]:not([tabindex='-1'])",
@@ -82,6 +83,7 @@ export function initDemoLegalModal() {
     const wasOpen = isOpen;
     isOpen = false;
     document.removeEventListener("keydown", handleKeydown);
+    window.removeEventListener("pagehide", close);
     modal.setAttribute("aria-hidden", "true");
     modal.setAttribute("inert", "");
     modal.setAttribute("hidden", "");
@@ -145,6 +147,8 @@ export function initDemoLegalModal() {
     setBackgroundInert(true);
     focusWithoutScroll(panel);
     document.addEventListener("keydown", handleKeydown);
+    // Close before the page can be restored from the back/forward cache.
+    window.addEventListener("pagehide", close);
   };
 
   const handleAccept = () => {
@@ -160,14 +164,26 @@ export function initDemoLegalModal() {
   try {
     accepted = localStorage.getItem(ACCEPTED_KEY) === "true";
   } catch {
-    // Show the notice when persisted acceptance cannot be read.
+    // The per-tab check still applies when persisted acceptance cannot be read.
   }
-  if (accepted) {
+
+  let shownInTab = false;
+  try {
+    shownInTab = sessionStorage.getItem(SHOWN_KEY) === "true";
+  } catch {
+    // Persisted acceptance can still keep the notice hidden.
+  }
+  if (accepted || shownInTab) {
     close();
     return;
   }
 
   open();
+  try {
+    sessionStorage.setItem(SHOWN_KEY, "true");
+  } catch {
+    // The notice remains dismissible if its display cannot be saved.
+  }
 
   acceptBtn?.addEventListener("click", handleAccept);
   closeTriggers.forEach((trigger) => {

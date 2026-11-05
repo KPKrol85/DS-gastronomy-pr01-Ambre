@@ -57,12 +57,6 @@ const createStaticServer = () => {
 
 const createFreshPage = async (browser) => {
   const context = await browser.newContext({ serviceWorkers: "block" });
-  await context.addInitScript(() => {
-    const initializedKey = "qaDemoLegalInitialized";
-    if (sessionStorage.getItem(initializedKey) === "true") return;
-    localStorage.removeItem("demoLegalAccepted");
-    sessionStorage.setItem(initializedKey, "true");
-  });
   const page = await context.newPage();
   await page.goto(`${baseUrl}/index.html`, { waitUntil: "domcontentloaded" });
   await page.locator("#demo-legal-modal:not([hidden])").waitFor();
@@ -84,10 +78,11 @@ const readDialogFocusableLabels = (page) =>
 
 const runKeyboardModalTest = async (browser) => {
   const { context, page } = await createFreshPage(browser);
-  const modal = page.locator("#demo-legal-modal");
   const panel = page.locator(".demo-legal-modal__panel");
 
   try {
+    assert.equal(await page.getByRole("dialog", { name: "Informacja o projekcie" }).isVisible(), true, "The initial notice should be exposed as a named dialog");
+    assert.equal(await page.evaluate(() => sessionStorage.getItem("demoLegalShown")), "true", "Opening the notice should record its display in this tab");
     assert.equal(await panel.evaluate((element) => document.activeElement === element), true, "Initial focus should be on the dialog panel");
 
     const focusableLabels = await readDialogFocusableLabels(page);
@@ -135,10 +130,52 @@ const runKeyboardModalTest = async (browser) => {
     assert.equal(await acceptButton.evaluate((element) => document.activeElement === element), true, "A single dialog control should retain focus on Shift+Tab");
 
     await page.keyboard.press("Escape");
-    assert.equal(await modal.getAttribute("hidden"), "", "Escape should close the dialog");
-    assert.equal((await readActiveElement(page)).id, "main", "Escape dismissal should focus the existing main content target");
+    await assertNoticeClosed(page, "Escape dismissal");
     assert.equal(await page.evaluate(() => localStorage.getItem("demoLegalAccepted")), null, "Escape should not persist acceptance");
-    assert.equal(await page.evaluate(() => Array.from(document.body.children).some((element) => element.id !== "demo-legal-modal" && element.hasAttribute("inert"))), false);
+
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await assertNoticeHidden(page, "reload after Escape");
+  } finally {
+    await context.close();
+  }
+};
+
+const runTabPresentationTest = async (browser) => {
+  const { context, page } = await createFreshPage(browser);
+  try {
+    await page.locator("[data-demo-legal-close]").click({ position: { x: 10, y: 10 } });
+    await assertNoticeClosed(page, "backdrop dismissal");
+
+    await Promise.all([
+      page.waitForURL(`${baseUrl}/menu.html`, { waitUntil: "domcontentloaded" }),
+      page.getByRole("link", { name: "Przejdź do pełnego menu restauracji" }).click()
+    ]);
+    await assertNoticeHidden(page, "navigation after backdrop dismissal");
+    assert.equal(await page.evaluate(() => localStorage.getItem("demoLegalAccepted")), null, "Backdrop dismissal and navigation should not persist acceptance");
+
+    const freshTab = await context.newPage();
+    await freshTab.goto(`${baseUrl}/menu.html`, { waitUntil: "domcontentloaded" });
+    await freshTab.locator("#demo-legal-modal:not([hidden])").waitFor();
+    await freshTab.reload({ waitUntil: "domcontentloaded" });
+    await assertNoticeHidden(freshTab, "reload while the notice was open");
+  } finally {
+    await context.close();
+  }
+};
+
+const runLegalLinkTest = async (browser, href) => {
+  const { context, page } = await createFreshPage(browser);
+  try {
+    await Promise.all([
+      page.waitForURL(`${baseUrl}${href}`, { waitUntil: "domcontentloaded" }),
+      page.locator(`#demo-legal-modal a[href="${href}"]`).click()
+    ]);
+    await assertNoticeHidden(page, `legal link to ${href}`);
+    assert.equal(await page.evaluate(() => localStorage.getItem("demoLegalAccepted")), null, "Following a legal link should not persist acceptance");
+
+    await page.goBack({ waitUntil: "domcontentloaded" });
+    assert.equal(page.url(), `${baseUrl}/index.html`, "Back should return to the original page");
+    await assertNoticeHidden(page, `return from ${href}`);
   } finally {
     await context.close();
   }
@@ -146,23 +183,24 @@ const runKeyboardModalTest = async (browser) => {
 
 const runPersistenceTest = async (browser) => {
   const { context, page } = await createFreshPage(browser);
-  const modal = page.locator("#demo-legal-modal");
 
   try {
     await page.locator("[data-demo-legal-accept]").click();
-    assert.equal(await modal.getAttribute("hidden"), "", "Acceptance should close the dialog");
+    await assertNoticeClosed(page, "explicit acceptance");
     assert.equal(await page.evaluate(() => localStorage.getItem("demoLegalAccepted")), "true");
-    assert.equal((await readActiveElement(page)).id, "main", "Acceptance should focus the existing main content target");
 
     await page.reload({ waitUntil: "domcontentloaded" });
-    assert.equal(await modal.getAttribute("hidden"), "", "Persisted acceptance should keep the dialog closed on reload");
-    assert.equal(await modal.getAttribute("aria-hidden"), "true");
+    await assertNoticeHidden(page, "reload after acceptance");
+
+    const freshTab = await context.newPage();
+    await freshTab.goto(`${baseUrl}/index.html`, { waitUntil: "domcontentloaded" });
+    await assertNoticeHidden(freshTab, "new tab after persisted acceptance");
   } finally {
     await context.close();
   }
 };
 
-const assertNoticeClosed = async (page, label) => {
+const assertNoticeHidden = async (page, label) => {
   const modal = page.locator("#demo-legal-modal");
   assert.equal(await modal.getAttribute("hidden"), "", `${label}: notice must be hidden`);
   assert.equal(await modal.getAttribute("aria-hidden"), "true", `${label}: notice must be hidden from assistive technology`);
@@ -170,6 +208,10 @@ const assertNoticeClosed = async (page, label) => {
   assert.equal(await page.evaluate(() => Array.from(document.body.children).some(
     (element) => element.id !== "demo-legal-modal" && element.hasAttribute("inert")
   )), false, `${label}: background inertness must be released`);
+};
+
+const assertNoticeClosed = async (page, label) => {
+  await assertNoticeHidden(page, label);
   assert.equal((await readActiveElement(page)).id, "main", `${label}: focus must return to main content`);
   assert.equal(await page.locator("#main").isVisible(), true, `${label}: restored focus target must be visible`);
 
@@ -178,23 +220,23 @@ const assertNoticeClosed = async (page, label) => {
   assert.equal(await toggle.evaluate((element) => document.activeElement === element), true,
     `${label}: background control must accept focus`);
   await page.keyboard.press("Tab");
-  assert.equal(await modal.evaluate((element) => element.contains(document.activeElement)), false,
+  assert.equal(await page.locator("#demo-legal-modal").evaluate((element) => element.contains(document.activeElement)), false,
     `${label}: closed notice must release keyboard containment`);
 };
 
-const runStorageFailureTest = async (browser, operation) => {
-  const label = `denied ${operation}`;
+const runStorageFailureTest = async (browser, operation, storageNames) => {
+  const label = `denied ${storageNames.map((name) => `${name}.${operation}`).join(" and ")}`;
   const context = await browser.newContext({ serviceWorkers: "block" });
   try {
-    await context.addInitScript((operation) => {
+    await context.addInitScript(({ operation, storageNames }) => {
       const original = Storage.prototype[operation];
       Storage.prototype[operation] = function (...args) {
-        if (this === window.localStorage) {
-          throw new DOMException(`Denied localStorage.${operation}`, operation === "getItem" ? "SecurityError" : "QuotaExceededError");
+        if (storageNames.some((name) => this === window[name])) {
+          throw new DOMException(`Denied ${operation}`, operation === "getItem" ? "SecurityError" : "QuotaExceededError");
         }
         return original.apply(this, args);
       };
-    }, operation);
+    }, { operation, storageNames });
     const page = await context.newPage();
     const runtimeErrors = [];
     page.on("pageerror", (error) => runtimeErrors.push(`${page.url()}: ${error.message}`));
@@ -219,23 +261,27 @@ const runStorageFailureTest = async (browser, operation) => {
     await page.locator("[data-demo-legal-accept]").focus();
     await page.keyboard.press("Enter");
     await assertNoticeClosed(page, `${label}: keyboard acceptance`);
-    if (operation === "setItem") {
+    if (operation === "setItem" && storageNames.includes("localStorage")) {
       assert.equal(await page.evaluate(() => localStorage.getItem("demoLegalAccepted")), null,
         `${label}: failed write must leave acceptance unpersisted`);
     }
 
     await page.reload({ waitUntil: "domcontentloaded" });
-    await openModal.waitFor({ state: "visible" });
-    await page.keyboard.press("Escape");
-    await assertNoticeClosed(page, `${label}: Escape after reload`);
+    if (storageNames.length === 2) {
+      await openModal.waitFor({ state: "visible" });
+      await page.keyboard.press("Escape");
+      await assertNoticeClosed(page, `${label}: Escape after reload`);
 
-    await page.reload({ waitUntil: "domcontentloaded" });
-    await openModal.waitFor({ state: "visible" });
-    await page.locator("[data-demo-legal-close]").click({ position: { x: 10, y: 10 } });
-    await assertNoticeClosed(page, `${label}: backdrop dismissal after reload`);
+      await page.reload({ waitUntil: "domcontentloaded" });
+      await openModal.waitFor({ state: "visible" });
+      await page.locator("[data-demo-legal-close]").click({ position: { x: 10, y: 10 } });
+      await assertNoticeClosed(page, `${label}: backdrop dismissal after reload`);
+    } else {
+      await assertNoticeHidden(page, `${label}: the available storage should suppress the notice after reload`);
+    }
 
     assert.deepEqual(runtimeErrors, [], `${label}: no uncaught runtime errors`);
-    console.log(`QA DEMO LEGAL E2E: PASS — ${label}: acceptance, reload, Escape, backdrop, focus and inertness; no uncaught runtime errors`);
+    console.log(`QA DEMO LEGAL E2E: PASS — ${label}`);
   } catch (error) {
     throw new Error(`${label}: ${error.message}`, { cause: error });
   } finally {
@@ -249,20 +295,29 @@ const run = async () => {
   let browser;
 
   try {
-    browser = await chromium.launch({ headless: true });
+    browser = await chromium.launch({ headless: true, ignoreDefaultArgs: ["--disable-back-forward-cache"] });
 
     console.log("QA DEMO LEGAL E2E: keyboard modal behavior");
     await runKeyboardModalTest(browser);
+
+    console.log("QA DEMO LEGAL E2E: per-tab presentation");
+    await runTabPresentationTest(browser);
+
+    for (const href of ["/regulamin.html", "/polityka-prywatnosci.html", "/cookies.html"]) {
+      console.log(`QA DEMO LEGAL E2E: legal link and return — ${href}`);
+      await runLegalLinkTest(browser, href);
+    }
 
     console.log("QA DEMO LEGAL E2E: acceptance persistence");
     await runPersistenceTest(browser);
 
     for (const operation of ["getItem", "setItem"]) {
-      console.log(`QA DEMO LEGAL E2E: denied ${operation}`);
-      await runStorageFailureTest(browser, operation);
+      await runStorageFailureTest(browser, operation, ["localStorage"]);
+      await runStorageFailureTest(browser, operation, ["sessionStorage"]);
+      await runStorageFailureTest(browser, operation, ["localStorage", "sessionStorage"]);
     }
 
-    console.log("QA DEMO LEGAL E2E: PASS (4/4 isolated scenarios)");
+    console.log("QA DEMO LEGAL E2E: PASS");
   } finally {
     if (browser) await browser.close();
     await new Promise((resolve, reject) => {

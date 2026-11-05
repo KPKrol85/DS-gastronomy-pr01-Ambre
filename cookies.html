@@ -271,14 +271,14 @@
               jeżeli odpowiednie narzędzia zostały rzeczywiście wdrożone i Użytkownik wyraził wymaganą zgodę.
             </p>
             <p>Pliki cookies mogą być odczytywane podczas kolejnych wizyt Użytkownika, jeżeli nie zostały wcześniej usunięte albo nie wygasł okres ich przechowywania.</p>
-            <p>Oprócz plików cookies Serwis wykorzystuje inne technologie umożliwiające zapis lub odczyt informacji na urządzeniu końcowym, w szczególności <code>localStorage</code>, Cache Storage i Service Worker.</p>
+            <p>Serwis wykorzystuje technologie umożliwiające zapis lub odczyt informacji na urządzeniu końcowym, w tym <code>localStorage</code>, <code>sessionStorage</code>, Cache Storage i Service Worker.</p>
             <p>W dalszej części dokumentu pliki cookies oraz podobne technologie są łącznie określane jako „technologie przechowywania danych”.</p>
 
             <div class="legal__section-head">
               <h2 id="cookies-3">3. Rodzaje wykorzystywanych technologii</h2>
               <a class="legal__toc-return" href="#legal-toc" aria-label="Wróć do spisu treści" title="Wróć do spisu treści"></a>
             </div>
-            <p>Aktualna wersja Serwisu nie ustawia klasycznych plików cookies, nie wykorzystuje <code>sessionStorage</code>, lokalnych baz danych przeglądarki ani technologii analitycznych lub marketingowych.</p>
+            <p>Aktualna wersja Serwisu nie ustawia klasycznych plików cookies. Nie korzysta też z lokalnych baz danych przeglądarki ani technologii analitycznych lub marketingowych.</p>
 
             <h3>Technologie niezbędne</h3>
             <p>
@@ -290,6 +290,10 @@
             <p>
               <code>localStorage</code> zapamiętuje wybrany przez Użytkownika motyw interfejsu oraz potwierdzenie zapoznania się z informacją o demonstracyjnym charakterze projektu. Dane są zapisywane
               lokalnie w przeglądarce wyłącznie po skorzystaniu z danej funkcji.
+            </p>
+            <p>
+              <code>sessionStorage</code> zapamiętuje wyświetlenie informacji o projekcie do końca sesji karty przeglądarki. Dzięki temu komunikat nie pojawia się ponownie po przejściu na inną podstronę
+              ani po odświeżeniu strony w tej samej karcie.
             </p>
 
             <h3 id="cookies-technologies-table-title">Wykaz technologii stosowanych w Serwisie</h3>
@@ -319,8 +323,16 @@
                     <td><code>localStorage</code></td>
                     <td>KP_Code Digital Studio</td>
                     <td>funkcjonalna</td>
-                    <td>Zapamiętanie potwierdzenia informacji o demonstracyjnym charakterze Serwisu.</td>
+                    <td>Zapamiętanie potwierdzenia informacji o projekcie po wybraniu przycisku „Akceptuję”.</td>
                     <td>Do usunięcia przez Użytkownika w ustawieniach przeglądarki.</td>
+                  </tr>
+                  <tr>
+                    <td><code>demoLegalShown</code></td>
+                    <td><code>sessionStorage</code></td>
+                    <td>KP_Code Digital Studio</td>
+                    <td>funkcjonalna</td>
+                    <td>Zapobieganie ponownemu wyświetleniu informacji o projekcie w tej samej karcie.</td>
+                    <td>Do końca sesji karty przeglądarki.</td>
                   </tr>
                   <tr>
                     <td><code>ambre-app-shell-v1.8</code></td>
@@ -351,7 +363,8 @@
               <li>zapewnienia prawidłowego funkcjonowania Serwisu,</li>
               <li>utrzymania stabilności technicznej i działania wybranych zasobów w trybie offline,</li>
               <li>zapamiętania wybranego motywu interfejsu,</li>
-              <li>zapamiętania potwierdzenia informacji o demonstracyjnym charakterze projektu.</li>
+              <li>zapamiętania potwierdzenia informacji o demonstracyjnym charakterze projektu,</li>
+              <li>pominięcia ponownego wyświetlenia informacji o projekcie w tej samej karcie.</li>
             </ul>
             <p>Technologie te nie są wykorzystywane do celów analitycznych, reklamowych ani marketingowych.</p>
 
@@ -380,7 +393,7 @@
             <ul>
               <li>ograniczyć zapisywanie plików cookies,</li>
               <li>usunąć wcześniej zapisane pliki cookies,</li>
-              <li>usunąć dane zapisane w <code>localStorage</code>,</li>
+              <li>usunąć dane zapisane w <code>localStorage</code> i <code>sessionStorage</code>,</li>
               <li>usunąć dane Cache Storage oraz rejestrację Service Workera.</li>
             </ul>
             <p>Szczegółowy sposób zarządzania danymi witryn zależy od rodzaju i wersji używanej przeglądarki.</p>
