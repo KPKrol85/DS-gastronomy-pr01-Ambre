@@ -75,10 +75,10 @@
 - [x] Notka demonstracyjna występuje we właściwych miejscach na wszystkich wymaganych stronach.
 - [x] Stopki zachowują spójny wygląd i treść.
 - [x] Dane kontaktowe są przypisane do właściwego odbiorcy.
-- [ ] Telefon, e-mail i adres są aktualne, jeśli są publikowane.
-- [ ] Odnośniki `tel:` i `mailto:` działają, jeśli występują.
-- [ ] Na właściwych podstronach znajdują się dyskretne noty demonstracyjne, jeśli są wymagane.
-- [ ] Nie występują sprzeczne deklaracje dotyczące charakteru działalności.
+- [x] Telefon, e-mail i adres są aktualne, jeśli są publikowane.
+- [x] Odnośniki `tel:` i `mailto:` działają, jeśli występują.
+- [x] Na właściwych podstronach znajdują się dyskretne noty demonstracyjne, jeśli są wymagane.
+- [x] Nie występują sprzeczne deklaracje dotyczące charakteru działalności.
 - [ ] Nie występują zbędne bannery, modale ani powtarzające się komunikaty demonstracyjne.
 
 ## 7. Formularz kontaktowy
