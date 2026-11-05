@@ -70,7 +70,7 @@
 
 ## 6. Standard KP_Code Digital Studio
 
-- [ ] Marka demonstracyjna jest jednoznacznie przedstawiona jako fikcyjna, jeśli projekt jest demonstracyjny.
+- [x] Marka demonstracyjna jest jednoznacznie przedstawiona jako fikcyjna, jeśli projekt jest demonstracyjny.
 - [ ] Autorstwo KP_Code Digital Studio jest prawidłowo oznaczone, jeśli dotyczy.
 - [ ] Notka demonstracyjna występuje we właściwych miejscach na wszystkich wymaganych stronach.
 - [ ] Stopki zachowują spójny wygląd i treść.
