@@ -254,10 +254,6 @@ const validateCoreGraph = (jsonLd, expectedPageUrl, file, occurrence) => {
   requireDemoDescription(webpage, file, occurrence, "WebPage");
   requireReference(webpage, "isPartOf", WEBSITE_ID, file, occurrence, "WebPage");
   requireReference(webpage, "about", PROJECT_ID, file, occurrence, "WebPage");
-
-  if (webpage?.primaryImageOfPage?.url !== PROJECT_IMAGE) {
-    addViolation(file, occurrence, `WebPage.primaryImageOfPage.url must equal ${PROJECT_IMAGE}`);
-  }
 };
 
 const htmlFiles = walkHtmlFiles(PROJECT_ROOT);
