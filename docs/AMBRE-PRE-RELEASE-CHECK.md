@@ -83,19 +83,19 @@
 
 ## 7. Formularz kontaktowy
 
-- [ ] Formularz prawidłowo wyświetla się na desktopie.
-- [ ] Formularz prawidłowo wyświetla się na telefonie.
-- [ ] Przycisk wysyłania jest prawidłowo ustawiony i czytelny.
-- [ ] Wszystkie pola mają właściwe etykiety.
-- [ ] Walidacja wymaganych pól działa.
-- [ ] Pole wyboru rodzaju zapytania działa poprawnie, jeśli występuje.
-- [ ] Zgoda dotycząca polityki prywatności działa, jeśli jest wymagana.
-- [ ] Mechanizm antyspamowy działa poprawnie, jeśli jest używany.
-- [ ] reCAPTCHA lub inna ochrona przed botami działa w środowisku produkcyjnym, jeśli jest używana.
-- [ ] Usługa obsługująca formularz odbiera rzeczywiste zgłoszenie testowe.
-- [ ] Formularz kieruje wiadomości do właściwego odbiorcy.
-- [ ] Strona lub komunikat sukcesu działa poprawnie.
-- [ ] Formularz nie wykazuje błędów w konsoli przeglądarki.
+- [x] Formularz prawidłowo wyświetla się na desktopie.
+- [x] Formularz prawidłowo wyświetla się na telefonie.
+- [x] Przycisk wysyłania jest prawidłowo ustawiony i czytelny.
+- [x] Wszystkie pola mają właściwe etykiety.
+- [x] Walidacja wymaganych pól działa.
+- [x] Pole wyboru rodzaju zapytania działa poprawnie, jeśli występuje.
+- [x] Zgoda dotycząca polityki prywatności działa, jeśli jest wymagana.
+- [x] Mechanizm antyspamowy działa poprawnie, jeśli jest używany.
+- [x] reCAPTCHA lub inna ochrona przed botami działa w środowisku produkcyjnym, jeśli jest używana.
+- [x] Usługa obsługująca formularz odbiera rzeczywiste zgłoszenie testowe.
+- [x] Formularz kieruje wiadomości do właściwego odbiorcy.
+- [x] Strona lub komunikat sukcesu działa poprawnie.
+- [x] Formularz nie wykazuje błędów w konsoli przeglądarki.
 
 ## 8. FAQ i CTA
 

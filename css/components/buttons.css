@@ -291,6 +291,7 @@ html[data-theme="dark"] .site-button--tab[aria-pressed="true"] {
   background: var(--c-accent);
   color: var(--c-accent-ink, #1b1b1f);
   box-shadow: var(--shadow-sm);
+  font-size: var(--fs-sm);
 }
 
 .site-button--form:hover {

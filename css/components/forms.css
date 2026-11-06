@@ -372,23 +372,6 @@ html[data-theme="dark"] .booking-form :is(input, select, textarea) {
   .booking-form__row--half {
     grid-column: span 3;
   }
-
-  .booking-form__actions {
-    flex-direction: row;
-    align-items: center;
-    gap: var(--space-04);
-  }
-
-  .booking-form__actions .site-button {
-    width: auto;
-    flex: 0 0 auto;
-  }
-
-  .booking-form__actions .booking-form__message--status {
-    flex: 1 1 auto;
-    min-height: 0;
-    text-align: left;
-  }
 }
 
 @media (min-width: 620px) and (max-width: 1023px) {
