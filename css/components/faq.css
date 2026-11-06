@@ -45,7 +45,7 @@
 
 .faq__summary:focus-visible {
   outline: 2px solid var(--c-accent-contrast);
-  outline-offset: 2px;
+  outline-offset: -2px;
   border-radius: var(--radius-xs);
 }
 

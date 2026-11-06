@@ -99,15 +99,15 @@
 
 ## 8. FAQ i CTA
 
-- [ ] Wszystkie pytania FAQ są aktualne, jeśli sekcja istnieje.
-- [ ] Odpowiedzi są zgodne z charakterem projektu i obowiązującymi standardami.
-- [ ] FAQ działa przy użyciu klawiatury.
-- [ ] FAQ jest zgodne z danymi strukturalnymi JSON-LD, jeśli zostały wdrożone.
-- [ ] Wszystkie przyciski CTA prowadzą do właściwych miejsc.
-- [ ] CTA nie sugerują nieistniejących usług ani funkcji.
-- [ ] Końcowe CTA są prawidłowo wyrównane na wszystkich właściwych podstronach.
-- [ ] Zawijanie przycisków na urządzeniach mobilnych działa poprawnie.
-- [ ] Nie występują uszkodzone odnośniki.
+- [x] Wszystkie pytania FAQ są aktualne, jeśli sekcja istnieje.
+- [x] Odpowiedzi są zgodne z charakterem projektu i obowiązującymi standardami.
+- [x] FAQ działa przy użyciu klawiatury.
+- [x] FAQ jest zgodne z danymi strukturalnymi JSON-LD, jeśli zostały wdrożone.
+- [x] Wszystkie przyciski CTA prowadzą do właściwych miejsc.
+- [x] CTA nie sugerują nieistniejących usług ani funkcji.
+- [x] Końcowe CTA są prawidłowo wyrównane na wszystkich właściwych podstronach.
+- [x] Zawijanie przycisków na urządzeniach mobilnych działa poprawnie.
+- [x] Nie występują uszkodzone odnośniki.
 
 ## 9. Responsywność i wygląd
 
