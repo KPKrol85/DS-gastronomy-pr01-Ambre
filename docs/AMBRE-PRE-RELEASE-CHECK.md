@@ -132,9 +132,9 @@ Sprawdź najważniejsze widoki na szerokościach około 375 px, 768 px i 1280 px
 - [x] Każda strona ma poprawny `title`.
 - [x] Opisy `meta description` są aktualne.
 - [x] Adresy canonical są prawidłowe.
-- [ ] Metadane Open Graph są zgodne z charakterem projektu.
-- [ ] Metadane Twitter/X są aktualne, jeśli występują.
-- [ ] Dane strukturalne JSON-LD są poprawne, jeśli występują.
+- [x] Metadane Open Graph są zgodne z charakterem projektu.
+- [x] Metadane Twitter/X są aktualne, jeśli występują.
+- [x] Dane strukturalne JSON-LD są poprawne, jeśli występują.
 - [ ] Fikcyjna działalność nie jest przedstawiana jako rzeczywista firma, jeśli dotyczy.
 - [ ] `sitemap.xml` zawiera właściwe adresy, jeśli jest używany.
 - [ ] `robots.txt` jest poprawny, jeśli jest używany.
