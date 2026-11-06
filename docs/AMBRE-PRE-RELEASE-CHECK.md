@@ -130,7 +130,7 @@ Sprawdź najważniejsze widoki na szerokościach około 375 px, 768 px i 1280 px
 ## 10. SEO i metadane
 
 - [x] Każda strona ma poprawny `title`.
-- [ ] Opisy `meta description` są aktualne.
+- [x] Opisy `meta description` są aktualne.
 - [ ] Adresy canonical są prawidłowe.
 - [ ] Metadane Open Graph są zgodne z charakterem projektu.
 - [ ] Metadane Twitter/X są aktualne, jeśli występują.
