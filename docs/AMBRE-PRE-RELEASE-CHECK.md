@@ -135,7 +135,7 @@ Sprawdź najważniejsze widoki na szerokościach około 375 px, 768 px i 1280 px
 - [x] Metadane Open Graph są zgodne z charakterem projektu.
 - [x] Metadane Twitter/X są aktualne, jeśli występują.
 - [x] Dane strukturalne JSON-LD są poprawne, jeśli występują.
-- [ ] Fikcyjna działalność nie jest przedstawiana jako rzeczywista firma, jeśli dotyczy.
+- [x] Fikcyjna działalność nie jest przedstawiana jako rzeczywista firma, jeśli dotyczy.
 - [ ] `sitemap.xml` zawiera właściwe adresy, jeśli jest używany.
 - [ ] `robots.txt` jest poprawny, jeśli jest używany.
 - [ ] Nie występują nieaktualne adresy URL.
