@@ -86,10 +86,10 @@
 - [x] Dependency installation completes successfully.
 - [x] Linting and automated tests pass.
 - [x] The production build completes without errors.
-- [ ] Production artifacts contain the required files, and available source and release integrity checks pass.
-- [ ] Required functional, accessibility, and performance verification results are acceptable.
-- [ ] Generated assets and build outputs are consistent with their canonical sources.
-- [ ] README, CHANGELOG, and essential technical instructions are accurate and current.
+- [x] Production artifacts contain the required files, and available source and release integrity checks pass.
+- [x] Required functional, accessibility, and performance verification results are acceptable.
+- [x] Generated assets and build outputs are consistent with their canonical sources.
+- [x] README, CHANGELOG, and essential technical instructions are accurate and current.
 
 ## 10. Deployment & Release
 
