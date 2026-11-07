@@ -3,9 +3,9 @@
 **Project:** DS-gastronomy-pr01-Ambre
 **Version:** 1.0.0
 **Owner:** Kamil Król
-**Verification date:** [YYYY-MM-DD]
+**Verification date:** 2026-11-07
 **Production URL:** https://ds-gastronomy-pr01-ambre.netlify.app/
-**Status:** IN PROGRESS
+**Status:** RELEASED
 
 **Verification rule:** Confirm each item using current project evidence and final checks. Mark non-applicable items as `N/A` with a brief reason. Unresolved release-blocking issues prevent release approval.
 
@@ -110,14 +110,18 @@
 
 ## Final Release Status
 
-**Result:** PENDING / RELEASED / BLOCKED
+**Result:** RELEASED
 **Version:** 1.0.0
-**Release commit:** [COMMIT_SHA]
-**Git tag:** [TAG]
+**Release commit:** `1d48073cbcbd962154ee760e3619b4341d8d270b`
+**Git tag:** `v1.0.0`
 **Production URL:** https://ds-gastronomy-pr01-ambre.netlify.app/
-**Release date:** [YYYY-MM-DD]
+**Release date:** 2026-11-07
 
-**Notes / exceptions:** [NONE / N/A WITH REASON / RELEASE BLOCKERS]
+**Notes / exceptions:**
+
+- **Redirects:** Netlify serves `/menu` and `/galeria` with HTTP 200 instead of the configured HTTP 301 redirects. Both URLs return the intended pages. Accepted as non-blocking.
+- **HSTS:** Production applies `max-age=31536000` instead of the configured `63072000`. HTTPS enforcement remains active. Accepted as non-blocking.
+- **Release blockers:** None identified. Release approved by the project owner.
 
 ---
 
