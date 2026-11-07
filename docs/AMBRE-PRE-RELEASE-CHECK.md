@@ -93,16 +93,16 @@
 
 ## 10. Deployment & Release
 
-- [ ] All approved release changes have been committed, and the Git working tree is clean.
-- [ ] The intended release commit and version have been confirmed.
-- [ ] GitHub Actions or the configured CI pipeline reports SUCCESS for the intended release commit.
-- [ ] The approved production build has been deployed from the correct source revision.
-- [ ] The production website is accessible over HTTPS and loads essential resources correctly.
-- [ ] A production smoke test confirms the functionality of critical pages and interactions.
-- [ ] Production-dependent functionality, including form delivery and spam protection, has been verified where applicable.
-- [ ] Hosting configuration, redirects, and security headers have been verified in production.
-- [ ] No unresolved release-blocking issues remain.
-- [ ] The project owner has approved the release.
+- [x] All approved release changes have been committed, and the Git working tree is clean.
+- [x] The intended release commit and version have been confirmed.
+- [x] GitHub Actions or the configured CI pipeline reports SUCCESS for the intended release commit.
+- [x] The approved production build has been deployed from the correct source revision.
+- [x] The production website is accessible over HTTPS and loads essential resources correctly.
+- [x] A production smoke test confirms the functionality of critical pages and interactions.
+- [x] Production-dependent functionality, including form delivery and spam protection, has been verified where applicable.
+- [x] Hosting configuration, redirects, and security headers have been verified in production.
+- [x] No unresolved release-blocking issues remain.
+- [x] The project owner has approved the release.
 - [ ] The Git tag has been created for the approved version and correct commit.
 - [ ] The tag has been pushed and verified in the remote repository.
 
