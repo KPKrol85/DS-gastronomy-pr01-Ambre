@@ -7,12 +7,12 @@
   Cross-Origin-Opener-Policy: same-origin
   X-Frame-Options: SAMEORIGIN
 # CSP_SCRIPT_HASHES_BEGIN
-# 'sha256-eMafO0gwJckXxK8a2avvOvi8MX23fmU5M8XY5pht6pk='
-# 'sha256-gGWYVzg+fLaszsliSGi6jSEu8bOpF5hk8n2SHMAQtb4='
-# 'sha256-htg6RW1UVQKEKM/QyaXilFSbGtthvEG4STjRww/+nSs='
-# 'sha256-Kq5kHlBSY//6mNz9G4SYoXW8/Gn0uuZT1jL42/peC38='
-# 'sha256-vZ/P9fwKNX85OjHA5J+wkZWImwDt3Vbv1eZfKxElCM8='
-# 'sha256-xNZkFeg5dDbNu8pyghoSaQoCT5yXXv6IoF5US2QA3ls='
+# 'sha256-11weyghKUKFAJkiLqcX1fuXiDDtTQ2E5gT6QcVlMPFk='
+# 'sha256-3EAfWiUh96Btce5WQ2m8iP4duCM44Ahwa6Z5bVaB0Hs='
+# 'sha256-cdg+4wOmxMc8zkUMupl6XMwDVpO1Di/6QMjlgGhwSHk='
+# 'sha256-dtmZN1YLvvzun7TYfc4yOTfTTqL2xdOeVe0esaJp3hE='
+# 'sha256-GbAHqvaOGFpNTKu2g6JfxwtfN4Pm/vD8cF16kumtN7I='
+# 'sha256-J4jNNLqvY7E0Xk10EYa31DPKZ6srUOrD93BImQ8RT2w='
 # 'sha256-yBR6N7+0CW7PxA/frvM1UMZqhNeI5a9UB9YGAP6TxOw='
 # CSP_SCRIPT_HASHES_END
-  Content-Security-Policy: upgrade-insecure-requests; default-src 'self'; img-src 'self' https: data: blob:; style-src 'self'; script-src 'self'; script-src-elem 'self' 'sha256-eMafO0gwJckXxK8a2avvOvi8MX23fmU5M8XY5pht6pk=' 'sha256-gGWYVzg+fLaszsliSGi6jSEu8bOpF5hk8n2SHMAQtb4=' 'sha256-htg6RW1UVQKEKM/QyaXilFSbGtthvEG4STjRww/+nSs=' 'sha256-Kq5kHlBSY//6mNz9G4SYoXW8/Gn0uuZT1jL42/peC38=' 'sha256-vZ/P9fwKNX85OjHA5J+wkZWImwDt3Vbv1eZfKxElCM8=' 'sha256-xNZkFeg5dDbNu8pyghoSaQoCT5yXXv6IoF5US2QA3ls=' 'sha256-yBR6N7+0CW7PxA/frvM1UMZqhNeI5a9UB9YGAP6TxOw='; script-src-attr 'none'; font-src 'self' data:; connect-src 'self'; frame-src https://www.google.com/; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+  Content-Security-Policy: upgrade-insecure-requests; default-src 'self'; img-src 'self' https: data: blob:; style-src 'self'; script-src 'self'; script-src-elem 'self' 'sha256-11weyghKUKFAJkiLqcX1fuXiDDtTQ2E5gT6QcVlMPFk=' 'sha256-3EAfWiUh96Btce5WQ2m8iP4duCM44Ahwa6Z5bVaB0Hs=' 'sha256-cdg+4wOmxMc8zkUMupl6XMwDVpO1Di/6QMjlgGhwSHk=' 'sha256-dtmZN1YLvvzun7TYfc4yOTfTTqL2xdOeVe0esaJp3hE=' 'sha256-GbAHqvaOGFpNTKu2g6JfxwtfN4Pm/vD8cF16kumtN7I=' 'sha256-J4jNNLqvY7E0Xk10EYa31DPKZ6srUOrD93BImQ8RT2w=' 'sha256-yBR6N7+0CW7PxA/frvM1UMZqhNeI5a9UB9YGAP6TxOw='; script-src-attr 'none'; font-src 'self' data:; connect-src 'self'; frame-src https://www.google.com/; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
