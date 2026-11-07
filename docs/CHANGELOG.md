@@ -82,6 +82,7 @@ Record changes that materially affect UI/UX, accessibility, public content, buil
 
 ### Fixed
 
+- Corrected 404 and offline navigation from nested URLs by using root-absolute destinations.
 - Restored Polish glyph coverage in local Poppins and Source Sans 3 fonts using `latin-ext` subsets and explicit `unicode-range`; verified intended font rendering without overflow at 390–1440 px.
 - Updated 15 gallery image descriptions to match the replacement photographs, including accessible lightbox alternatives; verified with accessibility and gallery E2E tests.
 

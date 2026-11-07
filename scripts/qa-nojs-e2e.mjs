@@ -22,6 +22,13 @@ const navigationLinks = [
   { name: "Kontakt", href: "index.html#rezerwacja" },
   { name: "FAQ", href: "index.html#faq" }
 ];
+const getNavigationLinks = (pagePath) => {
+  if (pagePath !== "404.html" && pagePath !== "offline.html") return navigationLinks;
+  return navigationLinks.map((link) => ({
+    ...link,
+    href: "/" + link.href.replace(/^index\.html/, "")
+  }));
+};
 /* Controls whose only action is provided by a JavaScript module. Filters and the theme
    toggle keep their layout box while unavailable; dish previews keep their visible image. */
 const enhancementControls = [
@@ -254,11 +261,12 @@ const run = async () => {
           await page.goto(`${baseUrl}/${pagePath}`, { waitUntil: "load", timeout: 15000 });
           const label = `${pagePath} at ${width}px`;
 
+          const expectedLinks = getNavigationLinks(pagePath);
           const stops = await walkTabOrder();
           assert.deepEqual(stops.filter((stop) => stop.enhancement), [],
             `${label}: no JavaScript-only control may be a keyboard stop`);
           assert.deepEqual(stops.filter((stop) => stop.navigation).map((stop) => stop.href),
-            navigationLinks.map((link) => link.href), `${label}: Tab must reach every navigation link in order`);
+            expectedLinks.map((link) => link.href), `${label}: Tab must reach every navigation link in order`);
 
           for (const control of enhancementControls) {
             const controls = page.locator(control.selector);
@@ -361,11 +369,12 @@ const run = async () => {
       }, `${label}: Tab must reach a visible, unobscured link with a focus outline`);
     };
 
-    const primaryLinks = navigationLinks.filter((link) => link.href.startsWith("index.html#"));
     for (const width of [320, 390, 939, 940, 1280]) {
       await page.setViewportSize({ width, height: 844 });
       for (const [pageIndex, pagePath] of navigationPages.entries()) {
         await runStep(`no-js navigation ${pagePath} at ${width}px`, async () => {
+          const expectedLinks = getNavigationLinks(pagePath);
+          const primaryLinks = expectedLinks.filter((link) => link.href.includes("#"));
           const sourceUrl = `${baseUrl}/${pagePath}`;
           await page.goto(sourceUrl, { waitUntil: "load", timeout: 15000 });
           await page.evaluate(() => document.fonts.ready);
@@ -377,7 +386,7 @@ const run = async () => {
           const nav = page.getByTestId("site-header-nav");
           assert.deepEqual(await nav.locator("a").evaluateAll((links) => links.map((link) => ({
             name: link.textContent.trim(), href: link.getAttribute("href")
-          }))), navigationLinks, "Native navigation destinations and order must be preserved");
+          }))), expectedLinks, "Native navigation destinations and order must be preserved");
           const links = await nav.locator("a").all();
           for (const link of await nav.locator(width < 940 ? "a" : ":scope > ul > li > a").all()) {
             assert.equal(await link.isVisible(), true, "Links must be available without hover or a prior interaction");
@@ -388,7 +397,7 @@ const run = async () => {
           for (const [index, link] of links.entries()) {
             await link.waitFor({ state: "visible" });
             await page.keyboard.press("Tab");
-            await assertKeyboardLink(link, navigationLinks[index].name);
+            await assertKeyboardLink(link, expectedLinks[index].name);
           }
           if (width < 940) {
             for (const link of links.slice(0, -1).reverse()) {
@@ -406,10 +415,10 @@ const run = async () => {
 
           // Each shell activates both submenu destinations and a primary link.
           // Rotating the primary link also exercises all six section destinations at each width.
-          for (const destination of [navigationLinks[2], navigationLinks[4], primaryLinks[pageIndex % primaryLinks.length]]) {
+          for (const destination of [expectedLinks[2], expectedLinks[4], primaryLinks[pageIndex % primaryLinks.length]]) {
             await page.goto(sourceUrl, { waitUntil: "load", timeout: 15000 });
             await page.locator(".site-header__brand").focus();
-            const linkIndex = navigationLinks.indexOf(destination);
+            const linkIndex = expectedLinks.indexOf(destination);
             for (let step = 0; step <= linkIndex; step += 1) {
               // As in the existing desktop navigation regression, let focus-within
               // reveal the submenu before asking native Tab to enter it.
@@ -697,11 +706,11 @@ const run = async () => {
           await page.goto(`${baseUrl}/404.html`, { waitUntil: "load", timeout: 15000 });
           await assertSystemFallback();
           const link = page.getByRole("main").getByRole("link", { name: "Powrót na stronę główną" });
-          assert.equal(await link.getAttribute("href"), "index.html#top", "The recovery link must keep its native destination");
+          assert.equal(await link.getAttribute("href"), "/#top", "The recovery link must keep its native destination");
 
           await measurePointerStates(link, `404 recovery link (${colorScheme})`);
           await Promise.all([
-            page.waitForURL(`${baseUrl}/index.html#top`, { timeout: 10000 }),
+            page.waitForURL(`${baseUrl}/#top`, { timeout: 10000 }),
             page.mouse.up()
           ]);
           await page.locator("#top").waitFor();

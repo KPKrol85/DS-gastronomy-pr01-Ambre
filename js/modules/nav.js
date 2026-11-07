@@ -296,8 +296,8 @@ export function initSmartNav() {
   if (/(?:^|\/)(index\.html)?$/.test(path) || path.endsWith("/")) return;
 
   const map = {
-    menu: "menu.html",
-    galeria: "galeria.html",
+    menu: "/menu.html",
+    galeria: "/galeria.html",
   };
 
   const links = document.querySelectorAll(".site-header__nav a[href]");
